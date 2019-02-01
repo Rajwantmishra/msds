@@ -1,0 +1,924 @@
+---
+title: "Project MSDS Week 3"
+author: "Rajwant Mishra"
+date: "January 9, 2019"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Bridge Course Final Project {.tabset .tabset-fade .tabset-pills}
+
+##  Problem Statement 
+
+
+This data is collection of SAPM and Good Comments of 5 videos, data colelcted duration is ranging between 2013 to 2015. 
+We will try to answer:
+
++ How Spamming is spread across the videos and it's high comment rate. 
++ Find SPAM / Comments pattern over year and month and during the hour of day
++ How often badwords have surfaced in the comments 
+
+
+## Data Source
+
++ [Source of Data](https://https://archive.ics.uci.edu/ml/datasets.html)
+
++ [Data File](https://archive.ics.uci.edu/ml/datasets/YouTube+Spam+Collection)
+
+## About DataSet
+
+This data is collection of SAPM and Good Comments of 5 videos, data colelcted duration is ranging between 2013 to 2015. 
+
+
+## Packages Used
+<list>
+<li> Tidyverse
+<li>stringr
+<li>xml
+<li>data.table
+</list>
+
+
+## Loading Packages 
+~~~~~~~
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl)
+
+~~~~~~~
+
+
+```{r include=FALSE}
+
+#install.packages("tidyverse")
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl) 
+
+
+```
+
+#  Question 2. Data wrangling : {.tabset .tabset-fade .tabset-pills}
+
+## Read 
+
+Here we have created and loaded all the file in directory of Project in our local variable fdataMaster, fdataEninem, fdataKatyPerry, fdataLMFAO, fdataShakira.
+
+```{r}
+# Read Data folder called Project in current working directory, which hold all the file FIVE csv files and ONE excel master file.
+workDir <- getwd()
+filePath = paste0(workDir,"/project")
+fileName <- list.files(path=filePath)
+SpamData <- data.frame(NA)
+
+
+# Start of code to read data from folder 
+
+for (n in  fileName){
+  #Get the File name and key 
+  tempName <- str_split(n,"-",n = 2,simplify = TRUE)[1,2]
+  key  <- str_split(tempName,"(.xlsx)|(.csv)",n=2,simplify = TRUE)[1,1]
+ 
+  if(str_detect(n,".xlsx$")){
+    #Using read excel from readxl package 
+    # We know its Master file 
+    assign(paste0("fdata",key),read_excel(paste0(filePath,"/",n)))
+    
+  } else{
+    # We know its our record data file for each item in Master file 
+    
+    assign(paste0("fdata",key),read_csv(paste0(filePath,"/",n))) 
+      }
+     print(paste0("fdata",key))
+     }
+
+# End of loading data 
+
+```
+
+
+
+## Show Data
+```{r}
+# Function to show Glimpse of the data
+showGlimpse <- function(x = NULL){
+  if(!is.null(x)){
+    print(paste0("--------------Start of %s-----------------------",x))
+  print(eval(head(parse(text = x))))
+  glimpse(x)
+    print(paste0("--------------End of %s-----------------------",x))
+  cat("\n")
+    return()}
+  
+  print("Data--------------Start of fdataMaster-----------------------")
+  print(head(fdataMaster))
+  print("Data--------------End of fdataMaster-----------------------")
+  cat("\n")
+
+  print("Data--------------Start of fdataEminem-----------------------")
+  glimpse(fdataEminem)
+  print("Data--------------End of fdataEminem-----------------------")
+  cat("\n") 
+  
+  print("Data--------------Start of fdataShakira-----------------------")
+  glimpse(fdataShakira)
+  print("Data--------------End of fdataShakira-----------------------")
+  cat("\n") 
+  
+  print("Data--------------Start of fdataKatyPerry-----------------------")
+  glimpse(fdataKatyPerry)
+  print("Data--------------End of fdataKatyPerry-----------------------")
+  cat("\n") 
+  
+  print("Data--------------Start of fdataLMFAO-----------------------")
+  glimpse(fdataLMFAO)
+  print("Data--------------End of fdataLMFAO-----------------------")
+  cat("\n") 
+
+  print("Data--------------Start of fdataPsy-----------------------")
+  glimpse(fdataPsy)
+  print("Data--------------End of fdataPsy-----------------------")
+  cat("\n") 
+
+  
+  print("Data--------------Start of SpamData-----------------------")
+  glimpse(SpamData)
+  print("Data--------------End of SpamData-----------------------")
+  cat("\n") 
+}
+showGlimpse()
+
+```
+
+
+## Data Wrangling {.tabset .tabset-fade .tabset}
+
+### Add Column /Combine Data 
+```{r}
+# AddKey and Name as colum to dataset, so that we can put all the data in 1 file 
+# Here I will load the data and then check if this data is availble in Master file 
+# If yes then add two column at the begning of the dataset with name "Key" for
+# dataset "YID" for youtube id.
+    
+fdataKatyPerry <- mutate(fdataKatyPerry,key= "KatyPerry", YID=as.character(fdataMaster[which(fdataMaster$Dataset == "KatyPerry"),][1,2]))
+
+fdataEminem <- mutate(fdataEminem,key= "Eminem", YID=as.character(fdataMaster[which(fdataMaster$Dataset == "Eminem"),][1,2]))
+
+fdataLMFAO <- mutate(fdataLMFAO,key= "LMFAO", YID=as.character(fdataMaster[which(fdataMaster$Dataset == "LMFAO"),][1,2]))
+fdataPsy <- mutate(fdataLMFAO,key= "Psy", YID=as.character(fdataMaster[which(fdataMaster$Dataset == "Psy"),][1,2]))
+fdataShakira <- mutate(fdataShakira,key= "Shakira", YID=as.character(fdataMaster[which(fdataMaster$Dataset == "Shakira"),][1,2]))
+
+showGlimpse()  # Check tibbles to see if they have all the new columns
+# Now we will use rbind to put file in 1 dataframe "SpamData" 
+SpamData <- rbind(fdataEminem,fdataKatyPerry,fdataLMFAO,fdataPsy,fdataShakira)
+head(SpamData)
+showGlimpse("SpamData")
+#Lets check the strucutre of column
+glimpse(SpamData)
+```
+
+
+
+
+### Change Str/ Add Column
+
+```{r}
+
+
+#Converting Key as factor 
+SpamData$key = as.factor(SpamData$key)
+glimpse(SpamData)
+
+# Check Unique of Video , indicates we have got data for all the videos in one dataset
+unique(SpamData$key)
+
+#Check the Dataset duration 
+unique(year(SpamData$DATE))
+
+#add MOnth Column
+SpamData$YEAR <- as.factor(year(SpamData$DATE))
+SpamData$DAY <- as.character(month(SpamData$DATE))
+SpamData$WDAY <- as.factor(weekdays(SpamData$DATE))
+
+
+#See the time of Day
+unique(hour(SpamData$DATE))
+
+# Add Time and Hour from Date column
+SpamData$HOUR <- hour(SpamData$DATE)
+SpamData$TIME <- str_sub(SpamData$DATE,12,end = -1L) # Time starts at 12th place in string of date,
+
+
+
+  
+```
+
+### Subset
+```{r}
+#Lets start working with Author Data now, We don't expect any duplicate but checking 
+dups_Author <- which(duplicated(SpamData$AUTHOR))
+
+# this looks like we have some same comment put on multiple videos (not checking as of now if it's by same by same user. )
+dup_comments <- which(duplicated(SpamData$CONTENT))
+
+#################################### Adding count for Same Comments 
+SpamData_ccount <- count(SpamData$CONTENT)
+SpamData$ConDupcount <-  mapply(function(x)(SpamData_ccount[which(SpamData_ccount$x==x),][1,2]),SpamData$CONTENT)
+
+
+#################################### Adding count for Same Authors 
+
+SpamData_tcount <- count(SpamData$AUTHOR)
+SpamData$AuthDupcount <-  mapply(function(x)(SpamData_tcount[which(SpamData_tcount$x==x),][1,2]),SpamData$AUTHOR)
+
+#################################### 
+
+#SO we have few Data which are with NA date, it may not add much vlaue in our analysis Lets park this data in other dataset
+#Create TWO New Data set with ONly data with valid Data one with VALIDSPAM and other with NASPAM where date is NA
+
+
+suppressWarnings(rm(validSPAM) ) # Remove Old Variable \
+ suppressWarnings(rm(NASPAM))     # Remove Old Variable \
+ 
+ # Creating new dataset with all the columns from MAIN data 
+ validSPAM <- SpamData[which(SpamData$DAY != 'NA'),]
+ NASPAM <- SpamData[-which(SpamData$DAY != 'NA'),]
+ glimpse(SpamData)
+ glimpse(validSPAM)
+ glimpse(NASPAM)
+```
+
+ 
+## String Operation  {.tabset .tabset-fade .tabset-pills}
+
+### Convert/ Add Column 
+
+```{r}
+# Converting 0 and 1 to Text "NO-SPAM", "SPAM" and create new dataset
+SpamData_text <- mutate(SpamData,CLASS= ifelse(CLASS == 0, "NO-SPAM", "SPAM")) 
+head(SpamData_text[,c("CLASS","CONTENT")])
+# SPAM DATA By  Year and Type 
+SpamData_Content <- SpamData_text %>% select("CLASS","CONTENT","YEAR","DAY")
+```
+
+
+### Reading JSON / Detect/ gsub
+Read JSON File from www to perfrom str_detect on the collection of badwords.
+
+```{r}
+
+# Get  bad word JSON File from GITHUB to do you string compare 
+#install.packages("rjson")
+badwordURL <- "https://raw.githubusercontent.com/web-mech/badwords/master/lib/lang.json"
+#library(rjson)
+suppressWarnings(rm(dontSay))
+
+raw <- read_file(badwordURL)
+dontSay <- fromJSON(raw)
+class(dontSay)
+dontSay <- as.data.frame(dontSay$words)
+colnames(dontSay) <- c("words")
+dontSay <- as.character(dontSay$words)
+# Replace and a all special char with scapce sequence in bad word  # . \ | ( ) [ { ^ $ * + ?   replace 
+dontSay <- gsub("[(]","\\\\(",dontSay)
+dontSay <- gsub("[.]","\\\\.",dontSay)
+dontSay <- gsub("[\\]","\\\\\\",dontSay)
+dontSay <- gsub("[|]","\\\\|",dontSay)
+dontSay <- gsub("[)]","\\\\)",dontSay)
+dontSay <- gsub("[*]","\\\\*",dontSay)
+
+#since Str_detect neeeds 1d varible to check using pase with collapse 
+ checkword <- paste(dontSay, collapse = '|')
+ dontSay_data <- SpamData_Content[which(str_detect(SpamData_Content$CONTENT,pattern =regex(checkword,ignore_case = TRUE)) ),]
+ 
+ dontSay_data$CLASS <- as.factor(dontSay_data$CLASS)
+summary(dontSay_data)
+
+## Message Marked as SPAM and have Bad words.
+ glimpse(dontSay_data[which(dontSay_data$CLASS=="SPAM"),])
+ 
+ ## Adding Bad column to new data set show if comments was bad or no
+ SpamData_text<- mutate(SpamData_text, bad = str_detect(SpamData_text$CONTENT,pattern =checkword ) )
+ 
+ 
+ # summary(SpamData_text)
+ # plyr::count(SpamData_text ,vars=c("CLASS","bad")) %>% 
+ #  plyr:: rename( c("CLASS"="TYPE","bad"="Bad words used","freq"="Number of Comments"))
+
+```
+
+## Write 
+write  "SpamData" it to local directory 
+
+```{r}
+# write  "SpamData" it to local directory 
+write.csv(SpamData,file = "project/SpamData.csv")
+
+```
+
+
+
+# Question 1. Data Exploration {.tabset .tabset-fade .tabset-pills}
+
+Data Exploration: This should include summary statistics, means, medians, quartiles, or any
+other relevant information about the data set. Please include some conclusions in the R
+Markdown text.
+
+## Objective {.tabset .tabset-fade .tabset}
+~~~~~~~
+Doing String operations and creating new data set. 
+Calcualting mean , median and other info.
+
+~~~~~~~
+
+
+## summary {.tabset .tabset-fade .tabset}
+
+### statistics
+```{r}
+glimpse(SpamData)
+head(fdataMaster)
+summary(SpamData)
+
+
+ddply(SpamData, "key",summarise, duration = max(as.numeric(YEAR)) - min(as.numeric(YEAR)))
+
+# count the total number of SAPM by key column
+# The output of ddply is just the give column as we have user Summarise fucnation, if we use funcation  tranform
+# SpamDataT <- ddply(SpamData, "key", transform, Spam = sum( CLASS ) )  it would result full data set for use to user 
+
+# Data Of Key Video and SPAM Count 
+# Sine CALSS Is logical and 1 is for SPAM and 0 for NO SPAM , Sum of CLASS would give sum of SAPM content 
+# Rename the column by doing pipe %>% of the data to rename of plys pacakge 
+ddply(SpamData, "key", summarise, Spam = sum( CLASS ) ) %>%
+rename( c("key"="Video Name","Spam"= " SPAM Count")) 
+
+# Spam over days of week
+ddply(SpamData, "WDAY", summarise, Spam = sum( CLASS ) ) %>%
+rename( c("WDAY"="Day of week","Spam"= " SPAM Count")) 
+
+
+```
+
+
+### Calculate % 
+
+```{r}
+
+# Count of each value of "Key" in the first spam data
+SpamData_keyCount <- count(SpamData, vars = "key")
+
+# Calculate % of SAPM by video 
+
+SpamData_percent <- ddply(SpamData, "key", summarise, Spam = sum( CLASS ) ) %>%
+mutate(  SPAM_PERCENT =  as.numeric(Spam)* 100/SpamData_keyCount$freq[which(SpamData_keyCount$key== key )] , 
+         TOTAL_COMMENTS = SpamData_keyCount$freq[which(SpamData_keyCount$key== key )]) 
+
+SpamData_percent[order(SpamData_percent$TOTAL_COMMENTS,decreasing = TRUE),]
+
+```
+
+
+### means
+```{r}
+# Know the Mean of comments from Author and Hours of the day
+
+sapply( list( "Repeat Author" = SpamData$AuthDupcount,"Hour of Day" = SpamData$HOUR ), FUN =mean, na.rm=TRUE) 
+
+
+# MEAN Of % of SPAM with respect to total spam
+sapply(list("Spam % Mean" = SpamData_percent$SPAM_PERCENT, "| Total Comment Mean"=SpamData_percent$TOTAL_COMMENTS),FUN = mean)
+
+# Mean of Hours and Day of the Month
+ sapply( list( "Hour_Mean" = SpamData$HOUR,"Day_Mean" = day(SpamData$DATE) ), mean, na.rm=TRUE) 
+
+```
+### Aggregate
+```{r}
+# aggregate data by Video Key and Weekday to see How many SPAMs were reported on each daty
+aggregate(list("SPAM_COUNT" = SpamData$CLASS ),by = list("ID" = SpamData$key, "Day_Of_Week" = SpamData$WDAY ) , FUN=  sum,na.action=FALSE )
+
+library(dplyr)  
+
+# Total comments by Week Days
+SpamData_total_spam_weekday <- plyr::count(SpamData, vars = c("key","WDAY"))
+SpamData_total_spam_weekday
+
+# Count of COmment by Year 
+SpamData_total_spam_year <- plyr:: count(SpamData, vars = c("key","YEAR"))
+summary(SpamData_total_spam_year)
+
+#It looks like we have 0 for Eminem at every day of week. Let check it with some sample data of SPAM in Main dataset
+SpamData[which(SpamData$CLASS == 1 & SpamData$key == "Eminem"),c("key", "WDAY","CLASS","DATE")]
+# We see we have NA for Wday and its right as we have NA for DATE , To validate further lets check the Not SAPM data for the Eminem
+SpamData[which(SpamData$CLASS == 0 & SpamData$key == "Eminem"),c("key", "WDAY","CLASS","DATE")]
+```
+
+### medians
+
+```{r}
+# Median of Hours and Day of the Month
+sapply( list( "Hour_Median" = SpamData$HOUR,"Day_Median" = day(SpamData$DATE) ), median, na.rm=TRUE)
+
+```
+
+### quartiles
+```{r}
+qunat_SPAM_byDay <- quantile(aggregate(list("SPAM_COUNT" = SpamData$CLASS), by= list("Day" = SpamData$WDAY),sum)$SPAM_COUNT)
+
+sprintf("The first, second and third quartiles of the 'SAPM Count' in SPAM Datas are %s, %s and %s spams respectively.",qunat_SPAM_byDay[1],qunat_SPAM_byDay[2],qunat_SPAM_byDay[3])
+# Using Colored Formating 
+
+
+cat("The first, second and third " %+% blue$underline$bold ('quartiles') %+% " of the " %+% red("SAPM Count") %+%  " in SPAM Datas are ", blue(qunat_SPAM_byDay[1]),",",blue(qunat_SPAM_byDay[2]), " and " , blue(qunat_SPAM_byDay[3]) , " spams respectively.")
+```
+
+### conclusions {.tabset .tabset-fade .tabset}
+
+1. We have 245 observations which were recorded with no Dates, and hence no Day is availvle for them.
+2. The SPAM % is directly proportional Total Comments as show in below table 
+```{r echo=FALSE}
+SpamData_percent
+
+```
+3. in 2014 , 2015 we see increse in trend as COMMENTS are incresing and SPAM too, by query summary(SpamData_total_spam_year)
+```{r echo=FALSE}
+summary(SpamData_total_spam_year)
+```
+
+4. Mean data Indicates that SPAM is more than 50% of total comments 
+
+  Spam % Mean | Total Comment Mean |
+--------------|--------------------|
+    51.89542  | 408.80000          |
+    
+5 SPAM Data by Weekday : The first, second and third quartiles of the SAPM Count in SPAM Datas are  95 ,103  and  116  spams respectively.
+  + qunat_SPAM_byDay
+  
+   0% | 25% | 50% | 75% |100%   |
+  ----|-----|-----|-----|-------|
+   95  |103  |116 | 124  |156   |
+  
+
+
+
+# Question 3. Graphics  {.tabset .tabset-fade .tabset-pills}
+Graphics: Please make sure to display at least one scatter plot, box plot and histogram. Don't
+be limited to this. Please explore the many other options in R packages such as ggplot2.
+
+## Objective {.tabset .tabset-fade .tabset}
+
+Creating differnt type of data and Graph set that can support us latter for our final data presentation. 
+## Graphs {.tabset .tabset-fade .tabset} 
+
+### BAR Graph
+```{r}
+library(plyr)
+head(SpamData_total_spam_year)
+# Comments Over Year on the Videos
+ggplot(SpamData_total_spam_year,mapping=aes(x=key,y=YEAR,fill= YEAR)) +
+  geom_col()+
+  ggtitle("Comments Over Year on the Videos")
+
+
+############################ Data by only Key year and Class using SPREAD to move ROW TO COLUMN
+SpamData_kcy <- SpamData_text%>%select(key,CLASS,YEAR)
+SpamData_kcy_f<- plyr::count(SpamData_kcy ,vars =c("key","YEAR","CLASS")) %>%
+spread(CLASS, freq) 
+  
+## Graph for only SPAM over the video per year  , Its very clear that 2014 and 2015 recorded increse in Comments and hence SPAM
+ggplot(SpamData_kcy_f,mapping=aes(x=key, y=SPAM, fill = YEAR)) +
+geom_col(na.rm = FALSE) +facet_wrap(~YEAR) +
+  labs(title="SPAM over Year on Videos",
+        x ="Video ", y = "SPAM Count")+
+  ggtitle(" Impact of SPAM on Number of Videos by year") +
+  theme(plot.title = element_text(color="gray", size=14, face="bold" ))
+
+
+
+# Impact of SPAM on Number of Videos by year 
+
+ggplot(SpamData_total_spam_year,mapping=aes(x=YEAR,fill= freq)) +
+  geom_bar() +
+  theme(plot.background = element_rect(color = "orange")) +
+  theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(color="blue")) +
+ theme(panel.grid.minor = element_blank())+
+  theme(panel.grid.major.x = element_blank())+
+  ylab( "No Of Videos Impacted") +
+  xlab( "Year" ) +
+  ggtitle(" Impact of SPAM on Number of Videos by year") +
+  theme(plot.title = element_text(color="red", size=14, face="bold.italic" ))
+
+
+
+```
+
+
+### box plot
+
+```{r}
+## using box plt to show that data was very high in 2014 and 2015
+ggplot(SpamData_kcy_f,mapping=aes(x=YEAR, y= SPAM)) +
+geom_boxplot()
+
+# We can clearly see that Spamming is not a regualar process , it happens in a chunk , with very few exceptions .
+ggplot(SpamData_text,mapping=aes(x=key, y=DATE,color = CLASS)) +
+ geom_boxplot(na.rm = TRUE)+
+  ylab( "Date in Year") +
+  xlab( "Video Key" ) +
+theme(panel.background = element_blank(),
+        legend.key = element_blank()) +  #Gray color behind the actual legend 
+theme(panel.grid.major = element_line(color="blue")) +
+ theme(panel.grid.minor = element_blank())+
+  theme(panel.grid.major.y = element_blank())+
+  scale_color_discrete(name="Comment Type")+
+ggtitle(" Type of comments on Videos by year") +
+theme(plot.title = element_text(color="red", size=12, face="bold" ))
+```
+
+
+### scatter plot
+
+```{r}
+#SPAM and NO SPAM BY YEAR 
+SpamData_byYear <- ddply(SpamData, "YEAR", summarise, Spam = sum( CLASS ) ) %>%
+mutate(  SPAM_PERCENT =  as.numeric(Spam)* 100/SpamData_keyCount$freq[which(SpamData_keyCount$key== key )] , 
+         TOTAL_COMMENTS = SpamData_keyCount$freq[which(SpamData_keyCount$key== key )]) 
+
+
+# Get Data for one video overt the period of dataset
+SpamData_text[order(SpamData_text$DAY),] %>%
+subset(key== "LMFAO") %>%
+  ggplot(mapping=aes(x=DAY, y=HOUR,color= CLASS)) +
+  geom_point()+
+  xlab("Month")
+
+
+
+# Run the same check on FUll Data Set now
+# Its very clear here that during 1st half 2015 spam were higher than the regular comments in the months.
+SpamData_text[order(SpamData_text$DAY),] %>%
+  ggplot(mapping=aes(x=DATE, y=HOUR,color= CLASS,na.rm = FALSE),na.rm = TRUE) +
+  geom_point(na.rm = TRUE,alpha= 1/3)  +
+  geom_smooth(na.rm = TRUE,span = 0.1) +
+  labs(title =" Type of comments on Videos by Date and \n Hour of the day ", x= "DATE" , y ="Hour") +
+  theme(plot.title = element_text(color="skyblue", size=12, face="bold" ))
+
+
+# From Above char its clear how Spaming has been progressing and figting with good content . Its Also strange to NOTE that more than 50% of data is SPAM.
+  
+```
+
+
+### histogram
+
+```{r}
+
+# store the mean over year 
+myear<- mean(summary(as.factor(replace_na(as.character(SpamData_text$YEAR),replace = "9999"))))
+
+mYear2 <- mean(summary(as.factor(replace_na(as.character(SpamData_text$YEAR),replace = "9999")))[c("2014","2013","9999")])
+
+ ################################## Hisogram showing same trend of more SPAM in incresing trend close to mean of all the comments over Month 
+    ggplot(SpamData_text,mapping = aes(x=DATE, fill = CLASS)) +
+    # start your data from 0 coordinates 
+    # bin creates 10 group of data .. deault R will get some random bin in this case it was 30 )
+     geom_histogram(na.rm= TRUE,boundary = 0,  
+                    bins = 10
+                    )  +
+      geom_hline(linetype = 5,  
+                 color="blue",
+                 yintercept = myear) +
+      
+      # Adding Annotation 
+      annotate("text",label = sprintf("mean of comments over year %s",myear), x= as.POSIXct("2014-01-25 18:08:03"), y= 535 ) +
+      geom_hline(linetype = 2,  
+                 color="red",
+                 yintercept = mYear2) +
+    
+    annotate("text",label = sprintf("mean of comments till 2014, %.2f",mYear2), x= as.POSIXct("2014-01-25 18:08:03"), y= mYear2+20 )+
+       labs(title =" Type of comments on Videos by  \n Year ", x= "DATE" , y ="Comments Count") +
+  theme(plot.title = element_text(color="Red", size=12, face="bold" ))
+  
+
+
+library(plyr)
+summary(SpamData_text[SpamData_text$YEAR == "2015",]$YEAR)
+
+```
+
+```{r}
+ #................................Data points indicates that people have commented more during  NIGHT Times , but its little slow during early days of work.
+
+# Mean time of comment is 12:33 during day.
+
+    xm <- as.numeric(summary(SpamData_text$HOUR)[4])
+    plyr::count(SpamData_text,c("HOUR","CLASS")) %>% 
+    ggplot(mapping = aes(x=HOUR,y= freq, fill=CLASS)) +
+    geom_col(na.rm = TRUE) +
+      ## # 0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash
+      geom_vline(na.rm = TRUE,linetype = 5,  
+                 color="blue",
+                 xintercept =as.numeric(summary(SpamData_text$HOUR)[4])) +
+      theme(panel.background = element_blank(),
+        legend.key = element_blank()) +
+      # Adding Annotation 
+      annotate("text",label = sprintf("mean of Time %.2f",as.numeric(summary(SpamData_text$HOUR)[4])), x= as.numeric(summary(SpamData_text$HOUR)[4]), y= 100 ) +
+    labs(title =" Type of Comments made during by Hours of day ", x= "Hour of Day" , y ="Comments Count") +
+  theme(plot.title = element_text(color="Red", size=12, face="bold" ))
+```
+
+### GEOM SMOOTH 
+```{r}
+xm <- as.numeric(summary(SpamData_text$HOUR)[4])
+    plyr::count(SpamData_text,c("HOUR","CLASS")) %>% 
+    ggplot(mapping = aes(x=HOUR,y= freq, color=CLASS)) +
+      geom_point(na.rm = TRUE) +
+    geom_smooth(na.rm = TRUE,span = 0.8)
+    
+    #Indicating Evening to Midnight more comments are created.
+```
+
+
+
+
+# Question 4. Conclusions {.tabset .tabset-fade .tabset-pills}
+
+##  Analysis 
+
+Our Analysis based on data is as below:
+
+> Both Good comments and bad comments are increasing over the year (point 1)
+
+> People are spending more time during evening to midnight , but less time during morrning (point 2) 
+
+> SPAMers target diffrent videos diffrent time of the month . Not same videos would be spammed every day or month .(point 2)
+
+> Badwords are equally present in good and spam comments , but are not very big in number. (point 3)
+
+## Point 1
+1. How Spamming is spread across the videos and it's  comment rate.
+
+> As we can see that spams are there since the time data was collected and it has increased over time .
+> We can clearly see that SPAM is very close to good content for some the videos in year 2014 and mostly all the videos in 2015 .
+
+```{r echo=FALSE}
+
+
+#################### Data by only Key year and Class using SPREAD to move ROW TO COLUMN
+SpamData_kcy <- SpamData_text%>%select(key,CLASS,YEAR)
+SpamData_kcy_f<- plyr::count(SpamData_kcy ,vars =c("key","YEAR","CLASS")) %>%
+spread(CLASS, freq) 
+  
+## Graph for only SPAM over the video per year  , Its very clear that 2014 and 2015 recorded increse in Comments and hence SPAM
+ggplot(SpamData_kcy_f,mapping=aes(x=key, y= SPAM, fill = YEAR)) +
+geom_col(na.rm = FALSE) +facet_wrap(~YEAR) +
+  labs(title="SPAM over Year on Videos",
+        x ="Video ", y = "SPAM Count")+
+  ggtitle(" Impact of SPAM on Number of Videos by year") +
+  
+  geom_point(aes(x=key, y= SpamData_kcy_f$`NO-SPAM`))+
+labs(subtitle = " (Black DOT indicates number of Good Comments by Year ") +
+theme(plot.title = element_text(color="Blue", size=14, face="bold" ),
+      plot.subtitle = element_text(color="black", size=10 ) )
+
+
+```
+
+## point 2   {.tabset .tabset-fade .tabset} 
+Find SPAM / Comments pattern over year and month and during the hour of day
+
+### SPAM / Year
+> We can see that as we are moving ahead , SPAM BOX is also increasing. 
+> Good point to note that even good comments has increased during 2015
+
+```{r echo=FALSE}
+ 
+
+# Impact of SPAM on  by year 
+
+ggplot(SpamData_text,mapping=aes(x=YEAR,fill = CLASS)) +
+  geom_bar() +
+  geom_text(stat='count', aes(label=..count..), vjust=-1)+
+  theme(plot.background = element_rect(color = "orange")) +
+  theme(panel.background = element_blank()) +
+  theme(panel.grid.major = element_line(color="blue")) +
+ theme(panel.grid.minor = element_blank())+
+  theme(panel.grid.major.x = element_blank())+
+  ylab( "No Of Videos Impacted") +
+  xlab( "Year" ) +
+  ggtitle(" Impact of SPAM on Number of Videos by year") +
+  theme(plot.title = element_text(color="red", size=14, face="bold.italic" ))
+
+```
+
+### Who is getting SPAM? 
+
+> We can clearly see that Spamming is not a regualar process for a Video, it happens in a in some months, with very few exceptions .
+
+> incontrast, for multiple videos, Data Point for 2015 indicates that most of the videos were spammed in this year,  almost every month some vidoes were spammed. 
+
+```{r echo=FALSE}
+
+ggplot(SpamData_text,mapping=aes(x=key, y=DATE,color = CLASS)) +
+ geom_boxplot(na.rm = TRUE)+
+  ylab( "Date in Year") +
+  xlab( "Video Key" ) +
+theme(panel.background = element_blank(),
+        legend.key = element_blank()) +  #Gray color behind the actual legend 
+theme(panel.grid.major = element_line(color="blue")) +
+ theme(panel.grid.minor = element_blank())+
+  theme(panel.grid.major.y = element_blank())+
+  scale_color_discrete(name="Comment Type")+
+ggtitle(" Type of comments on Videos by year") +
+theme(plot.title = element_text(color="red", size=12, face="bold" ))
+```
+
+
+### Trends of SPAM..
+Hisogram showing same trend of more SPAM in incresing trend close to mean of all the comments over Month 
+* since 2015 data is big we tried plotting meen against all data except 2015 
+> Is clear that 2015 has added more Good comments and also SPAM
+
+```{r echo=FALSE}
+################################## 
+    ggplot(SpamData_text,mapping = aes(x=DATE, fill = CLASS)) +
+    # start your data from 0 coordinates 
+    # bin creates 10 group of data .. deault R will get some random bin in this case it was 30 )
+     geom_histogram(na.rm= TRUE,boundary = 0,  
+                    bins = 10
+                    )  +
+      geom_hline(linetype = 5,  
+                 color="blue",
+                 yintercept = myear) +
+      
+      # Adding Annotation 
+      annotate("text",label = sprintf("mean of comments over year %s",myear), x= as.POSIXct("2014-01-25 18:08:03"), y= 535 ) +
+      geom_hline(linetype = 2,  
+                 color="red",
+                 yintercept = mYear2) +
+    
+    annotate("text",label = sprintf("mean of comments till 2014, %.2f",mYear2), x= as.POSIXct("2014-01-25 18:08:03"), y= mYear2+20 )+
+       labs(title =" Type of comments on Videos by  \n Year ", x= "DATE" , y ="Comments Count") +
+  theme(plot.title = element_text(color="Red", size=12, face="bold" ))
+  
+```
+
+### When people commented ?
+
+Data points indicates that people have commented more during  NIGHT Times , but its little slow during early days of work.
+> Less comments during morning ? We can say yes.
+
+```{r echo=FALSE}
+#................................
+
+# Mean time of comment is 12:33 during day.
+
+    xm <- as.numeric(summary(SpamData_text$HOUR)[4])
+    plyr::count(SpamData_text,c("HOUR","CLASS")) %>% 
+    ggplot(mapping = aes(x=HOUR,y= freq, fill=CLASS)) +
+    geom_col(na.rm = TRUE) +
+      ## # 0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash
+      geom_vline(na.rm = TRUE,linetype = 5,  
+                 color="blue",
+                 xintercept =as.numeric(summary(SpamData_text$HOUR)[4])) +
+      theme(panel.background = element_blank(),
+        legend.key = element_blank()) +
+      # Adding Annotation 
+      annotate("text",label = sprintf("mean of Time %.2f",as.numeric(summary(SpamData_text$HOUR)[4])), x= as.numeric(summary(SpamData_text$HOUR)[4]), y= 100 ) 
+```
+
+### When SPAM won 
+
+*Its very clear here that during 1st half of 2014 and 2015 spam were higher than the rgular comments in the months.
+
+* From below chart its clear how Spaming has been progressing and figting with good content . Its Also strange to NOTE that more than 50% of data is SPAM.
+
+> Bulk of 2015 is visble again.
+
+```{r}
+
+SpamData_text[order(SpamData_text$DAY),] %>%
+  ggplot(mapping=aes(x=DATE, y=HOUR,color= CLASS,na.rm = FALSE),na.rm = TRUE) +
+  geom_point(na.rm = TRUE,alpha= 1/3)  +
+  geom_smooth(na.rm = TRUE,span = 0.1) +
+  labs(title =" Type of comments on Videos by Date and \n Hour of the day ", x= "DATE" , y ="Hour") +
+  theme(plot.title = element_text(color="skyblue", size=12, face="bold" ))
+
+
+# From Above char its clear how Spaming has been progressing and figting with good content . Its Also strange to NOTE that more than 50% of data is SPAM.
+```
+
+
+## Point 3
+
+Below table is very clear and pointing out that Bad words more in SAPM , but strange even not-Spam comments contain bad words.
+
+
+```{r}
+  plyr::count(SpamData_text ,vars=c("CLASS","bad")) %>% 
+  plyr:: rename( c("CLASS"="TYPE","bad"="Bad words used","freq"="Number of Comments"))
+```
+
+
+
+
+# Question 5. {.tabset .tabset-fade .tabset-pills}
+<b>BONUS </b> - place the original .csv in a github file and have R read from the link. 
+
+><b> SPAMdata Master file created from this product is Uploaded to 
+>[CSV Github](https://github.com/Rajwantmishra/msds/blob/master/SpamData.csv)
+>, [Raw CSV from GIT Hub](https://raw.githubusercontent.com/Rajwantmishra/msds/master/SpamData.csv)
+
+```{r}
+
+gitRawFile = "https://raw.githubusercontent.com/Rajwantmishra/msds/master/SpamData.csv"
+
+#require(XML)
+read.csv.url <- read.csv( url(gitRawFile))
+head(read.csv.url)
+
+
+#require(read.table)
+read.csv.Data <- read.csv(gitRawFile,header=T)
+head(read.csv.Data )
+
+#library(data.table)
+dataTableCSV <- fread(gitRawFile)
+head(dataTableCSV)
+
+library(tidyverse)
+
+tidyDataCSV <- read_csv(gitRawFile)
+str(tidyDataCSV)
+head(tidyDataCSV)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
