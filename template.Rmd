@@ -1,0 +1,49 @@
+---
+title: "ADD Your Title"
+author: "YOU NAME"
+date: "January 31, 2019"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Porject Heading 
+
+---
+
+Note that "#" matters while deciding your tab postion 
+
+---
+## Tab Group Heading  {.tabset .tabset-fade .tabset-pills}
+>Some Text 
+*List 
+
+### Sub Item 1
+
+You can insert R-code here
+
+### Sub Item 2
+
+You can insert graph here
+
+### Sub Item 3 
+
+You can insert table here
+
+### Sub Item Group {.tabset .tabset-fade .tabset-pills}
+
+Create More Tab inside
+
+#### Sub Group Item 1 
+
+#### Sub  Group Item 2
+
+#### Sub group Item 2
+
