@@ -1,0 +1,195 @@
+---
+title: "607 W5 Assignment"
+author: "Rajwant Mishra"
+date: "February 26, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+# Load the tidyverse
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(data.table)
+library(DT)
+
+# Read in the coal dataset
+ssa <- read_csv("https://github.com/Rajwantmishra/msds/raw/master/week5/w5dataset.csv")
+
+
+ssa<- ssa[!is.na(ssa$X2),]
+
+# method 2
+######filter(ssa,!is.na(X2))
+
+# Using Shift
+#ssa <-mutate(t,X1 = ifelse( is.na(X1),shift(X1, 1L, type="lag"),X1))
+
+# #Using Mutate Dplyr funtion 
+# ssa<- mutate(t,X1 = ifelse( is.na(X1),lag(X1),X1))
+
+ssaDF <-  mutate(ssa,X1= ifelse( is.na(X1),lag(X1),X1)) %>%
+  gather(Status,value ,-c(X1,X2))  %>%
+  spread(key = X2,value = "value") %>%  
+  dplyr::rename( AirPort = X1,FlyingFrom = Status)
+
+# gather(ssa,Status,value ,-c(X1,X2))  %>%
+#   spread(key = X2,value = "value")
+
+
+  # group_by(ssaDF,AirPort)
+  # glimpse(ssaDF)
+  # summary(ssaDF)
+  # 
+  # summarise(ssaDF,mean=mean(delayed))
+
+
+
+
+```
+
+```{r}
+datatable(ssaDF)
+library(ggplot2)
+
+# Perform analysis to compare the arrival delays for the two airlines.
+
+
+ssaStat<- group_by(ssaDF,AirPort) %>%
+  summarise(MEAN = mean(delayed), Median = median(delayed), sd = sd(delayed))
+
+
+
+ggplot2::ggplot(ssaDF, aes(Facet=AirPort, fill=AirPort) )+geom_freqpoly(aes(delayed))
+  geom_col(bins = 20,binwidth=0.5,color="white", fill= "red",position = "stack")
+  
+  
+  ggplot(ssaDF, aes(y = delayed, x = FlyingFrom)) + 
+  geom_bar(stat = "identity",position="dodge")+
+  facet_wrap(~ AirPort) 
+  
+    ggplot(ssaDF, aes(y = delayed, x = FlyingFrom)) + 
+  geom_bar(stat = "identity",position="dodge")+
+  facet_wrap(~ AirPort) 
+    
+      ggplot(ssaDF, aes(y = delayed, x = FlyingFrom)) + 
+  geom_bar(stat = "identity",position="dodge")+
+  facet_wrap(~ AirPort) 
+  
+      
+   #  Side by Side By Airport
+ statMean <-      ggplot(ssaDF, aes(y = delayed, x = FlyingFrom,fill= AirPort)) + 
+  geom_bar(stat = "identity",position="dodge")+ 
+               geom_hline(ssaStat,linetype = 2,  
+                 color=c("red","blue"),
+                 yintercept = ssaStat$MEAN)+
+        annotate("text",label = sprintf("Mean %s, %.2f",ssaStat$AirPort,ssaStat$MEAN), x= 2, y= ssaStat$MEAN+10,color=c("red","blue"))
+          
+         
+        
+      
+    
+    
+        
+      #  Side by Side By Airport
+statMedian <-       ggplot(ssaDF, aes(y = delayed, x = FlyingFrom,fill= AirPort)) + 
+  geom_bar(stat = "identity",position="dodge")+ 
+               geom_hline(ssaStat,linetype = 1,  
+                 color=c("red","blue"),
+                 yintercept = ssaStat$Median)+
+        annotate("text",label = sprintf("Median %s, %.2f",ssaStat$AirPort,ssaStat$Median), x= 2, y= ssaStat$Median+10,color=c("red","blue"))     
+    
+
+    
+
+```
+
+
+
+`r datatable(ssaStat) `
+From Here it looks like Mean and Median of AM West is high compared to ALASKA. This can be concluded here that Delay is very high in AM WEST Airport. Below box plot gives very nice picture of the how delays are distributed for these Airports and it also support our understanding. 
+>So far we have not taken the airports traffic in considartion. 
+
+
+```{r}
+  
+           ggplot(ssaDF, aes(y = delayed, x = AirPort,fill= AirPort)) + 
+  geom_boxplot()
+
+
+               
+```
+
+
+
+If we consider overall traffic at the Airport, we note that the Airport *AM WEST* is very crowded and overall fligts is almost 2 time as that of *ALASKA*. 
+
+```{r}
+# Group data by Airport and get summary by Delay and Total Flights and Also find % of Delay
+
+group_by(ssaDF,AirPort) %>% summarise(sumDelay = sum(delayed),
+                                      sumAll = sum(delayed+`on time`)) %>%
+  mutate(DelayPercent = round((sumDelay/sumAll)*100,2))
+
+### Its Surprising to see "AM WEST" have better % in overall trafic data here.
+
+# Lets create scatterplots to detect the datapoints for Airport Delay
+  ggplot(ssaDF, aes(y = delayed, x = FlyingFrom,color= AirPort)) + 
+  geom_point()
+  
+```
+
+> We can see that  Seattle and Phoenix data have very big differences, lets drop them for further check.
+
+
+```{r}
+
+
+# After removing Seattle and Phoenix data as they seems like outlier
+
+filter(ssaDF,!(FlyingFrom == "Phoenix" | FlyingFrom == "Seattle" )) %>%
+group_by(AirPort) %>% summarise(sumDelay = sum(delayed),
+                                      sumAll = sum(delayed+`on time`)) %>%
+  mutate(DelayPercent = round((sumDelay/sumAll)*100,2))
+                                     
+```
+
+
+Again after removing the two major high and Low data points from both Airports, we are back with high percentage for AM WEST In dealy. 
+
+
+#COlcusion 
+
+We can say that Dealy frequecy is high with AM WEST, even though the overall trafic is also more than the ALASKA (Note the traffic after dropping the 2 data points). 
+
+With given information it can be said the AM WEST and ALASKA have a bright SPOT to consider from each others operation. ALASKA is doing better in terms of controlling the over all delay. 
+
+
+```{r eval=FALSE, include=FALSE}
+        ggplot(ssaDF, aes(y = delayed, x = FlyingFrom,fill= AirPort)) + 
+      
+      
+      
+      
+    
+    annotate("text",label = sprintf("mean % is, %.2f",mYear2), x= as.POSIXct("2014-01-25 18:08:03"), y= mYear2+20 )
+      
+    ssaStat
+    
+     geom_hline(linetype = 2,  
+                 color="red",
+                 yintercept = mYear2) +
+    
+    annotate("text",label = sprintf("mean of comments till 2014, %.2f",mYear2), x= as.POSIXct("2014-01-25 18:08:03"), y= mYear2+20 )+
+      
+     
+
+  
+
+```
+
