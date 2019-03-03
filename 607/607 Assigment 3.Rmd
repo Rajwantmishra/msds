@@ -1,0 +1,500 @@
+---
+title: "607 Week 3 Assignment"
+author: "Rajwant Mishra"
+date: "February 11, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to problems 3 and 4 from chapter 8 of Automated Data Collection in R.  Problem 9 is extra credit.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+Here is the referenced code for the introductory example in #3:
+
+ raw.data <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+Due end of day Sunday.
+
+
+
+```{r}
+
+library(tidyverse)
+library(lubridate)
+library(stringr)
+raw <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+name <-   as.data.frame(str_split(raw,"555"))
+names(name) <- c("NAME")
+
+name <- str_replace_all(name$NAME,
+                        "-|[\\d]|\\(|\\)|\\.","")
+trimws(name[name!=""])
+
+
+
+
+# Here, apply gives each row to any, which checks if the expression x=="" (which is itself a vector) is true for any of the elements and if so, it returns TRUE. The whole apply expression thus returns a vector of TRUE/FALSE statements, which are negated with !. This can then be used to subset your data.
+name <- as.data.frame(name)
+name <- name[!apply(name, 1, function(x) any(x=="")),] 
+name
+
+name2 <- unlist(str_extract_all(raw, "[[:alpha:]., ]{2,}"))
+name2
+
+fn <- unlist(str_extract_all(raw, "[[:alpha:]., ]{2,}"))
+
+
+fn <- unlist(str_extract_all(raw, "[[:alpha:].?, ]{2,}"))
+
+fn
+```
+
+```{r}
+str_extract_all(raw.data,"\\d?(\\d{3})?")
+
+p<- unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+
+digit
+
+example.obj <- c("1. A small sentence. - 2. Another tiny sentence.")
+
+unlist(str_extract_all(example.obj, "[[:punct:]ABC]"))
+unlist(str_extract_all(example.obj, "[[:punct:]A-Ca-c]"))
+unlist(str_extract_all(example.obj, "[[:alnum:]]|[[:punct:]]"))
+
+unlist(str_extract_all(example.obj, "s[[:alpha:]]{5}"))
+
+unlist(str_extract_all(example.obj, "s[[:alpha:]]{5}"))
+unlist(str_extract_all(example.obj, "A.+?sentence"))
+
+unlist(str_extract_all(example.obj, fixed(".")))
+
+unlist(str_extract_all(example.obj, fixed(".")))
+unlist(str_extract_all(example.obj, "\\."))
+
+unlist(str_extract_all(example.obj, "(\\D){1,10}"))
+unlist(str_extract_all(example.obj, "(\\w){1,8}"))
+
+unlist(str_extract_all(example.obj, "(\\w){3}"))
+unlist(str_extract_all(example.obj, "\\w+"))
+
+
+unlist(str_extract_all(example.obj, "\\<s"))
+unlist(str_extract_all(example.obj, "e\\b"))
+
+str_extract(example.obj, "(\\<[b-z]+\\>).+?\\1")
+
+
+str_extract(example.obj, "\\s+")
+
+```
+
+```{r}
+raw.data <- "555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev.Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr.Julius Hibbert"
+
+unlist(str_extract_all(raw.data, "[[:alpha:]., ]{2,}"))
+unlist(str_extract_all(raw.data, "[[:alpha:] .,]{2,}"))
+
+unlist(str_extract_all(raw.data, "[[:alpha:]., ]{2,}"))
+
+unlist(str_extract_all(raw.data, "[^[:alpha:]-]{3,}"))
+unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?"))
+unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+```
+```{r}
+agrep("Barack Obama", "Michelle Obama", max.distance = list(all = 6))
+make.unique(c("a", "b", "a", "c", "b", "a"))
+pmatch(c("and this", "and that", "and these", "and those"), char.vec)
+
+```
+
+```{r}
+library(XML)
+# download file
+if(!file.exists("listOfSimpsonsEpisodes.html")){
+link <- "http://en.wikipedia.org/wiki/List_of_The_Simpsons_episodes"
+download.file(link, "listOfSimpsonsEpisodes.html", mode="wb")
+}
+
+tables <- readHTMLTable("listOfSimpsonsEpisodes.html",header=T, stringsAsFactors=F)
+
+length(tables)
+tables[[3]]
+
+tmpcols <- names(tables[[3]])
+for(i in 3:19){
+tmpcols <- intersect(tmpcols, names(tables[[i]]))
+}
+
+
+
+episodes <- NULL
+for(i in 3:19){
+episodes <- rbind(episodes[,tmpcols],tables[[i]][,tmpcols])
+}
+for(i in 1:dim(episodes)[2]){
+Encoding(episodes[,i]) <- "UTF-8"
+}
+names(episodes) <- c("pnr", "nr", "title", "directedby","Writtenby", "airdate", "productioncode")
+save(episodes,file="episodes.Rdata")
+#Let us load the table containing all the Simpsons
+
+```
+```{r}
+con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+query <- "SELECT * FROM movies_review"
+
+tab1 <- dbSendQuery(con2,query)
+suppressWarnings(rm(movies_review ))
+movies_review <- dbFetch(tab1)
+query <- "SELECT * FROM movies_master"
+
+tab1 <- dbSendQuery(con2,query)
+movies_master <- dbFetch(tab1)
+#disconenct DB
+dbDisconnect(con2)
+
+glimpse(movies_review)
+glimpse(movies_master)
+
+grep("Bad",movies_master$Movie_Name[1:3], value=T)
+
+grep("Bad",movies_master$Movie_Name[1:3])
+
+grepl("Bad",movies_master$Movie_Name[1:10])
+
+
+grep("ar",movies_master$Movie_Name[1:10], value=T)
+grepl("ar",movies_master$Movie_Name[1:10])
+movies_master$Movie_Name
+grepl("Bad",movies_master$Movie_Name[1:10])
+grepl("Star",movies_master$Movie_Name[1:10])
+
+indicies <- sapply(c("Truth","Dare"),grepl, movies_master$Movie_Name,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE)
+
+index <- apply(indicies, 1, all) # Retrun strict and match 
+
+
+indicies <- sapply(c("Bad","Star"),grepl, movies_master$Movie_Name,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE)
+index <- apply(indicies, 1, any)  # Retrun any of the match 
+
+grepall <- function(pattern, grepl, x,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE,
+value=FALSE, logic=FALSE){
+  # apply grepl() and all()
+indicies <- sapply(pattern, grepl, x,
+ignore.case, perl, fixed, useBytes)
+}
+
+
+
+shiny_demo("Loterry")
+
+
+
+```
+
+```{r}
+Sys.getlocale()
+small.frogs <- "Sm°a grodorna, sm°a grodorna ¨ar lustiga att se."
+small.frogs
+
+Encoding(small.frogs)
+
+small.frogs.utf8 <- iconv(small.frogs, from = "windows-1252",
+to = "UTF-8")
+
+Encoding(small.frogs.utf8)
+small.frogs.utf8
+
+Encoding(small.frogs.utf8) <- "windows-1252"
+small.frogs.utf8
+
+iconvlist()
+
+```
+
+
+```{r}
+
+
+library(RCurl)
+
+enc.test <- getURL("http://www.sciencemag.org/")
+unlist(str_extract_all(enc.test, "<meta.+?>"))
+
+unlist(str_extract_all(enc.test, "<meta.+?>"))
+```
+
+
+
+```{r}
+
+unlist(str_extract_all(raw, "[[:alpha:]., ]{2,}"))
+p<- unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+
+
+rawdata<-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+raw.data 
+names <- unlist(str_extract_all(rawdata, "[[:alpha:]., ]{2,}"))
+
+names
+
+# [1] "Moe Szyslak"          "Burns, C. Montgomery" "Rev. Timothy Lovejoy" "Ned Flanders"        
+# [5] "Simpson, Homer"       "Dr. Julius Hibbert" 
+
+
+
+```
+
+```{r}
+
+unlist(str_extract_all(names,"[[:alpha:]]{2,}|[[:alpha:]. ?]{2,}|[.?[:alpha:] ]{2,}"))
+
+unlist(str_extract_all(names,"[[:alpha:]]{2,}"))
+
+unlist(str_extract_all(names,"[[:alpha:]]{2,}|[[:alpha:] .?[:alpha:]]{2,}|[[:alpha:]. ?]{2,} "))
+
+unlist(str_extract_all(names,"[[:alpha:]. ]{3,}"))
+
+ unlist(str_extract_all(names,"([[:alpha:]. ]{2,})?"))
+first
+
+
+str_extract_all(c("Dr. Julius Hibbert","Rev. Timothy   Lovejoy"),"[[:alpha:].?{1,3}]{2,}")
+
+
+unlist(lapply(strsplit(names, " "), function(x) { return(x[length(x)-1]) }))
+
+# Moe           Szyslak         
+# Burns         C. Montgomery 
+# 
+# Ned           Flanders      
+# Simpson,      Homer
+# Dr. Julius    Hibbert
+
+
+strings = c("12 Jun 2002", " 8 September 2004 ", "22-July-2009 ",
+"01 01 2001", "date", "02.06.2000",
+"xxx-yyy-zzzz", "$2,600")
+# date pattern (month as text)
+dates = "([0-9]{1,2})[- .]([a-zA-Z]+)[- .]([0-9]{4})"
+str_match(strings, dates)
+
+str_match(names, "[[:alpha:]]{2,}|[[:alpha:]. ?]{2,}")
+```
+
+
+
+
+```{r}
+
+# WORKING 
+grepall <- function(pattern, x,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE,
+value=FALSE, logic=FALSE){
+  
+  # error and exception handling
+if(length(pattern)==0 | length(x)==0){
+warning("Length of pattern or data equals zero.")
+return(NULL)
+}
+# apply grepl() and all()
+indicies <- sapply(pattern, grepl, x,
+ignore.case, perl, fixed, useBytes)
+index <- apply(indicies, 1, all)
+# indexation and return of results
+if(logic==T) return(index)
+if(value==F) return((1:length(x))[index])
+if(value==T) return(x[index])
+}
+
+
+#-----------------------------Dispaly Name -------------------------------------------
+rawdata<-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+names <- unlist(str_extract_all(rawdata, "[[:alpha:]., ]{2,}"))
+
+names
+
+
+#-----------------------------Dispaly 1st and Last name  -------------------------------------------
+Title <- NA
+Title[grepall("Dr.",names)] <- "Dr."
+Title[grepall("Rev.",names)] <- "Rev."
+
+tName <- trimws(str_replace_all(names,"Rev.|Dr.",""))
+FLName <- trimws(unlist(str_extract_all(tName,"[[:alpha:]]{2,}|[[:alpha:]. ?]{2,}|[.?[:alpha:] ]{2,}",1)))
+colnames(FLName) <- c("First Name","Last Name")
+data.frame(Title,"Full Name" = tName,FLName)
+
+#-----------------------------HAS Title (Rev. or Dr.) -------------------------------------------
+data.frame(names,Title,"Has_Title"= (grepl(c("Dr."),names)|grepl(c("Rev."),names)))
+
+#-----------------------------HAS 2nd Name----------------------------------------------------------
+data.frame("Raw Name " = names, "Full_Name" = tName,"Sec_Name" = ifelse(str_count(tName,"[[:alpha:]]+")>2,"YES","No"))
+
+#--------------------------------------------------------------------------------------
+
+
+unlist(str_extract_all(names,"[[:alpha:]]{1,3}"),1)
+unlist(str_extract_all(names,"[[:alpha:]]{2,}"))
+unlist(str_extract_all(names,"\\w.{2,}"))
+
+# Moe           Szyslak         
+# Burns         C. Montgomery 
+# 
+# Ned           Flanders      
+# Simpson,      Homer
+# Dr. Julius    Hibbert
+# WORKING  END
+```
+
+
+
+
+```{r}
+
+#-----------------------------------------------------------------
+
+grepl(c("Dr."),names)
+grepl(c("Rev."),names)
+data.frame(names,"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+
+
+
+#-----------------------------------"Rev.","Tim"-------------------------------
+indicies <- sapply(c("Rev.","Tim"),grepl, names,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE)
+
+index <- apply(indicies, 1, all) # Retrun strict and match 
+
+
+#------------------------------------------------------------------------------
+# Has 2nd Name 
+str_count("asas asasdsa asdasdsad .dsafdfd",pattern = ".")
+data.frame(names,ifelse(str_count(names,"[[:alpha:]]+")>2,"YES","No"),"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+
+data.frame(names,str_detect(names,", ?"),"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+
+```
+
+```{r}
+
+
+```
+
+
+
+
+
+
+
+```{r}
+# (a) [0-9]+\\$
+# (b) \\b[a-z]{1,4}\\b
+# (c) .*?\\.txt$
+# (d) \\d{2}/\\d{2}/\\d{4}
+# (e) <(.+?)>.+?</\\1>
+example.obj <- "1. A small sentence. - 2. Another tiny sentence."
+unlist(str_extract_all(example.obj, "[a-z]{1,4}"))
+
+a <- c("0121210121$ 3423423 1232$ 0932$ 444")
+str_extract_all(a,"[0-9]+\\$")
+# Would retrun only number from 0-9 in contuinues ending with $ at the end.
+
+b<-  "nice verynice FIIVE SIIIXX ONE TWO THREE FOUR NICE TINY MANGO msds msdsd 0932$ 444 smal four."
+unlist(str_extract_all(b, "\\b[a-z]{1,4}\\b"))
+# Only returns small letter word  of exact length 4
+
+# (c) .*?\\.txt$
+c<- c("one.txt","two.*.txt","three.*txt$" , "four.*.txt$", "fine.*.tx" ,"Abcd MSDS max.txt  dot.*txt  onemore.*.txt")
+unlist(str_extract_all(c, ".*?\\.txt$"))
+
+# data which are like <name>.txt , <name>.?*txt or any text ending ".txt"" will be retrun from this .
+
+
+
+
+# (d) \\d{2}/\\d{2}/\\d{4}
+d<- c("12/12/201","1/1/2012","01/12/2019", "00/0/2019","12/02/2019")
+unlist(str_extract_all(d, "\\d{2}/\\d{2}/\\d{4}"))
+# strin starting with number , {2}  say only 2 number , then "/" and again 2 number , then "/" and then 4 number.
+
+# (e) <(.+?)>.+?</\\1>
+
+# uses backreferencing to return any string that starts with a ``<text>`` and ends with ``</text>``
+
+e <- "<meta>MSDS CLASS 607</meta> <ol><li>Assignment</li><li>3e</li></ol>"
+unlist(str_extract_all(e, '<(.+?)>.+?</\\1>'))
+
+```
+
+
+
+
+```{r}
+
+
+
+ddd<- "clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr"
+
+is.locale(ddd)
+iconv(ddd, from = "windows-1252", to = "UTF-8")
+
+Encoding(ddd)
+
+Encoding("I am rajwant")
+
+
+str_extract_all(ddd,"\\d+")
+str_extract_all(ddd,"\\w")
+str_extract_all(ddd,"\\w[[:punct:]]")
+str_extract_all(ddd,"[[:upper:].]")
+
+unlist(str_extract_all(ddd,"[A-Z.]"))
+
+paste0(unlist(str_extract_all(ddd,"[A-Z.]")),collapse = "")
+
+str_split(paste0(unlist(str_extract_all(ddd,"[A-Z.]")),collapse = ""),
+          "\\.",simplify = TRUE)
+#-------------------------------------------------------END -----------------------------------
+
+str_extract_all(ddd,"\\w[[:punct:]]")
+str_extract_all(ddd,"\\d[[A-Z]]")
+
+
+unlist(str_extract_all(ddd, '[^[a-z]|[0-9]]'))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

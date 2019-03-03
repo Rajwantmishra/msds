@@ -1,0 +1,167 @@
+---
+title: "606 Assignment1 - Loading Data into a Data Frame"
+author: "Rajwant Mishra"
+date: "January 31, 2019"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Problem Statement 
+
+---
+
+<b >Your task </b>  
+
++ study the dataset and the associated description of the data (i.e. "data dictionary"). You may need
+to look around a bit, but it's there! 
+
++ You should take the data, and create a data frame with a subset of the columns
+in the dataset. 
+
++ You should include the column that indicates edible or poisonous and three or four other columns.
++ You should also add meaningful column names and replace the abbreviations used in the data-for example, in the appropriate column, "e" might become "edible."
+
++ Your deliverable is the R code to perform these transformation tasks.
+
+---
+
+#  Solution {.tabset .tabset-fade .tabset-pills}
+
+
+
+
+## Data Source
+
++ [Source of Data](https://archive.ics.uci.edu/ml/datasets/mushroom)
+
++ [Data File](https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/)
+
++ [Data Desc](https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.names)
+
+## About DataSet
+
+    (a) Mushroom records drawn from The Audubon Society Field Guide to North
+        American Mushrooms (1981). G. H. Lincoff (Pres.), New York: Alfred
+        A. Knopf
+    (b) Donor: Jeff Schlimmer (Jeffrey.Schlimmer@a.gp.cs.cmu.edu)
+    (c) Date: 27 April 1987
+
+
+## Loading Packages 
+~~~~~~~
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl)
+
+~~~~~~~
+
+```{r include=FALSE}
+
+#install.packages("tidyverse")
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl) 
+
+```
+
+# Load/Display Data {.tabset .tabset-fade .tabset-pills}
+
+## Local Read
+
+
+```{r}
+setwd("C:\\Users\\951250\\Documents\\myR\\MS\\607")
+workDir <- getwd()
+filePath = paste0(workDir,"/data")
+# fileName <- list.files(path=filePath)
+
+# mushroom <- read_delim(paste0(filePath,"/","mushroom.data" ))
+# coloumName <- c(" ")
+
+mushroom_meta <- read_delim(paste0(filePath,"/","atr.txt"),delim=".",col_names = FALSE)
+
+# using the Name from above tible to set the header of the mushroom dataset
+mushroom <- read_delim(paste0(filePath,"/","mushroom.data" ),delim = ",",col_names = trimws(mushroom_meta$X2))
+
+
+```
+
+## Check Data
+
+> Data of Mushsroom datset  `r head(mushroom) `
+
+> Data of Masuhroom Dataset's Attributes 
+
+```{r}
+
+names(mushroom_meta) <- c("ID","Type","Value")
+head(mushroom_meta[,c(2,3)] )
+
+
+
+```
+
+
+##  Replace Value
+
+* Replace Header from Meta data
+```{r}
+
+head(mushroom)
+mushroom <- mutate(mushroom,classes = ifelse(classes == "p", "poisonous", "edible"))
+
+```
+
+* Update Meaning in the Column
+
+```{r}
+mushroom$`cap-shape`<- revalue(mushroom$`cap-shape`,c(b="bell",c="conical",x="convex",f="flat",
+                                  k="knobbed",s="sunken"))
+mushroom$`cap-surface` <- revalue(mushroom$`cap-surface`,c(f="fibrous",g="grooves",y="scaly",s="smooth"))
+
+mushroom$`cap-color` <- revalue(mushroom$`cap-color`,c(n = "brown" ,b ="buff", c="cinnamon", g= "gray" ,r ="green",p ="pink" ,u= "purple" ,e="red", w ="white", y= "yellow"))
+
+head(mushroom[,c(1:4)])
+glimpse(mushroom[,c(1:4)])
+
+```
+
+
+## Subset of Data
+
+```{r}
+# Data Subset
+mushroom_edible <- subset(mushroom,select = c(1:5))
+
+head(mushroom_edible)
+
+```
+
+
+***
+
+# Thank You
+
+

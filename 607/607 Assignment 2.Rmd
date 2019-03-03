@@ -1,0 +1,403 @@
+---
+title: "607 Assignment 2"
+author: "Rajwant Mishra"
+date: "February 10, 2019"
+output:
+  html_document:
+    df_print: paged
+    
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Plan to scrap data from [here](https://www.imdb.com/list/ls026612019/)
+
+# Loading Package 
+
+***
+library(tidyverse)  
+
+    # Parsing of HTML/XML files  
+    library(rvest)    
+
+    # String manipulation
+    library(stringr)   
+
+    # Verbose regular expressions
+    #install.packages("rebus")
+    library(rebus)     
+
+    # Eases DateTime manipulation
+    library(lubridate)
+
+    library(DT)
+***
+
+```{r include=FALSE}
+# For SQL 
+# install.packages("RSQLite")
+library(RSQLite)
+# General-purpose data wrangling
+    library(tidyverse)  
+
+    # Parsing of HTML/XML files  
+    library(rvest)    
+
+    # String manipulation
+    library(stringr)   
+
+    # Verbose regular expressions
+    #install.packages("rebus")
+    library(rebus)     
+
+    # Eases DateTime manipulation
+    library(lubridate)
+
+    library(DT)
+
+```
+
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## Scrapping Function
+
+* Reading only Rating , Title , Username and content of comments 
+
+```{r}
+## COllection of all the Function Needed 
+
+ Final_Review <- NA
+
+# Get Movie Name from Header
+Mname <- function(html){
+      html %>% 
+        # The relevant tag
+        html_nodes('.parent') %>%      
+        html_text() %>% 
+        # Trim additional white space
+        str_trim() %>%                       
+        # Convert the list into a vector
+        unlist()                             
+}
+
+
+# Rating 
+
+
+
+rating <- function(html){
+      html %>% 
+        # The relevant tag
+        html_nodes('.rating-other-user-rating') %>%      
+        html_text() %>% 
+        # Trim additional white space
+        str_trim() %>%                       
+        # Convert the list into a vector
+        unlist()                             
+}
+
+
+
+# Comment and Title 
+
+mtitle <- function(html){
+  
+  if (!is.na(html_node(first_page,'.ipl-ratings-bar')))(
+      html %>% 
+        # The relevant tag
+        html_nodes('.lister-item-content .title') %>%      
+        html_text() %>% 
+        # Trim additional white space
+    map(1) %>%
+        str_trim() %>%                       
+        # Convert the list into a vector
+        unlist()  )                           
+}
+
+# html_nodes(first_page,'.ipl-ratings-bar')
+# COntributor Name 
+
+mrname <- function(html){
+   if (!is.na(html_node(first_page,'.ipl-ratings-bar')))(
+      html %>% 
+        # The relevant tag
+        html_nodes('.display-name-link') %>%      
+        html_text() %>% 
+        # Trim additional white space
+   
+        str_trim() %>%                       
+        # Convert the list into a vector
+        unlist()  
+   )
+}
+
+
+
+#display-name-date
+#Desc .lister-item-content .content .text show-more__control
+
+mdesc <- function(html){
+   if (!is.na(html_node(first_page,'.ipl-ratings-bar')))(
+      html %>% 
+        # The relevant tag
+        html_nodes('.content .text') %>%      
+        html_text() %>% 
+        # Trim additional white space
+   
+        str_trim() %>%                       
+        # Convert the list into a vector
+        unlist() 
+   )
+}
+
+## End OF COllection Function 
+
+
+
+
+readAllAttribute<- function(html){
+  getMoviewName <- Mname(html)
+  str_split(getMoviewName,"\n") # Got the moview name 
+ temp_movieName <- trimws(str_split(getMoviewName,"\n",simplify = TRUE))
+  # Read Rating 
+  rating <- rating(html)
+  
+  # Comment Title 
+  title<- mtitle(html)
+  
+  # COntributor Name 
+  name<- mrname(html)
+  
+  #Comment Content
+  desc<- mdesc(html)
+  # Retrun Final Data 
+ suppressWarnings(rm(Final_Review))
+ 
+  Final_Review <- data.frame(rating,desc[1:length(rating)],title[1:length(rating)],name[1:length(rating)])
+  
+  fm_movie_name <-  temp_movieName[1,1]
+ fm_movie_year <-  str_replace_all(temp_movieName[1,2],"\\(|\\)|[A-Z]","")
+ 
+ print ("----------------------------------------------------")
+ print(fm_movie_name)
+ print ("----------------------------------------------------")
+ updateDB (fm_movie_name,fm_movie_year , Final_Review )
+
+}
+
+
+
+```
+
+
+## DB Function 
+
+* Connect to DB 
+* Setup table 
+* Update record function 
+* Data wrangling to Replace special char with scapce sequence  or  blank
+
+
+```{r}
+CheckDB <- function() {
+  con2 <- dbConnect(RMySQL::MySQL(), dbname = "MSDS2019", host="148.72.58.145", user="MSDS2019",password= "!S(Ue1&?scWA")
+  # con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+
+# DRop Table if Present 
+if(dbExistsTable(con2, "movies_master")){
+  dbRemoveTable(con2, "movies_review")
+    dbRemoveTable(con2,"movies_master")
+  
+  }
+ 
+query <- "CREATE TABLE `movies_master` (   `ID` INT NOT NULL AUTO_INCREMENT,  `Movie_Name` VARCHAR(45) NULL,   `Year` YEAR NULL,   PRIMARY KEY (`ID`))"
+
+
+tab1 <- dbSendQuery(con2,query)
+tab1data <- dbFetch(tab1)
+
+#Create another table to hold review 
+
+query <- "CREATE TABLE `movies_review` 
+(  `ID` INT NOT NULL AUTO_INCREMENT,  
+`Movie_ID` INT NOT NULL,  
+`User_Name` VARCHAR(45) NULL,  
+`Rating` INT NULL,  
+`Title` VARCHAR(45) NULL,  
+`Content` VARCHAR(1000) NULL,
+PRIMARY KEY (`ID`, `Movie_ID`),  
+ CONSTRAINT `ID`    FOREIGN KEY (`Movie_ID`)    
+ REFERENCES `flights`.`movies_master` (`ID`)    
+ ON DELETE NO ACTION     ON UPDATE CASCADE)"
+
+tab1 <- dbSendQuery(con2,query)
+tab1data <- dbFetch(tab1)
+
+# Close COnnection
+dbDisconnect(con2)
+  
+}
+
+updateDB <- function(movie_name,myear,reviews){
+# 
+#   con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+  con2 <- dbConnect(RMySQL::MySQL(), dbname = "MSDS2019", host="148.72.58.145", user="MSDS2019",password= "!S(Ue1&?scWA")
+ 
+  # Update table with Movies name 
+query <- sprintf("insert into movies_master (Movie_Name,Year) values('%s',%s)",movie_name,myear)
+  print (query)
+tab1 <- dbSendQuery(con2,query)
+tab1data <- dbFetch(tab1)
+
+# Get movie key to update review 
+query <- sprintf("select  ID from movies_master  where Movie_Name ='%s' and Year = %s limit 1",movie_name,myear)
+  
+tab1 <- dbSendQuery(con2,query)
+tab1data <- dbFetch(tab1)
+movie_ID <- tab1data$ID
+# update REview 
+
+
+
+for (n in  1:dim(reviews)[1])
+{
+  temprating <- str_split(reviews$rating,"/",n=2,simplify = TRUE)[n,1]
+# # Replace and a all special char with scapce sequence  word  # . \ | ( ) [ { ^ $ * + ?   replace
+tempdesc <- str_replace_all(reviews$desc[n],"\\n|\\(|\\)|\\'|\\:|\\--|\\||\\*","")
+temptitle <-  str_replace_all(reviews$title[n],"\\n|\\(|\\)|\\'|\\:|\\--|\\||\\*","")
+tempname <- str_replace_all(reviews$name[n],"\\n|\\(|\\)|\\'|\\:|\\--|\\||\\*","")
+
+ query<-  sprintf("insert into movies_review (Movie_ID,User_name,Title,Content,rating) values(%s,'%s','%s','%s',%s)",movie_ID,tempname, temptitle ,tempdesc,temprating )
+ print(query)
+ tab1 <- dbSendQuery(con2,query)
+ 
+tab1data <- dbFetch(tab1)
+}
+
+
+# Close COnnection
+dbDisconnect(con2)
+  
+}
+
+```
+
+
+## Main Task 
+
+* Start scarping the DATA
+* Update DB
+
+```{r}
+# Set the URL To scarp data of Reviews from 
+#       ID| Movie Name |  Year |
+#  Rev_ID | Movie ID | Title | Rating | Dec |
+
+ url <-c('https://www.imdb.com/title/tt3203528/reviews?ref_=tt_urv',
+          'https://www.imdb.com/title/tt4154756/reviews?ref_=tt_urv',
+          'https://www.imdb.com/title/tt2231461/reviews?ref_=tt_urv',
+          'https://www.imdb.com/title/tt6772950/reviews?ref_=tt_urv',
+         'https://www.imdb.com/title/tt3606756/reviews?ref_=tt_urv',
+          'https://www.imdb.com/title/tt1517451/reviews?ref_=tt_urv')
+ 
+
+CheckDB()
+for (n in 1:6){
+  print (n)
+  suppressWarnings(rm(first_page))
+first_page <- read_html(url[n])
+suppressWarnings(rm(getReview))
+readAllAttribute(first_page)
+}
+
+```
+
+
+## Data Display
+
+* Read data from DB
+* Disaply in R
+* Data Wrangling in R
+
+```{r}
+# Database Operation 
+# con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+
+con2 <- dbConnect(RMySQL::MySQL(), dbname = "MSDS2019", host="148.72.58.145", user="MSDS2019",password= "!S(Ue1&?scWA")
+
+query <- "SELECT * FROM movies_review"
+
+tab1 <- dbSendQuery(con2,query)
+suppressWarnings(rm(movies_review ))
+movies_review <- dbFetch(tab1)
+
+query <- "SELECT * FROM movies_master"
+
+tab1 <- dbSendQuery(con2,query)
+movies_master <- dbFetch(tab1)
+
+datatable(movies_master)
+
+table(movies_review$Movie_ID)
+table(movies_review$Rating)
+
+query <- "select Movie_ID,  avg(Rating) from movies_review group by Movie_ID"
+
+tab1 <- dbSendQuery(con2,query)
+movie_rating <- dbFetch(tab1)
+
+
+#--------------------------------------------------------------------#
+# Movie with 5+ rating 
+query <- "select Movie_ID, count(rating) from movies_review  where rating > 5 group by movie_id "
+
+tab1 <- dbSendQuery(con2,query)
+movie_rating_5plus <- dbFetch(tab1)
+
+#disconenct DB
+dbDisconnect(con2)
+
+# Check movie_rating_5plus by within R  
+movie_rating_5plusr<-  as.data.frame(table (movies_review[which (movies_review$Rating>5),2]))
+
+names(movie_rating_5plusr ) <- c("Movie_ID","count(rating)")
+
+# Both data points are same.
+
+#--------------------------------------------------------------------#
+
+# Movie Rating by MOvie Name 
+
+datatable(mutate(movie_rating, Name = movies_master[which(movies_master$ID==movie_rating$Movie_ID),2], Rating = movie_rating$`avg(Rating)` )[,c(1,3,4)],style = 'bootstrap') %>%
+   formatStyle(
+  'Movie_ID',
+  backgroundColor = styleEqual(c(1, 2,3,4,5,6), c('gray', 'yellow',"blue","red","purple","maroon"),'white'))
+
+
+#--------------------------------------------------------------------#
+
+# Update Movie name in MOvie Review 
+movies_review$name <- movies_review$Movie_ID
+for( n in 1:length(movies_master$ID)){
+movies_review$name<- str_replace_all(movies_review$name,paste0(movies_master$ID[n],collapse = ", "),movies_master$Movie_Name[n])
+
+}
+
+
+
+
+datatable(movies_review[,c(2,7,3,4,5,6)],style = 'bootstrap') %>%
+   formatStyle(
+  'Movie_ID',
+  backgroundColor = styleEqual(c(1, 2,3,4,5,6), c('gray', 'yellow',"blue","red","purple","maroon"),'white')
+ 
+  )
+
+
+```
+

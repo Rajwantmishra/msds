@@ -1,0 +1,224 @@
+---
+title: "606 Assignment1 - Loading Data into a Data Frame"
+author: "Rajwant Mishra"
+date: "January 31, 2019"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Problem Statement 
+
+---
+
+<b >Your task </b>  
+
++ study the dataset and the associated description of the data (i.e. "data dictionary"). You may need
+to look around a bit, but it's there! 
+
++ You should take the data, and create a data frame with a subset of the columns
+in the dataset. 
+
++ You should include the column that indicates edible or poisonous and three or four other columns.
++ You should also add meaningful column names and replace the abbreviations used in the data-for example, in the appropriate column, "e" might become "edible." 
+
++ Your deliverable is the R code to perform these transformation tasks.
+---
+
+#  Solution {.tabset .tabset-fade .tabset-pills}
+
+
+
+
+## Data Source
+
++ [Source of Data](https://archive.ics.uci.edu/ml/datasets/mushroom)
+
++ [Data File](https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/)
+
++ [Data Desc] (https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.names)
+
+## About DataSet
+
+    (a) Mushroom records drawn from The Audubon Society Field Guide to North
+        American Mushrooms (1981). G. H. Lincoff (Pres.), New York: Alfred
+        A. Knopf
+    (b) Donor: Jeff Schlimmer (Jeffrey.Schlimmer@a.gp.cs.cmu.edu)
+    (c) Date: 27 April 1987
+
+
+## Packages Used
+<list>
+<li> Tidyverse
+<li>stringr
+<li>xml
+<li>data.table
+</list>
+
+
+## Loading Packages 
+~~~~~~~
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl)
+
+~~~~~~~
+
+```{r include=FALSE}
+
+#install.packages("tidyverse")
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl) 
+
+
+```
+
+
+
+```{r}
+
+setwd("C:\\Users\\951250\\Documents\\myR\\MS\\607")
+workDir <- getwd()
+filePath = paste0(workDir,"/data")
+# fileName <- list.files(path=filePath)
+
+# mushroom <- read_delim(paste0(filePath,"/","mushroom.data" ))
+# coloumName <- c(" ")
+
+mushroom_meta <- read_delim(paste0(filePath,"/","atr.txt"),delim=".",col_names = FALSE)
+
+# using the Name from above tible to set the header of the mushroom dataset
+mushroom <- read_delim(paste0(filePath,"/","mushroom.data" ),delim = ",",col_names = trimws(mushroom_meta$X2))
+
+
+
+# coloumName <- c(" ")
+
+
+# mushroom <- read.delim(paste0(filePath,"/","mushroom.data" ),sep = ",")
+str_split(trimws(mushroom_meta$X3[1]),",",simplify = TRUE)
+
+for (n in  20:length(mushroom_meta$X3)){
+  # print (str_split(trimws(mushroom_meta$X3[n]),",",simplify = TRUE))
+  # tempVar <- paste0(trimws(mushroom_meta$X2[n]))
+  print(paste0(trimws(mushroom_meta$X2[n])))
+  assign("tempVar",str_split(trimws(mushroom_meta$X3[n]),",",simplify = TRUE))
+   # tempVar <- paste0("`",trimws(mushroom_meta$X2[n]),"`")
+  for ( j in 1:length(tempVar))
+  {
+    # print(eval(tempVar[j]))
+    # str_split(tempVar[j],"=")
+    # ddply(mushroom,.paste0("`",trimws(mushroom_meta$X2[n]),"`"),mutate,paste0("`",trimws(mushroom_meta$X2[n]),"`") =as.character(user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)]))
+    # 
+    # mutate(mushroom,paste0("`",trimws(mushroom_meta$X2[n]),"`") = ifelse(paste0("`",trimws(mushroom_meta$X2[n]),"`") ==  str_split(tempVar[1],"=",simplify = TRUE)[2], "edible", "poisonous")) 
+    #  print(tempVar[j])
+#     
+#     revalue(x, c(a = "A", c = "C")) 
+# mapvalues(x, c("a", "c"), c("A", "C")) 
+  }
+}
+
+head(mushroom)
+mushroom <- mutate(mushroom,classes = ifelse(classes == "p", "poisonous", "edible"))
+
+# Update Menaing in the Column
+mushroom$`cap-shape`<- revalue(mushroom$`cap-shape`,c(b="bell",c="conical",x="convex",f="flat",
+                                  k="knobbed",s="sunken"))
+
+
+
+
+# Update Menaing in the Column
+mushroom$`cap-surface` <- revalue(mushroom$`cap-surface`,c(f="fibrous",g="grooves",y="scaly",s="smooth"))
+
+
+# Update Menaing in the Column
+mushroom$`cap-color` <- revalue(mushroom$`cap-color`,c(n = "brown" ,b ="buff", c="cinnamon", g= "gray" ,r ="green",p ="pink" ,u= "purple" ,e="red", w ="white", y= "yellow"))
+
+
+
+#getting the row from meta table for Cap-surface
+trimws(mushroom_meta[which(trimws(mushroom_meta$X2)=="cap-surface"),3])
+# Split data by comma 
+str_split(trimws(mushroom_meta[which(trimws(mushroom_meta$X2)=="cap-surface"),3]),",")
+
+#Array 
+temp_str <- str_split(trimws(mushroom_meta[which(trimws(mushroom_meta$X2)=="cap-surface"),3]),",",simplify = TRUE)
+tempLen <- length(temp_str)
+
+replace(mushroom$`cap-surface`, c("f","g","y","s"), c("fibrous","grooves","scaly","smooth"))
+
+
+
+
+
+head(mushroom)
+
+# Data Subset
+mushroom_edible <- subset(mushroom,select = c(1:5))
+
+# NOT Using 
+
+# mushroom_edible <- mushroom[which(mushroom$classes=="edible"),]
+# 
+# mushroom_edible <- ddply(mushroom,c("`cap-shape`","`cap-surface`"),summarise, Count_bruises = sum(as.integer(`bruises?`)))
+# 
+# count (mushroom,c("classes","`cap-shape`","`cap-surface`"))
+
+# Not Using
+
+
+glimpse(mushroom)
+head(mushroom)
+head(mushroom_meta )
+mushroom_meta
+```
+
+
+## Tab Group Heading  {.tabset .tabset-fade .tabset-pills}
+>Some Text 
+*List 
+
+### Sub Item 1
+
+
+### Sub Item 2
+
+You can insert graph here
+
+### Sub Item 3 
+
+You can insert table here
+
+### Sub Item Group {.tabset .tabset-fade .tabset-pills}
+
+Create More Tab inside
+
+#### Sub Group Item 1 
+
+#### Sub  Group Item 2
+
+#### Sub group Item 2
+

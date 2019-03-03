@@ -1,0 +1,654 @@
+---
+title: "CHT"
+author: "Rajwant Mishra"
+date: "February 28, 2019"
+output:
+  html_document:
+    template: demo.html
+    df_print: paged
+    highlight: tango
+---
+
+
+---
+logourl: "./img/apple-touch-icon.png"
+
+---
+
+
+
+
+<!--  in_header: header.html -->
+<!--   before_body: rmarkdown.html -->
+
+
+<!-- prettydoc::html_pretty: -->
+<!--     theme: cayman -->
+<!--     highlight: github -->
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("prettydoc")
+
+library(prettydoc)
+```
+
+
+```{r include=FALSE}
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl) 
+#install.packages("DT")
+library(DT)
+
+```
+
+
+
+```{r include=FALSE}
+#Set Password 
+password <- 'CUNY1'
+send_df_to_js <- function(text){
+  cat(
+    paste(
+    '<script>
+      var pass1 = "',text,'";
+    </script>'
+    , sep="")
+  )
+}
+
+send_df_to_js(password)
+```
+
+
+
+```{r include=FALSE}
+# Logo
+# Define variable containing url
+url <- "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Luxottica.svg/220px-Luxottica.svg.png"
+
+# Logo
+
+workDir <- getwd()
+
+filePath = paste0(workDir)
+fileName <- list.files(path=filePath)
+SpamData <- data.frame(NA)
+# Only Data to consider
+keep<- c("CH")
+dontKeep <- TRUE # if True KEEP WILL ACT AS EXCLUSION else Inclusion.
+checkAttendance <- FALSE
+checkAttendance_file  <- "present.xlsx"
+#Event Timezone
+etimezone<- "America/Chicago"
+save_file<- "saved_feb22.xlsx"
+sent_file <- "sent_feb22.xlsx"
+```
+
+
+
+```{r include=FALSE}
+
+# Read File 
+
+# names <- c("DRG", "ProviderID", "Name", "Address", "City", "State", "ZIP", "Region", "Discharges", "AverageCharges", "AverageTotalPayments", 
+#            "AverageMedicarePayments")
+# types = 'ccccccccinnn'
+# 
+# types = 'cccccccccnnccdcccddccc'
+# 
+# inpatient <- read_tsv('http://594442.youcanlearnit.net/inpatient.tsv', col_names = names, skip=1, col_types = types)
+
+
+#-----------------------------------------------------
+#------------------------ User Info--------------
+#-----------------------------------------------------
+ctype = c("text","text","text","text","text","numeric","numeric","text","text","text","text","text","text","text")
+user <-  read_excel(path=paste0(filePath,"/","User.xlsx"),col_types = ctype)
+
+# Remove all Deleted User 
+user <- user[-(which(user$DEL_IND=="X")),]
+
+# combine user namne with First name and last name 
+user$full <- paste0(user$NAME_FIRST," ", user$NAME_LAST)
+
+
+# sent_by_rep <- ddply(sent_by_rep,.(`Business Partner`),mutate,RNAME=as.character(user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)]))
+
+
+#-----------------------------------------------------
+#------------------------ Presnet Data Info--------------
+#-----------------------------------------------------
+if (checkAttendance) {
+ctype = c("text","text","text","text","text","numeric","numeric","text","text","text","text","text","text","text")
+user_present <-  read_excel(path=paste0(filePath,"/",checkAttendance_file))
+}
+
+
+
+#-----------------------------------------------------
+#-------------------------Submitted Data--------------
+#-----------------------------------------------------
+
+
+ctype =c("text","text","text","text","text","text","text","text","text","numeric","numeric","text","text","date","text","text","guess","date","guess","text","text","text")
+sent <- read_excel(path=paste0(filePath,"/",sent_file),col_types = ctype)
+
+glimpse(sent)
+sent$`Time Stamp` <-  ymd_hms(sent$`Time Stamp` , tz = "UTC")
+#format(ymd_hms("20190120162205",tz="UTC"),tz="CET")
+glimpse(sent)
+
+sent$`ZSFA_CARTS_HEAD-ZAEZET` <- paste( 
+  str_pad(hour(sent$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"),
+  str_pad(minute(sent$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"),
+  str_pad(second(sent$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"), 
+                                        sep=":")
+
+#gsub("^([0-9]{1,2})", "0\\1\\2", hour(sent$`ZSFA_CARTS_HEAD-ZAEZET`))
+
+# sent$subTime <- ymd_hms(
+#     paste0(str_remove_all(sent$`Date in Format YYYYMMDD`,"-"),
+#            str_remove_all(sent$`ZSFA_CARTS_HEAD-ZAEZET`,":"))
+# )
+
+
+
+sent$subTime <- ymd_hms(
+    paste0(str_remove_all(sent$`Date in Format YYYYMMDD`,"-"),
+           format(ymd_hms(paste0("2015-09-27", str_remove_all(sent$`ZSFA_CARTS_HEAD-ZAEZET`,":"))), format="%H:%M:%S",tz=etimezone))
+)
+
+glimpse(sent)
+
+# Remove Note duplicate entry for after exluding note .
+# sent$`ZSFA_CART_NOTE_H-NOTES_LINES` <- NA
+sent <- sent[-which(duplicated(sent[,-20])),]
+
+
+
+
+## Check 
+# All Brand
+# sent <- mutate(sent,keep= ifelse(Dv %in% keep,"Keep","Remove"))
+# sent <- sent[which(sent$keep=="Keep"),]
+
+
+#sent[707:708,c(14,17)]
+
+#-----------------------------------------------------
+#-------------------------Saved Data--------------
+#-----------------------------------------------------
+
+
+
+ctype =c("text","text","text","text","text","text","text","text","text","numeric","numeric","text","text","date","text","text","guess","date","guess","text","text","text")
+
+saved <- read_excel(path=paste0(filePath,"/",save_file),col_types = ctype)
+
+glimpse(saved)
+saved$`Time Stamp` <-  ymd_hms(saved$`Time Stamp` , tz = "UTC")
+glimpse(saved)
+
+saved$`ZSFA_CARTS_HEAD-ZAEZET` <- saved$`ZSFA_CARTS_HEAD-ZAEZET` <- paste( 
+  str_pad(hour(saved$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"),
+  str_pad(minute(saved$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"),
+  str_pad(second(saved$`ZSFA_CARTS_HEAD-ZAEZET`), 2, side="left",pad="0"),
+  sep=":")
+
+#gsub("^([0-9]{1,2})", "0\\1\\2", hour(sent$`ZSFA_CARTS_HEAD-ZAEZET`))
+
+saved$saveTime <- print(saved$`Time Stamp`,tz=etimezone)
+saved$saveHour <- hour(saved$saveTime)
+glimpse(saved)
+#sent[229:235,c(14,17)]
+
+
+#format = "%m/%d/%Y %H:%M"
+
+
+
+
+#sent$`Time Stamp` <- as.POSIXct(as.numeric(x[1:5])*86400, origin="1899-12-30",tz="GMT")
+
+#  sent$`Time Stamp` <- as.POSIXct((sent$`Time Stamp`)*86400, origin = "1900-01-01", tz = "UTC")
+
+```
+
+
+```{r include=FALSE}
+# Check is all or some brand to be included 
+## Check 
+# All Brand
+sent <- mutate(sent,keep= ifelse(Dv %in% keep,"Keep","Remove"))
+# ifelse(dontKeep,"remove","keep")
+ifelse(dontKeep,
+       sent <- sent[which(sent$keep=="Remove"),],
+       sent <- sent[which(sent$keep=="Keep"),])
+
+```
+
+
+
+```{r include=FALSE}
+library(plyr)
+#Day By Day Check for REP 
+if (checkAttendance) {    # Check for Atttendance 
+
+# sent_by_rep <- ddply(sent_by_rep,.(`Business Partner`),mutate,Rep_Name =as.character(user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)]))
+
+str(user_present)
+
+# user_present$Date <- date(user_present$Date)
+# mutate,drop =as.character(user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)])
+# SEGARIAN
+
+sent$present <- NA
+for (n in 1:dim(sent)[1]){
+  
+  # ifelse(temp_sent$`Business Partner`[n] %in% user_present$repID,
+  #        temp_sent$drop[n] <- "YES", 
+  #        temp_sent$drop[n] <-"NO")
+   gsub("(^|[^0-9])0+", "\\1", user_present$repID, perl = TRUE)
+  ifelse(dim(user_present[which(as.numeric(user_present$repID) %in% sent$`Business Partner`[n] & user_present$Date == date(sent$`Date in Format YYYYMMDD`[n])),2])[1],
+         sent$present[n] <- "YES", 
+         sent$present[n] <-"NO")
+  
+    # ifelse(date(temp_sent$`Date in Format YYYYMMDD`[n]) %in% user_present[which(user_present$repID == temp_sent$`Business Partner`[n]),2],
+    #      temp_sent$drop[n] <- "YES", 
+    #      temp_sent$drop[n] <-"NO")
+  
+  # date(temp_sent$`Date in Format YYYYMMDD`[n]) 
+  #   as.character( date(temp_sent$`Date in Format YYYYMMDD`[n]) ) %in% user_present[which(as.numeric(user_present$repID) %in% temp_sent$`Business Partner`[n]),2]
+  # 
+  #  as.character( date(temp_sent$`Date in Format YYYYMMDD`[n]) ) %in%  c("2019-02-06","2019-02-07")
+  #  
+  #  tem<- user_present[which(as.numeric(user_present$repID) %in% temp_sent$`Business Partner`[n]),2] %>%
+  #    tem[which(tem$Date== date(temp_sent$`Date in Format YYYYMMDD`[n])),]
+   
+   # dim(user_present[which(as.numeric(user_present$repID) %in% temp_sent$`Business Partner`[1] & user_present$Date == date(temp_sent$`Date in Format YYYYMMDD`[1])),2])[1]
+   # 
+   # dim(user_present[which(as.numeric(user_present$repID) %in% temp_sent$`Business Partner`[n] & user_present$Date == date(temp_sent$`Date in Format YYYYMMDD`[n])),2])[1]
+   # 
+   # user_present[which(as.numeric(user_present$repID) %in% temp_sent$`Business Partner`[n] & user_present$Date == date(temp_sent$`Date in Format YYYYMMDD`[n])),2]
+
+   
+   
+  # user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)])
+  # 
+  # temp_sent$drop[n] = ifelse( identical(today(),date(x)),"YES","NO") )
+}
+ # ddply(temp_sent,as.quoted(c("`Business Partner`","`Date in Format YYYYMMDD`")),function (x,y)(  drop <- ifelse( identical(today(),date(y)),"YES","NO") ))
+
+sent<- sent[which(sent$present=="YES"),]
+glimpse(sent)
+
+}
+```
+
+
+```{r include=FALSE}
+Del_cart <- which(saved$`Deletion Indicator`=="X")
+if(!is_empty(Del_cart)){
+saved <- saved[-Del_cart,]
+}
+
+if(dim(saved)[1] > 0){
+saved_by_org <- ddply(saved, "SOrg.", summarise, Count = sum( `Order Quantity`) )
+names(saved_by_org ) <-c("Org","Unit")
+sprintf("Total Unit Saved : %s in CART",sum(saved_by_org$Unit))
+sprintf("Total Unit in Saved %s CART",sum(saved_by_org$Unit))
+
+
+## saved by date
+saved_by_org_date <-  ddply(saved, c("SOrg.","`Chngd On`"), summarise, Count = sum( `Order Quantity`) )
+names(saved_by_org_date ) <-c("Org","Date","Unit")
+
+
+
+}
+
+
+glimpse(sent)
+summary(sent)
+d<- count(sent,  c("Surrogate_key","Material")) %>% .[order(.$freq,decreasing = TRUE),]
+
+
+
+
+
+
+
+
+
+
+
+
+# h <- count(sent,  c("SOrg.","`ZSFA_CARTS_HEAD-ZAEZET`")) %>% .[order(.$freq,decreasing = TRUE),]
+  
+ #d[order(d$freq,decreasing = TRUE),]  sent$subTime
+sent$subHour <- hour(sent$subTime)
+
+#   
+# 
+# count(sent,  c("SOrg.","subHour","Surrogate_key")) %>% .[order(.$freq,decreasing = TRUE),]
+  
+
+
+
+sent_by_org <- ddply(sent, "SOrg.", summarise, Count = sum( `Order Quantity`) )
+names(sent_by_org ) <-c("Org","Unit")
+sprintf("Total Unit Ordered %s",sum(sent_by_org$Unit))
+#alternate Qty by Org 
+aggregate(list("Total Qty" = sent$`Order Quantity` ),by=list( "Org " = sent$SOrg.),sum)
+
+# --- By Date 
+
+sent_by_org_date <- ddply(sent, c("SOrg.","`Date in Format YYYYMMDD`"), summarise, Count = sum( `Order Quantity`) )
+
+names(sent_by_org_date ) <-c("Org","Date","Unit")
+
+# --- By Date
+
+
+
+
+
+sent_qty_brand <-ddply(sent, "Dv", summarise, 
+                 Qty = sum(`Order Quantity` ) )
+
+sent_qty_brand
+
+sent_qty_brand_hr <- ddply(sent, c("Dv","subHour"), summarise, 
+                 Qty = sum(`Order Quantity` ) )
+
+sent_qty_brand_hr 
+
+sent_qty_brand_hr2 <- ddply(sent, c("Dv","subHour","`Date in Format YYYYMMDD`"), summarise, 
+                 Qty = sum(`Order Quantity` ) )
+
+sent_qty_brand_hr 
+
+
+ggplot(sent_qty_brand_hr,mapping=aes(x=subHour,y=Qty,fill=Dv)) +
+  geom_col()
+
+sent_by_rep <- ddply(sent, c("SOrg.","`Business Partner`"), summarise, Count = sum( `Order Quantity`) )
+
+#Add Name of the Rep as column in here
+sent_by_rep <- ddply(sent_by_rep,.(`Business Partner`),mutate,Rep_Name =as.character(user[which(user$AGENT_ID_ECC==`Business Partner`),c(15)]))
+
+#sort Data
+sent_by_rep[order(sent_by_rep$Count,decreasing = TRUE),] 
+
+
+#by Customer 
+sent_by_customer<- ddply(sent, c("SOrg.","Customer","`First name`","Dv"), summarise, Count = sum( `Order Quantity`) )
+
+#by Customer
+sent_by_customer_only<- ddply(sent, c("Customer"), summarise, Count = sum( `Order Quantity`) )
+
+
+
+#---------------Heder  subset(sent,select = c(1:6))
+ h2_cart <- select(sent,c("Surrogate_key","SOrg."))  %>% 
+   distinct(.) %>%
+ count(2)
+ 
+ names(h2_cart)<- c("Sales Org","Cart")
+h2_cart
+
+
+ h2_cart_save <- select(saved,c("Surrogate_key","SOrg."))  %>% 
+   distinct(.) %>%
+ count(2)
+ 
+ names(h2_cart_save)<- c("Sales Org","Cart")
+h2_cart
+
+
+ h2 <- select(sent,c("Surrogate_key","SOrg.","subHour"))  %>% 
+   distinct(.) %>%
+ count(c(2,3))
+ 
+ names(h2)<- c("Sales Org","HOUR","Cart")
+h2
+
+
+ggplot(h2,mapping=aes(x=HOUR,y=Cart,fill=`Sales Org`)) +
+  geom_col()+
+  ggtitle("Cart in Hour by ORG")
+# Customer COunt 
+length(sent_by_customer_only$Customer)
+# Mean of COunt 
+mean(sent_by_customer_only$Count, na.rm=TRUE)
+# 
+# > Avg customer Ordered Units are:  `r mean(sent_by_customer_only$Count, na.rm=TRUE) `  from : `r length(sent_by_customer_only$Customer) ` customers.
+
+```
+
+# Event Date : Feb 22 
+
+## Summary
+
+
+
+Type | Carts | Units
+------------- | -------------| ------------- 
+<b>Submitted<b>| `r as.character(sum(h2_cart$Cart)) `  | `r as.character(sum(sent_by_org$Unit)) `
+<b>Saved </b> | `r if(dim(saved)[1] > 0){ as.character(sum(h2_cart_save$Cart) ) } `  | `r if(dim(saved)[1] > 0){as.character(sum(saved_by_org$Unit)-0)} `
+-------------------------------------- 
+<!-- >`r sprintf("Total Unit Submitted %s",sum(sent_by_org$Unit)) ` -->
+
+<!-- >`r sprintf("Total Unit in Saved CART %s",if(dim(saved)[1] > 0){sum(saved_by_org$Unit)}) ` -->
+
+
+> Total Units Sent to SAP by Org / Date 
+
+```{r echo=FALSE}
+
+# datatable(sent_by_org_date,caption="Total Units Sent to SAP by Org / Date", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE)
+
+datatable(sent_by_org_date,caption="Total Units Sent to SAP by Org / Date", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c("US80", "CA80"), c('gray', 'yellow'),'yellow'))
+```
+
+***
+
+> Total Unit Saved in OSS by Org / Date
+
+```{r echo=FALSE}
+# if(dim(saved)[1] > 0){
+#   
+#   
+# datatable(saved_by_org_date,caption="Total Unit Saved in OSS by Org / Date", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE)
+#  
+#   
+# }
+
+if(dim(saved)[1] > 0){
+datatable(saved_by_org_date,caption="Total Unit Saved in OSS by Org / Date", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c("US80", "CA80"), c('gray', 'orange'),'orange'))
+}
+
+```
+
+
+## Detail {.tabset .tabset-fade .tabset-pills}
+
+```{r include=FALSE}
+# print(sent_by_org)
+#install.packages("DT")
+library(DT)
+
+
+datatable(sent_by_org,caption="Total Unit by Org", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c("US80", "CA80"), c('gray', 'yellow'),'yellow'))
+
+if(dim(saved)[1] > 0){
+datatable(saved_by_org,caption="Total Unit by Org", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(searching = FALSE)) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c(0, 1), c('gray', 'yellow'),'red'))
+
+}
+
+# datatable(sent_by_org,caption="Total Unit by Org", class = 'cell-border stripe', width = 400,autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+#   'Unit',
+#   backgroundColor = styleEqual(c(0, 1), c('gray', 'yellow'),'yellow'))
+
+
+# filter="top", selection="multiple", escape=FALSE, 
+#       options = list(sDom  = '<"top">lrt<"bottom">ip')
+
+
+
+
+```
+
+* Total Submitted Unit By Org
+
+`r datatable(sent_by_org, style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c("US80", "CA80"), c('gray', 'yellow'),'yellow'))
+`
+
+*** 
+
+* Total Saved Unit By Org
+
+`r 
+if(dim(saved)[1] > 0){
+datatable(saved_by_org, style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(sDom  = '<"top"><"bottom">')) %>% formatStyle(
+  'Unit',
+  backgroundColor = styleEqual(c(0, 1), c('gray', 'yellow'),'red'))
+}
+`
+
+
+## Qty by Brand {.tabset .tabset-fade .tabset-pills}
+```{r echo=FALSE}
+
+
+# NO Image 
+# datatable(sent_qty_brand,caption="Qty by Brand", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(searching = FALSE))
+
+sent_qty_brand_img<- data.frame(
+Brand = paste0('<img src="https://github.com/Rajwantmishra/lux/blob/master/brand/',sent_qty_brand$Dv,'.png?raw=true" height="42" width="42" >'),sent_qty_brand)
+
+
+datatable(sent_qty_brand_img,caption="Qty by Brand", escape = FALSE ,style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(searching = FALSE))
+
+```
+
+## QTY / Hr {.tabset .tabset-fade .tabset-pills}
+
+```{r echo=FALSE}
+datatable(sent_qty_brand_hr,caption="Qty by Hr", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE,options = list(searching = FALSE))
+```
+
+
+## Qty Processed by Rep {.tabset .tabset-fade .tabset-pills}
+```{r echo=FALSE}
+# sent_by_rep[order(sent_by_rep$Count,decreasing = TRUE),] 
+datatable(sent_by_rep,caption="Qty by Hr", style = 'bootstrap', class = 'table-bordered table-condensed',autoHideNavigation = TRUE,rownames = FALSE)
+```
+
+## Data By Customer 
+
+> Only Submitted data 
+* 9999999 Indicates New Account or Order Open by Other Agent
+ 
+```{r echo=FALSE}
+# datatable(sent_by_customer)
+
+datatable(sent_by_customer,extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+  ))
+```
+
+
+## Graph 
+
+* By Date 
+
+```{r echo=FALSE}
+
+ggplot(sent_qty_brand_hr2,mapping=aes(x=subHour,y=Qty)) +
+  geom_col(aes(fill=Dv))+ facet_wrap(~`Date in Format YYYYMMDD`) 
+  
+
+```
+
+* Brands Type Quantity by Hour
+
+```{r echo=FALSE}
+
+sent_qty_brandType_hr <- mutate(sent_qty_brand_hr,"Dv", TYPEBRAND= ifelse(Dv  %in% c("RB", "RX", "RJ", "OO", "DG", "EA", "HC", "MK", "MU"), "Lux", "In HOuse")) %>%
+  ddply( c("TYPEBRAND","subHour"), summarise, 
+                 Qty = sum(`Qty` ) )
+
+
+
+   # Brand Grouping 
+  # ggplot(sent_qty_brandType_hr, mapping=aes(x=subHour,y=Qty,fill=TYPEBRAND)) +
+  # geom_col()
+
+
+# 
+ggplot(sent_qty_brand_hr,mapping=aes(x=subHour,y=Qty,fill=Dv)) +
+  geom_col()
+
+
+```
+
+
+***
+
+Thank You. 
+<center><img src="`r url`"></center>  
+
+<div class='one'>
+<button type="button" class="btn btn-secondary btn-sm" onclick="password()" >Login</button></div>
+<script language="JavaScript">
+
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+  pass1 = "`r password `"
+  hide();
+  password();
+      // - Code to execute when all DOM content is loaded. 
+      // - including fonts, images, etc.
+  });
+
+window.addEventListener('load', function() {
+    console.log('All assets are loaded')
+})
+
+
+function password() {
+ hide();
+  var pass = prompt('What was the first country we visited together?');
+  if (pass == pass1)
+  {
+    show();
+  } else { 
+    alert('sorry, try again! Refresh your page.');
+    hide();
+  }
+}
+
+function hide(){document.getElementById("event-date-feb-22").style.display = 'none';}
+function show(){document.getElementById("event-date-feb-22").style.display = 'block';}
+</script>

@@ -1,0 +1,323 @@
+---
+title: "607 Assignment Week3"
+author: "Rajwant Mishra"
+date: "February 15, 2019"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+# Question {.tabset .tabset-fade .tabset-pills}
+
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to problems 3 and 4 from chapter 8 of Automated Data Collection in R.  Problem 9 is extra credit.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+Here is the referenced code for the introductory example in #3:
+
+
+```{r include=FALSE}
+
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(DT))
+suppressWarnings(library(lubridate))
+
+```
+
+
+# Working {.tabset .tabset-fade .tabset-pills}
+
+> raw.data <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+## Question 1
+
+1. Copy the introductory example. The vector name stores the extracted names.
+R> name
+[1] "Moe Szyslak" "Burns, C. Montgomery" "Rev. Timothy Lovejoy"
+[4] "Ned Flanders" "Simpson, Homer" "Dr. Julius Hibbert"
+
+```{r}
+# WORKING 
+
+
+#-----------------------------Dispaly Name -------------------------------------------
+rawdata<-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+names <- unlist(str_extract_all(rawdata, "[[:alpha:]., ]{2,}"))
+
+names
+
+```
+
+## Question 2
+2. Use the tools of this chapter to rearrange the vector so that all elements conform to
+the standard first_name last_name.
+
+* Moe           Szyslak         
+* Burns         C. Montgomery 
+* Ned           Flanders      
+* Simpson,      Homer
+* Dr. Julius    Hibbert
+
+
+```{r}
+#-------------------Dispaly 1st and Last name  --------------------
+
+#-------------------------
+# Target to acheive
+#First Name  || Last Name |
+#-------------------------
+# Moe           Szyslak         
+# Burns         C. Montgomery 
+# 
+# Ned           Flanders      
+# Simpson,      Homer
+# Dr. Julius    Hibbert
+#-------------------------
+
+#-------FM which returns postion of maching string in vector.
+grepall <- function(pattern, x,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE,
+value=FALSE, logic=FALSE){
+  
+  # error and exception handling
+if(length(pattern)==0 | length(x)==0){
+warning("Length of pattern or data equals zero.")
+return(NULL)
+}
+# apply grepl() and all()
+indicies <- sapply(pattern, grepl, x,
+ignore.case, perl, fixed, useBytes)
+index <- apply(indicies, 1, all)
+# indexation and return of results
+if(logic==T) return(index)
+if(value==F) return((1:length(x))[index])
+if(value==T) return(x[index])
+}
+
+#------End of FM 
+
+Title <- NA
+Title[grepall("Dr.",names)] <- "Dr."
+Title[grepall("Rev.",names)] <- "Rev."
+
+tName <- trimws(str_replace_all(names,"Rev.|Dr.",""))
+FLName <- trimws(unlist(str_extract_all(tName,"[[:alpha:]]{2,}|[[:alpha:]. ?]{2,}|[.?[:alpha:] ]{2,}",1)))
+colnames(FLName) <- c("First Name","Last Name")
+datatable(data.frame(Title,"Full Name" = tName,FLName))
+
+```
+
+## Question 3
+
+3. Construct a logical vector indicating whether a character has a title (i.e., Rev. and
+Dr.).
+
+
+```{r}
+
+#-----------------------------HAS Title (Rev. or Dr.) -------------------------------------------
+data.frame(names,Title,"Has_Title"= (grepl(c("Dr."),names)|grepl(c("Rev."),names)))
+
+# OPTION 2 : --------------
+# Look for 2/3 character starting with Caps and followed by period ---------------------------- 
+data.frame(names,Title,"Has_Title"=
+str_detect(names,"\\b[A-Z]{1}[a-z]{1,2}\\."))
+
+
+```
+
+## Question 4
+
+4. Construct a logical vector indicating whether a character has a second name.
+
+```{r}
+#-----------------------------HAS 2nd Name----------------------------------------------------------
+data.frame("Raw Name " = names, "Full_Name" = tName,
+           "Sec_Name" = ifelse(str_count(tName,"[[:alpha:]]+")>2,"TRUE","FALSE"))
+
+#--------------------------------------------------------------------------------------
+
+```
+
+* Some  other Test
+
+```{r}
+
+unlist(str_extract_all(names,"[[:alpha:]]{1,3}"),1)
+unlist(str_extract_all(names,"[[:alpha:]]{2,}"))
+unlist(str_extract_all(names,"\\w.{2,}"))
+
+
+# WORKING  END
+```
+
+
+ 
+## Question 5
+ 
+ Describe the types of strings that conform to the following regular expressions and
+construct an example that is matched by the regular expression.
+
++ (a) [0-9]+\\$
++ (b) \\b[a-z]{1,4}\\b
++ (c) .*?\\.txt$
++ (d) \\d{2}/\\d{2}/\\d{4}
++ (e) <(.+?)>.+?</\\1>
+
+<details>
+  <summary> Answer `(a) [0-9]+\\$`</summary>
+  
+  > Would retrun only number from 0-9 in contuinues ending with $ at the end.
+  
+```{r}
+a <- c("0121210121$ 3423423 1232$ 0932$ 444")
+str_extract_all(a,"[0-9]+\\$")
+
+```
+  
+</details>
+***
+
+<details>
+  <summary>Answer `(b) \\b[a-z]{1,4}\\b`</summary>
+  
+  > Only returns small letter word  of exact length 4.
+
+```{r}
+b<-  "nice verynice FIIVE SIIIXX ONE TWO THREE FOUR NICE TINY MANGO msds msdsd 0932$ 444 smal four."
+unlist(str_extract_all(b, "\\b[a-z]{1,4}\\b"))
+
+
+```
+
+</details>
+***
+
+<details>
+  <summary>Answer `(c) .*?\\.txt$` . </summary>
+  
+  > data which are like <name>.txt , <name>.?*txt or any text ending ".txt"" will be retrun from this .
+
+```{r}
+c<- c("one.txt","two.*.txt","three.*txt$" , "four.*.txt$", "fine.*.tx" ,"Abcd MSDS max.txt  dot.*txt  onemore.*.txt")
+unlist(str_extract_all(c, ".*?\\.txt$"))
+
+```
+
+</details>
+***
+
+<details>
+  <summary>Answer ` (d) \\d{2}/\\d{2}/\\d{4}` </summary>
+  
+  > string starting with number , {2}  say only 2 number , then "/" and again 2 number , then "/" and then 4 number.
+  
+```{r}
+d<- c("12/12/201","1/1/2012","01/12/2019", "00/0/2019","12/02/2019")
+unlist(str_extract_all(d, "\\d{2}/\\d{2}/\\d{4}"))
+
+```
+
+</details>
+***
+
+<details>
+  <summary>Answer `(e) <(.+?)>.+?</\\1> `</summary>
+  
+  > Uses backreferencing to return any string that starts with a ``<text>`` and ends with ``</text>``.
+  
+```{r}
+e <- "<meta>MSDS CLASS 607</meta> <ol><li>Assignment</li><li>3e</li></ol>"
+unlist(str_extract_all(e, '<(.+?)>.+?</\\1>'))
+
+
+```
+
+</details>
+***
+
+## Challange 6
+
+The following code hides a secret message. Crack it with R and regular expressions.
+Hint: Some of the characters are more revealing than others! The code snippet is also
+available in the materials at www.r-datacollection.com.
+
+  > clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0Tanwo
+Uwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigO
+d6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5
+fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr
+
+> Answer is  "CONGRATULATIONS.YOU.ARE.A.SUPERNERD"
+```{r}
+
+
+
+ddd<- "clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr"
+
+
+iconv(ddd, from = "windows-1252", to = "UTF-8")
+
+Encoding(ddd)
+
+Encoding("I am rajwant")
+
+
+str_extract_all(ddd,"\\d+")
+str_extract_all(ddd,"\\w")
+str_extract_all(ddd,"\\w[[:punct:]]")
+str_extract_all(ddd,"[[:upper:].]")
+
+unlist(str_extract_all(ddd,"[A-Z.]"))
+
+paste0(unlist(str_extract_all(ddd,"[A-Z.]")),collapse = "")
+
+str_split(paste0(unlist(str_extract_all(ddd,"[A-Z.]")),collapse = ""),
+          "\\.",simplify = TRUE)
+
+```
+#-------------------------------------------------------END -----------------------------------
+
+***
+***
+***
+
+```{r}
+str_extract_all(ddd,"\\w[[:punct:]]")
+str_extract_all(ddd,"\\d[[A-Z]]")
+
+
+unlist(str_extract_all(ddd, '[^[a-z]|[0-9]]'))
+
+```
+
+
+## Some Other Test
+
+```{r}
+
+#-----------------------------------------------------------------
+
+grepl(c("Dr."),names)
+grepl(c("Rev."),names)
+data.frame(names,"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+
+
+
+#-----------------------------------"Rev.","Tim"-------------------------------
+indicies <- sapply(c("Rev.","Tim"),grepl, names,
+ignore.case = FALSE, perl = FALSE,
+fixed = FALSE, useBytes = FALSE)
+
+index <- apply(indicies, 1, all) # Retrun strict and match 
+
+
+#------------------------------------------------------------------------------
+# Has 2nd Name 
+str_count("asas asasdsa asdasdsad .dsafdfd",pattern = ".")
+data.frame(names,ifelse(str_count(names,"[[:alpha:]]+")>2,"YES","No"),"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+
+data.frame(names,str_detect(names,", ?"),"DR." = grepl(c("Dr."),names),"Rev." = grepl(c("Rev."),names))
+```
