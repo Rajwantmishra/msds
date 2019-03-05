@@ -1,0 +1,670 @@
+---
+title: "606 HW3"
+author: "Rajwant Mishra"
+date: "February 25, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DATA606)
+
+rajplot <- function (mean = 0, sd = 1, bounds = c(-1, 1), tails = FALSE,subTitle = "") 
+{
+  x <- seq(-4, 4, length = 100) * sd + mean
+  hx <- dnorm(x, mean, sd)
+  plot(x, hx, type = "n", xlab = "x-Axis", ylab = "", main = "Normal Distribution", sub=subTitle,    axes = FALSE)
+  
+  lines(x, hx)
+  if (tails) {
+    i.low <- x <= bounds[1]
+    i.high <- x >= bounds[2]
+    polygon(c(x[i.low], bounds[1]), c(hx[i.low], 0), col = "red")
+    polygon(c(bounds[2], x[i.high]), c(0, hx[i.high]), col = "red")
+    abline( v = mean, col = "gray60",lty = 3)
+    text(0.9,0, "Mean", col = 2, adj = c(-.1, -.1))
+   
+  }
+  else {
+    i <- x >= bounds[1] & x <= bounds[2]
+    polygon(c(bounds[1], x[i], bounds[2]), c(0, hx[i], 0), 
+      col = "red")
+    abline( v = mean, col = "gray60",lty = 2)
+text(-0.9,0, "Mean", col = 2, adj = c(-.1, -.1))
+    area <- pnorm(bounds[2], mean, sd) - pnorm(bounds[1], 
+      mean, sd)
+    if (diff(bounds) > 0) {
+      result <- paste("P(", bounds[1], "< x <", bounds[2], 
+        ") =", signif(area, digits = 3))
+      mtext(result, 3)
+    }
+  }
+  axis(1)
+}
+
+```
+
+
+Graded: 3.2 (see normalPlot), 3.4, 3.18 (use qqnormsim from lab 3), 3.22, 3.38, 3.42
+
+3.2 Area under the curve
+What percent of a standard normal distribution N(??=0,??=1) is found in each region? Be sure to draw a graph.
+
+(a) Z > - 1.13
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mi>Z</mi>
+  <mo>=</mo>
+  <mfrac>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2212;<!-- ??? --></mo>
+      <mi>&#x03BC;<!-- ?? --></mi>
+    </mrow>
+    <mi>&#x03C3;<!-- ?? --></mi>
+  </mfrac>
+</math>
+```{r}
+
+ 
+#-------------------SMAPLE START
+
+
+mu <- 0
+sd <- 1
+Z <- -1.13
+
+# From the formula value for 'x'
+x <- Z * sd + mu
+
+# Finding probability for x > -1.13
+# 1 - pnorm(x, mean = 0, sd = 1)
+
+# Finding probability fo x > -1.13
+# 1 - pnorm(x, mean = 0, sd = 1)
+shade <- 1- pnorm(x, mean = 0, sd = 1)
+
+pnorm(shade, mean = 0, sd = 1)
+
+qnorm(shade,0,1)
+shade <- 1- pnorm(x, mean = 0, sd = 1)
+
+normalPlot(mean = 0, sd = 1, bounds = c(x,qnorm(1)), tails = FALSE)
+
+
+```
+
+#### Answer
+The percentage represented on the region is: `r paste(round(shade*100,2), "%", sep="") `
+
+***
+
+b. Z < 0.18
+
+```{r}
+z <- 0.18
+# From the formula value for 'x'
+x <- z * sd + mu
+
+# Finding probability fo x < 0.18
+shade<-probx<-pnorm(x, mean = 0, sd = 1)
+
+normalPlot(mean = 0, sd = 1, bounds = c(-qnorm(1),x), tails = FALSE)
+
+```
+
+#### Answer
+The percentage represented on the region is: `r paste(round(shade*100,2), "%", sep="") `
+
+***
+
+(c) Z > 8
+
+```{r}
+mu <- 0
+sd <- 1
+z <- 8
+# Value for  'x' given Z score
+x <- z * sd + mu
+
+
+# Since we have that x>8 , we need to get 1-p(8)
+shade <- 1 - pnorm(x, mean = 0, sd = 1)
+
+
+normalPlot(mean = 0, sd = 1, bounds = c(x, qnorm(1)), tails = FALSE)
+
+```
+
+#### Answer
+The percentage represented on the region is: ~ 0.00%
+
+
+***
+
+(d) |Z| < 0.5
+
+```{r}
+mu <- 0
+sd <- 1
+Z <- 0.5
+# finding value for 'x'
+x <- Z * sd + mu
+x
+
+# Since we have that |x|<0.5
+
+x1 <- pnorm(-x, mean = 0, sd = 1)
+x2 <- pnorm(x, mean = 0, sd = 1)
+x2 - x1
+
+
+normalPlot(mean = 0, sd = 1, bounds = c(-x, x), tails = FALSE)
+```
+
+#### Answer
+The percentage represented on the region is: 38.29%
+
+***
+
+## 3.4
+3.4 Triathlon times, Part I. In triathlons, it is common for racers to be placed into age
+and gender groups. Friends Leo and Mary both completed the Hermosa Beach Triathlon, where
+Leo competed in the Men, Ages 30 - 34 group while Mary competed in the Women, Ages 25 -
+29 group. Leo completed the race in 1:22:28 (4948 seconds), while Mary completed the race in
+1:31:53 (5513 seconds). Obviously Leo finished faster, but they are curious about how they did
+within their respective groups. Can you help them? Here is some information on the performance
+of their groups:
+. The finishing times of the Men, Ages 30 - 34 group has a mean of 4313 seconds with a
+standard deviation of 583 seconds.
+. The finishing times of the Women, Ages 25 - 29 group has a mean of 5261 seconds with a
+standard deviation of 807 seconds.
+. The distributions of finishing times for both groups are approximately Normal.
+Remember: a better performance corresponds to a faster finish.
+(a) Write down the short-hand for these two normal distributions.
+#### Answer
+> Group Men, Ages 30 - 34: N(µ =4313, sd =583), Group Women, Ages 25-29: N(µ =5261, sd =807).
+
+***
+(b) What are the Z-scores for Leo's and Mary's finishing times? What do these Z-scores tell you?
+
+
+```{r}
+leo <-4948
+
+mu <- 4313
+sd<- 583
+
+Z = (leo - mu )/sd
+
+pnorm(Z)
+rajplot(mean = 0, sd = 1, bounds = c(Z, 4), tails = FALSE,"Leo")
+
+mer <-5513
+mu2 <- 5261
+sd2<- 807
+
+Z2 = (mer - mu2 )/sd2
+
+pnorm(Z2)
+rajplot(mean = 0, sd = 1, bounds = c(Z2, 4), tails = FALSE,"Mary")
+
+
+
+
+
+
+
+```
+
+#### Answer
+Z-score is the number of standard deviations from the mean.
+
+Leo's result is 1.09 standard deviations from the mean while Mary's results is 0.31 standard deviations from the mean.
+This shows Leo's performance was better.
+
+
+
+***
+
+(c) Did Leo or Mary rank better in their respective groups? Explain your reasoning.
+```{r}
+leoRank <- 1-pnorm(Z)
+MaryRank <- 1-pnorm(Z2)
+
+rajplot(mean = 0, sd = 1, bounds = c(leoRank, MaryRank ), tails = FALSE,"Mary")
+```
+#### Answer
+Leo performed better in the group than Mary did on her group, this is due to Mary is in the top 37%% of best times for her group, while Leo is in top 13.80% for best times on his group.
+
+***
+
+(d) What percent of the triathletes did Leo finish faster than in his gro
+```{r}
+pnorm(Z)
+pnorm(Z,lower.tail=FALSE)
+
+```
+#### Answer
+Leo finished faster than `r round(pnorm(Z,lower.tail=FALSE)*100,2)`% of the triathletes.
+
+***
+
+(e) What percent of the triathletes did Mary finish faster than in her group?
+
+```{r}
+pnorm(Z2)
+pnorm(Z2,lower.tail=FALSE)
+
+```
+#### Answer
+ Mary finished faster than `r pnorm(Z2,lower.tail=FALSE)*100`% of the triathletes.
+
+***
+
+(f) If the distributions of finishing times are not nearly normal, would your answers to parts (b) - (e) change? Explain your reasoning.
+
+#Answer
+Z-scores of not normal distributions are relevant only for analysis in a respective group.We will not be able to compare two people from different groups based on Z-scores of not normal distributions.since we cannot use the normal probability table to calculate probabilities and percentiles without a normal model, it would impact the calculation. The answer to part (b) would not change as Z-scores can be calculated for distributions that are not normal.
+Answer to (C) might change depending on varaince in data points.
+(e)Each of these answers would need to be reevaluated and recalculated based upon a non-normal or a normalized distribution.
+
+
+***
+***
+3.18 Heights of female college students. Below are heights of 25 female college students.
+1
+54,
+2
+55,
+3
+56,
+4
+56,
+5
+57,
+6
+58,
+7
+58,
+8
+59,
+9
+60,
+10
+60,
+11
+60,
+12
+61,
+13
+61,
+14
+62,
+15
+62,
+16
+63,
+17
+63,
+18
+63,
+19
+64,
+20
+65,
+21
+65,
+22
+67,
+23
+67,
+24
+69,
+25
+73
+(a) The mean height is 61.52 inches with a standard deviation of 4.58 inches. Use this information
+to determine if the heights approximately follow the 68-95-99.7% Rule.
+(b) Do these data appear to follow a normal distribution? Explain your reasoning using the graphs
+provided below.
+
+```{r}
+url <- "https://raw.githubusercontent.com/jbryer/DATA606Fall2016/master/Data/Data%20from%20openintro.org/Ch%203%20Exercise%20Data/fheights.txt"
+hdata <- read.table(url, header = TRUE, stringsAsFactors = FALSE)
+head(hdata)
+
+
+h<- 54:73
+hgiven <- 61.52
+mu <- 61.52
+sd<- 4.58
+
+hdata$Z = (hdata$heighs-mu)/sd
+hdata$sd <- round(hdata$Z,0)
+
+quantile(hdata$heighs, c(.67, .95, .997))
+#    67%    95%  99.7% 
+# 63.000 68.700 72.724 
+# For this data point lets find  Zscore
+
+zscore67 <- (63-mu)/sd
+zscore95 <- (68-mu)/sd # in 95th percentile of data
+zscore99 <- (72.724-mu)/sd # in 95th percentile of data
+
+# Comapring Probability  
+prob67 <- pnorm(63,mu,sd)
+prob95 <- pnorm(68,mu,sd) # in 95th percentile of data
+prob99 <- pnorm(72.724,mu,sd )# in 95th percentile of data
+
+scoreData<- data.frame(X=c(63, 68.700, 72.724 ), Zcore= c(zscore67,zscore95,zscore99), probability= c(prob67,prob95,prob99))
+
+# From the check its clear that all the Quantiles value of this diributions are follwoing  68-95-99.7% Rule.
+# - All the datapoints are having probability of less than the 67,95 an 99 and they are in 1 standard devialtion from MEAN.
+
+
+
+
+
+qqnorm(hdata$heighs)
+qqline(hdata$heighs, col = 2)
+
+
+hist(hdata$heighs, probability = TRUE, xlab = "Heights", ylim = c(0, 0.1))
+x <- 50:75
+y <- dnorm(x = x, mean = mu, sd = sd)
+lines(x = x, y = y, col = "blue")
+abline(v = mu, col = "red")
+
+
+
+
+qqnorm(hdata$heighs)
+qqline(hdata$heighs, col = 2)
+
+
+qqnormsim(hdata$heighs)
+
+
+#1000 Random sample
+
+height1k <- rnorm(n = 1000,mu,sd)
+
+qqnormsim(height1k)
+
+
+# height1k <- rnorm(n = 10000000,mu,sd)
+# 
+# qqnormsim(height1k)
+
+
+
+
+
+```
+#### Answer
+The distribution is unimodal and symmetric. The superimposed normal curve seems to indicate normal distribution. Since the sample size is less it would be very tough to see exact distribution but it would tends towrd very normal ditribution as sample size increases.
+
+If you see simulation of 1000 records , its very much a normal distribution. As most of the data points fall in |1|,|2|,|3| std deviation .
+
+
+***
+***
+
+3.22 Defective rate. A machine that produces a special type of transistor (a component of
+computers) has a 2% defective rate. The production is considered a random process where each
+transistor is independent of the others.
+(a) What is the probability that the 10th transistor produced is the first with a defect?
+
+```{r}
+#  1 2 3 4 5 6 7 8 9 Defect ......
+# Here DEFECT is considered as Success 
+#It's a case of geometric distribution. In this case, 9 is the number of failures until we find a defective part(Success).
+# Probaility of 1 in defect in 10 is 2% i.e. pd^1*(i-pd)10-1
+
+ps<- (1 - 0.02)^9 * 0.02
+ps
+# We can also use dgeom(n,p), here 
+# n= vector of quantiles representing the number of failures in a sequence of Bernoulli trials before success occurs.
+# p= vector of probabilities
+# Here 9 is number of failure before success 
+dgeom(9,0.02)
+
+
+
+```
+
+#### Answer
+The probability that the 10th transistor produced is the first with a defect is ~ `r dgeom(9,0.02)*100 `.
+
+***
+(b) What is the probability that the machine produces no defective transistors in a batch of 100?
+```{r}
+
+#Probability of defet is 0.02 
+# so noDefct probability = (1-0.02)
+
+# noDefect for 100 units will be :
+pf100 <- (1-0.02)^100
+pf100
+# Since there is no Success in the event of 100 so we didn't multiply (0.2)^0 = 1 
+#This is conventionally interpreted as the number of 'successes' in size trials.
+dbinom(0, 100, .02)
+```
+#### Answer
+The probability that the machine produces no defective transistors in a batch of 100 is 13.26%.
+
+***
+(c) On average, how many transistors would you expect to be produced before the first with a
+defect? What is the standard deviation?
+
+---
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mi>E</mi>
+  <mo stretchy="false">(</mo>
+  <mi>X</mi>
+  <mo stretchy="false">)</mo>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mi>p</mi>
+  </mfrac>
+</math>
+---
+```{r}
+
+ps = 0.02
+mu = 1/ps
+sd= (1-ps)/(ps)^2
+sd = sqrt(sd)
+
+p_mu_sd <- data.frame(ps,mu,sd)
+
+```
+
+#### Answer: 
+On average, I would expect to produce 50 transistors before the first one comes with a defect, with a standard deviation of 49.50.
+
+***
+
+(d) Another machine that also produces transistors has a 5% defective rate where each transistor
+is produced independent of the others. On average how many transistors would you expect to
+be produced with this machine before the first with a defect? What is the standard deviation?
+```{r}
+
+ps = 0.05
+mu = 1/ps
+sd= (1-ps)/(ps)^2
+sd = sqrt(sd)
+
+p_mu_sd <- rbind(p_mu_sd ,c(ps,mu,sd))
+qplot(x = rnorm(100,mu,sd))
+normalPlot(mu,sd)
+```
+
+#### Answer: 
+On average, I would expect to produce 20 transistors before the first one comes with a defect, with a standard deviation of ~19.50.
+***
+(e) Based on your answers to parts (c) and (d), how does increasing the probability of an event
+a???ect the mean and standard deviation of the wait time until success?
+
+```{r}
+p_mu_sd
+```
+#### Answer: 
+Increasing Probability of an Event , decreases the Mean and Std. Deviation . We can see the info clearly from abvoe table.
+***
+***
+
+3.38 Male children. While it is often assumed that the probabilities of having a boy or a girl
+are the same, the actual probability of having a boy is slightly higher at 0.51. Suppose a couple
+plans to have 3 kids.
+(a) Use the binomial model to calculate the probability that two of them will be boys.
+```{r}
+
+
+pb <- 0.51 # Probability of Boys
+totalKid <- 3 # Total kid
+kb = 2 #Boy expected = 2
+
+nk <- factorial(totalKid) / (factorial(2)*factorial(totalKid - 2))
+
+# Probability of 2 success with failuire  probility of (1-0.51)
+probboy <- dgeom(2,(1-0.51))   # 0.127449
+# Using formula 
+# probboy <-(pb^2)*((1-pb)^(totalKid-2))  
+
+tpb <- nk*probboy
+tpb 
+#factorial(totalKid)/(factorial(kb)*(factorial(totalKid-kb)))*(pb^kb)*((1-pb)^(totalKid-kb))
+
+# Other way  k =2 n = 3  3c2 *(pb^2)*((1-pb)^(totalKid-2))
+
+```
+
+#### Answer: 
+The probability that two of them will be boys is 38.23%
+
+***
+
+(b) Write out all possible orderings of 3 children, 2 of whom are boys. Use these scenarios to
+calculate the same probability from part (a) but using the addition rule for disjoint outcomes.
+Confirm that your answers from parts (a) and (b) match.
+
+
+```{r}
+# All Possible 3 children: BBB,BBG,BGB,GBB,BGG,GGB,GBG,GGG
+# 3 orderings include 2 boys.
+factorial(3)
+  
+children <- data.frame(c("BBG", "BGB", "GBB"))
+#probability of getting two boys and a girl
+# this part is exactly the same as (p^num_boys)*((1-p)^(num_kids-num_boys))
+#multiply probability of getting two boys and a girl by 3 cases
+# 3 is exactly the same as factorial(num_kids) / (factorial(num_boys)*factorial(num_kids - num_boys)) 
+children$p <- c(pb * pb * (1 - pb), pb * (1 - pb) * pb, (1 - pb) * 
+    pb * pb)
+names(children) <- c("Combination", "probability")
+
+# total probability of 2 boy and 1 girl is
+sum(children$probability)
+
+identical(tpb ,sum(children$probability))
+
+```
+#### Answer:  
+total probability of 2 boy and 1 girl is `r sum(children$probability)`.
+
+>Disjoint events cannot happen at the same time. In other words, they are mutually exclusive. Put in formal terms, *events A and B are disjoint if their intersection is zero*: ... Disjoint events are disjointed, or not connected. Another way of looking at disjoint events are that they have no outcomes in common.
+here `tpb - sum(children$probability)) =  0` both a and b match.
+
+***
+
+(c) If we wanted to calculate the probability that a couple who plans to have 8 kids will have
+3 boys, briefly describe why the approach from part (b) would be more tedious than the
+approach from part (a).
+
+#### Answer: 
+It would be more tedious because it will be harder to list and count all cases with 3 boys and 5 girls than cases with 2 boys and a girl. 'choose(8,3)'
+***
+***
+
+3.42 Serving in volleyball. A not-so-skilled volleyball player has a 15% chance of making the
+serve, which involves hitting the ball so it passes over the net on a trajectory such that it will land
+in the opposing team's court. Suppose that her serves are independent of each other.
+(a) What is the probability that on the 10th try she will make her 3rd successful serve?
+
+```{r}
+## This is a Negative Binomial distribution , since last trial must be a success 
+
+p <- 0.15
+n <- 10
+k <- 3
+
+#number of cases with 2 successes and 7 failures in 9 first attemps
+
+num_cases <- factorial(n-1)/(factorial(k-1)*(factorial(n-k)))
+prob <-num_cases*(p^k)*((1-p)^(n-k))
+
+prob
+
+# Alternate method 
+
+choose(n - 1, k - 1) * (1 - p)^(n - k) * p^k
+```
+
+#### Answer: 
+ The probability that two of them will be boys is `r round( prob*100,2) `
+
+
+***
+(b) Suppose she has made two successful serves in nine attempts. What is the probability that
+her 10th serve will be successful?
+
+#### Answer: 
+Since events are indipendent, success for serve is  15% .
+
+***
+
+(c) Even though parts (a) and (b) discuss the same scenario, the probabilities you calculated
+should be di???erent. Can you explain the reason for this discrepancy?
+
+
+
+#### Answer: 
+The first time we used the negative binomial distribution formula, which describes the probability of observing the kth success on the nth trial.
+In Part (b) calculates the probability that last serve is success i.e. 15% or .15 as given in problem. 
+Question (a) = part(b)* probability of 2 success in 9th attempt.( That two of the previous nine attempts are successes.)
+
+Quick Check :
+
+```{r}
+
+p <- 0.15
+n <- 10
+k <- 3
+parta <- choose(n - 1, k - 1) * (1 - p)^(n - k) * p^k
+
+#number of cases with 2 successes and 7 failures
+p <- 0.15
+n <- 9
+k <- 2
+
+partb2in9<- choose(n,k) * (1 - p)^(n - k) * p^k
+
+# partb2in9* Probability os ucces of last serve
+
+partc<-  partb2in9 *  p
+parta 
+partc
+
+```
+
+***
+***
+
+
+
+
+
+
+
+```{r eval=FALSE, include=FALSE}

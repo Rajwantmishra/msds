@@ -1,0 +1,81 @@
+---
+title: "606 HW 1"
+author: "Rajwant Mishra"
+date: "February 7, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(openintro); 
+data(heartTr)
+```
+
+```{r}
+heartTr
+# 1.48 Stats scores. Below are the final exam scores of twenty introductory statistics students.
+# 57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89, 94
+# Create a box plot of the distribution of these scores. The five number summary provided below
+# may be useful.
+# Min Q1 Q2 (Median) Q3 Max
+# 57 72.5 78.5 82.5 94
+
+stmark<- c(57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89, 94)
+
+boxplot(stmark, ylab= "Marks" )
+
+#--------------------------------------------------------------------------
+
+table(heartTr$survived,heartTr$transplant)
+round(prop.table(table(heartTr$survived,heartTr$transplant)),2)
+
+prop.table(table(heartTr$transplant))
+
+
+
+round(prop.table(table(heartTr[which(heartTr$transplant=="treatment"),4])),2)
+round(prop.table(table(heartTr[which(heartTr$transplant=="control"),4])),2)
+
+#--------------------------------------------------------------------------
+
+drinks<- c(5,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0)
+
+boxplot(drinks)
+
+#------------------------------------------------------------------------
+boxplot( 
+  c(64,70,75,78,80,
+92,
+93,
+103,
+111,
+117,
+117,
+122,
+122,
+133,
+136,
+137,
+137,
+250,
+266,
+274,
+277,
+298
+))
+
+
+round(prop.table(table(heartTr[which(heartTr$transplant=="treatment"),4])),2)
+round(prop.table(table(heartTr[which(heartTr$transplant=="control"),4])),2)
+
+table (heartTr$survived)
+table (heartTr$transplant)
+
+
+```
+

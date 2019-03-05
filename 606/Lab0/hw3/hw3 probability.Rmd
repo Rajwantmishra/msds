@@ -1,0 +1,506 @@
+---
+title: "Probability"
+author: "Rajwant Mishra"
+date: "February 17, 2019"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+---
+<style type='text/css'>
+.nav>li {
+    position: relative;
+    display: block;
+    list-style-position: inside;
+    border: 1px solid black;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Probability   {.tabset .tabset-fade .tabset-pills}
+
+### Library
+
+---
+  
++ library(tidyverse)
++ library(ggplot2)
++ install.packages("VennDiagram")
++ library(VennDiagram) 
+
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(ggplot2)
+# install.packages("VennDiagram")
+library(VennDiagram)
+
+```
+
+
+
+
+### Question 2.6
+If you roll a pair of fair dice, what is the probability of
+
+#### (a) getting a sum of 1?
+
+<b> 0 Probability of getting a 1 , as we can't have 0 on the dice</b>
+
+#### (b) getting a sum of 5?
+
++ 1 4 or
++ 2 3 or
++ 3 2 or
++ 4 1 
+
+* Above sequence results in sum of 5, and it posbility would be (1/6 )*(1/6) for each pair. 
+"Probability of getting a sum of 5 = (1/36) + (1/36) + (1/36) + (1/36) =   4/36"
+
+
+### 2.8 Poverty and language. :
+
+#### Question 
+The American Community Survey is an ongoing survey that
+provides data every year to give communities the current information they need to plan investments
+and services. The 2010 American Community Survey estimates that 14.6% of Americans live below
+the poverty line, 20.7% speak a language other than English (foreign language) at home, and 4.2%
+fall into both categories
+
+Define Variables:
+P(PL) = 14.6% P(FL) = 20.7% P(PL and FL) = 4.2%
+
+```{r}
+PL <- 14.6/100
+FL<- 20.7/100
+PLandFL <- 4.2/100
+```
+
+#### a. Are living below the poverty line and speaking a foreign language at home disjoint? Living below the povery line and speaking a foreign language are not disjoint as both can occur together (P(A and L)).
+
+<b> No these events are not disjoint, there are people who are living below the poverty line and speak a more than once language extra apart of English </b>
+
+***
+
+#### (b) Draw a Venn diagram summarizing the variables and their associated probabilities.
+
+```{r}
+grid.newpage() 
+draw.pairwise.venn(area1 = 14.6, area2 = 20.7, cross.area = 4.2, category = c("Below PL", 
+    " Speak Foreign Lang"), fill = c("red","blue"))
+
+```
+
+*** 
+#### (c) What percent of Americans live below the poverty line and only speak English at home?
+
+Each person living below the poverty line either speaks only English at home or some other language. From the vein diagram we know that only 4.2 % of people below poverty line doesn't speak only English.  So, the only % of Americans who speak English below pervert line are: 14.6 %  - 4.2% = 10.4 % i.e. 0.104.  
+
+```{r}
+
+`Americans live below the poverty line and only speak English` <- (PL - PLandFL)*100
+ABPandSE <- paste(round((PL - PLandFL)*100, digits = 1), "%", sep="")
+ABPandSE 
+```
+
+***
+
+
+#### (d) What percent of Americans live below the poverty line or speak a foreign language at home?
+
+We need to know:
+ p(live below Poverty line) OR p(speak Foreign Lang at home) 
+=> P(A) or p(B) = p(A) + p(B) - p(A intersection B)
+=> = 0.146 + 0.207 ??? 0.042  = 0.311
+
+
+```{r}
+ALBPorSFL <- (PL + FL - PLandFL)*100
+ALBPorSFL <- paste(round(ALBPorSFL, digits = 1), "%", sep="")
+ALBPorSFL
+```
+
+***
+
+#### (e) What percent of Americans live above the poverty line and only speak English at home?
+Answer:  We can also solve this by 
+ Mutually exclusive pair of events are complements to each other,The Complement Rule states that the sum of the probabilities of an event and its complement must equal 1. 
+ P(A) + P(A') = 1
+ 
+ 
+p(Americans live above the poverty  ) + P( below the poverty line) = 1
+AND 
+p(only speak English at home) + p( speak Foreign Lang) = 1
+so the problilty of =>
+"p(Americans live above the poverty  ) AND p(only speak English at home)"
+
+[1 -P( below the poverty line)  ] *AND* [ 1 - p( speak Foreign Lang)]  
+P(neither below PL nor speak FL) = 1 - P(below PL or speak FL) = 1 - 0.311 = 0.689 % 
+
+
+```{r}
+
+# [1 -P( below the poverty line)  ] AND [ 1 - p( speak Foreign Lang)] 
+
+ALAPLandSOE <- ((1-PL) * (1-FL) )* 100
+ALAPLandSOE <- paste(round(ALAPLandSOE, digits = 2), "%", sep="")
+ALAPLandSOE
+
+```
+
+`r ALAPLandSOE ` of Americans live above the poverty line and only speak english at home
+
+***
+
+#### (f) Is the event that someone lives below the poverty line independent of the event that the person speaks a foreign language at home?
+ 
+ Using mutipication Rule: we know that events can only be said indipendent only whenn P(A and B) = P(A)*P(B) , We know in this case: p(PLandFL) = 4.2% 
+` ((PL) * (FL))*100 ` = `r paste(round(((PL) * (FL))*100 , digits = 2), "%", sep="")`
+<b> therefore the events are dependent. </b>
+ 
+```{r}
+
+```
+
+***
+### 2.20 Assortative mating. 
+#### Question 
+Assortative mating is a nonrandom mating pattern where individuals
+with similar genotypes and/or phenotypes mate with one another more frequently than what would
+be expected under a random mating pattern. Researchers studying this topic collected data on
+eye colors of 204 Scandinavian men and their female partners. The table below summarizes the
+results. For simplicity, we only include heterosexual relationships in this exercise.65
+Partner (female)
+
+ M/F| Blue | Brown | Green | Total
+ ----|--------- | ------|----|--|- 
+Blue |78 |23| 13| 114
+Brown |19 |23|12 |54
+Green |11 |9 |16 |36
+Total |108| 55 |41| 204
+
+#### (a) What is the probability that a randomly chosen male respondent or his partner has blue eyes?
+
+Using Additon rule :  P(FemaleBlue) + P(MaleBLue) - P(MaleBlue AND FemaleBlue)
+```{r}
+Total <- 204
+FB <-  108/ Total 
+FBr <- 55/ Total
+FG <-  41/ Total
+MB <-114/ Total
+MBr <-54/ Total
+MG <-36/ Total
+FMB <- 78/Total
+
+Ans<- FB + MB - FMB
+
+```
+<b> `r Ans ` is the probability that a randomly chosen male respondent or his partner has blue eyes . </b>
+
+***
+
+#### (b) What is the probability that a randomly **chosen male respondent with blue eyes** has a **partner with blue eyes**?
+ p(partner with blue eyes) when event p(male respondent with blue eyes) has taken palce. 
+p(FB|MB) = p(MaleBlue and Female Blue) / p(Male with Blue Eyes)
+
+```{r}
+# p(FB|MB) = p(MaleBlue and Female Blue) / p(Male with Blue Eyes)
+
+Ans <- FMB / MB
+
+Ans <- round(Ans,digit=2)
+# 78/114
+
+```
+<b> `r Ans ` is the probability that a randomly **chosen male respondent with blue eyes** has a **partner with blue eyes**. </b>
+
+***
+
+#### (c) What is the probability that a **randomly chosen male respondent with brown eyes** has a **partner with blue eyes** ? 
+p(FB|MBr) = p(Male Brown and Female BLue ) / p(all Male Brown eye)
+```{r}
+ (54/204 ) + (108/204) / MBr
+
+FBMBr <- 19/Total
+Ans<- FBMBr/MBr
+Ans <- round(Ans,digit=2)
+
+
+```
+`r Ans ` is the probability that a **randomly chosen male respondent with brown eyes** has a **partner with blue eyes**
+
+***
+
+#### What about the probability of a randomly chosen **male respondent with green eyes** having a **partner with blue eyes**?
+
+p(FB|MG) = p(Male Green and Female Blue Eyes) / P( All Male Green Eyes)
+```{r}
+
+FBMG <- 11/Total
+Ans <- FBMG/MG
+Ans <- round(Ans,digit=2)
+
+```
+`r Ans ` is  the probability of a randomly chosen **male respondent with green eyes** having a **partner with blue eyes**. 
+
+***
+
+#### (d) Does it appear that the eye colors of male respondents and their partners are independent?
+Explain your reasoning.
+
+Using Using Bayes' Theorem: If the two events are independent, then 
+
+P(A | B) = P(A) (if and only if A and B independent)
+In this case below should stand true:
+P(Female Blue | Male green Eyes) = P(Female Blue)
+
+```{r}
+
+pFbMG<- (11/204)/(36/204)
+FB
+108/204
+
+```
+
+but: `r pFbMG ` ??? `r FB `. <b> Hence they are not independent </b> .
+
+
+***
+### 2.30 Books on a bookshelf. 
+
+#### Question : 
+The table below shows the distribution of books on a bookcase
+based on whether they are nonfiction or fiction and hardcover or paperback.
+
+Format
+Hardcover Paperback Total
+Type
+Fiction 13 59 72
+Nonfiction 15 8 23
+Total 28 67 95
+
+#### (a) Find the probability of drawing a hardcover book first then a paperback fiction book second when **drawing without replacement**.
+```{r}
+# p(drawing a hardcover book) and (paperback fiction book second)
+# Since we have to draw without replcament , total book count would go by 1 after each draw.
+# since its AND , we will multiply the both probabilities 
+
+Ans <- (28/95) * (59/94)
+
+paste(round(Ans, digits = 3), sep = "")
+
+```
+`r Ans ` is the probability of drawing a hardcover book first then a paperback fiction book second when **drawing without replacement**.
+
+***
+
+#### (b) Determine the probability of drawing a fiction book first and then a hardcover book second,when drawing without replacement.
+
+```{r}
+Ans<- paste(round(((72/95) * (28/94)), digits = 3),  sep = "")
+```
+`r Ans ` is the probability of drawing a fiction book first and then a hardcover book second,when drawing without replacement.
+
+***
+
+#### (c) Calculate the probability of the scenario in part (b), except this time complete the calculations under the scenario where the first book is placed back on the bookcase before randomly drawing the second book.
+```{r}
+
+# Since we have to draw and then replace, total book count wouldn't change after each draw.
+# since its AND , we will multiply the both probabilities 
+
+Ans <- Ans<- paste(round(((72/95) * (28/95)), digits = 3),  sep = "")
+
+
+
+```
+`r Ans ` is the probability of drawing a fiction book first and then a hardcover book second,when **drawing with replacement**.
+
+
+***
+
+#### (d) The final answers to parts (b) and (c) are very similar. Explain why this is the case.
+
+They are very similar because the marginal probabilities do not change much between the scenarios due to the sampling size being much smaller than the population. In this particular example, it is a change from 95 to 94 options, which is not very large (1/94 - 1/95 = `r 1/94 - 1/95 ` )
+```{r}
+
+```
+
+
+***
+### 2.38 Baggage fees. 
+
+#### Question :
+An airline charges the following baggage fees: $25 for the first bag and
+$35 for the second. Suppose 54% of passengers have no checked luggage, 34% have one piece of
+checked luggage and 12% have two pieces. We suppose a negligible portion of people check more
+than two bags.
+
+#### (a) Build a probability model, compute the average revenue per passenger, and compute the
+corresponding standard deviation.
+
+
+```{r}
+
+bag<- c(0,1,2)
+fees <- c(0,25, 25+ 35) # Two bag would be 25 + 35 
+percent <- c(.54, .34, .12)
+revFee <- data.frame(bag,fees,percent) 
+
+#  average revenue per passenger
+
+avgRev <- sum(revFee$fees*revFee$percent)  # (0.34 * 25) + (0.12* (35+25))
+
+# sample(bag,size = 100,replace = TRUE,prob = c(0.54, 0.34, 0.12))
+```
+average revenue per passenger = `r avgRev `
+
+***
+
+#### Compute the corresponding standard deviation.
+```{r}
+
+
+# Sd = sqrt[ sum of ( x - mean)( x - mean)/ n  ]     .....Square of the distance from the mean
+
+
+
+# var <- ((revFee$fees*revFee$percent)- (MeanFee) ) *((revFee$fees*revFee$percent)- (MeanFee) ) 
+revFee$var <- (revFee$fees- avgRev )^2 *revFee$percent
+
+totalFeevar <- sum(revFee$var)
+
+sd_per_passenger<- sqrt(totalFeevar)
+ round(sd_per_passenger,2)
+```
+
+`r round(sd_per_passenger,2)` is the corresponding standard deviation per passsenger. 
+
+
+***
+
+#### (b) About how much revenue should the airline expect for a flight of 120 passengers? With what
+standard deviation? Note any assumptions you make and if you think they are justified.
+
+```{r}
+expectedrev <- avgRev * 120
+
+#The expected revenue for 120 passengers is $1884.
+
+# for 120 
+# Standard deviation: would be sqrt( of n * (SD^2) ) i.e. sqrt(120*(19.95^2))
+p120 <-  sqrt(120*  sd_per_passenger^2)
+
+round(p120,2)
+
+```
++ The expected revenue for 120 passengers is $`r expectedrev`.
++ The standard deviation for the expected revenue of 120 passengers is `r round(p120,2)`.
+
+***
+
+### 2.44 Income and gender.
+
+#### Question : 
+The relative frequency table below displays the distribution of
+annual total personal income (in 2009 inflation-adjusted dollars) for a representative sample of
+96,420,486 Americans. These data come from the American Community Survey for 2005-2009.
+This sample is comprised of 59% males and 41% females.69
+
+Income Total
+$1 to $9,999 or loss 2.2%
+$10,000 to $14,999 4.7%
+$15,000 to $24,999 15.8%
+$25,000 to $34,999 18.3%
+$35,000 to $49,999 21.2%
+$50,000 to $64,999 13.9%
+$65,000 to $74,999 5.8%
+$75,000 to $99,999 8.4%
+$100,000 or more 9.7%
+
+
+#### (a) Describe the distribution of total personal income.
+
+```{r}
+library(ggplot2)
+personal_income <- data.frame(c("1_9999", "10000_14999", "15000_24999", 
+    "25000_34999", "35000_49999", "50000_64999", "65000_74999", 
+    "75000_99999", "1000000+"), c(0.022, 0.047, 0.158, 0.183, 
+    0.212, 0.139, 0.058, 0.084, 0.097))
+names(personal_income) <- c("Income", "Total")
+personal_income$Income <- factor(personal_income$Income, levels = c("1_9999", 
+    "10000_14999", "15000_24999", "25000_34999", "35000_49999", 
+    "50000_64999", "65000_74999", "75000_99999", "1000000+"))
+ggplot(personal_income, aes(y = Total, x = Income)) + 
+  geom_bar(stat = "identity") + 
+    theme(axis.text.x = element_text(angle = 120))
+```
+
+The data seems to have the highest frequency for the $35,000 to $49,999 range with a right skew. However, the distribution appears to be bimodal with a second smaller peak at the $100,000+ bin.
+
+***
+
+#### (b) What is the probability that a randomly chosen US
+resident makes *less than $50,000* per year?
+
+```{r}
+
+personal_income
+les50k<-sum(personal_income$Total[1:5])
+
+```
+
+`r les50k ` is the probability that a randomly chosen USresident makes *less than $50,000* per year
+
+***
+
+#### (c) What is the probability that a randomly chosen US
+resident makes less than $50,000 per year and is female?
+Note any assumptions you make.
+ > We know 59% males and 41% females are in sample 
+ 
+We need to know 
+P(Less than $50,000|Female)=p(less than $50,000andFemale)/P(Female)
+
+Assume that both Male and Female has the same proportion of earning under 50k, with this we can say that . p(F under 50k) = p(under 50k) * p(F )
+
+```{r}
+# 59% males and 41% females
+Ans <- les50k * 0.41
+
+```
+`r Ans ` is the probability that a randomly chosen US
+resident makes less than $50,000 per year and is female?
+Note any assumptions you make. Given we assume they have same proportion of earning under 50K.
+
+***
+
+#### (d) The same data source indicates that 71.8% of females
+make less than $50,000 per year. Use this value to
+determine whether or not the assumption you made in
+part (c) is valid.
+
+
+```{r}
+
+# recalualte the Probability as Female has 0.718 probability of getting less 50K. 
+Ans2 <- 0.718  * 0.41
+
+Ans2 
+Ans
+
+```
+
+This value is pretty close to the result in (c); however, there is a difference. As long as the change in the ratio of women to men is small, the overall result will not have much difference. Change between c: `r Ans ` and D: `r Ans2 ` is ~4 % which can be used to say that our assumption  in C was wrong. 
+***
+
+
+
+
+
+
+

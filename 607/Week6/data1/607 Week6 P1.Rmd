@@ -1,0 +1,354 @@
+---
+title: "607 Week6 P1"
+author: "Rajwant Mishra"
+date: "March 3, 2019"
+output:
+ html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Load the tidyverse
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(stringr)
+library(data.table)
+library(DT)
+library(ggplot2)
+
+  getHeader <-  function(phead,startFrom = 2) {  
+    
+                ytd <- FALSE
+                phead <- phead[,startFrom :dim(phead)[2]]
+                header<- character(dim(phead)[2])
+                for (i in 1:dim(phead)[2]){
+                  
+                  if(!ytd){
+                  # for (j in 1:dim(phead[i])[1]){
+                  if(!is.na(phead[[i]][[1]])){
+                     yr = str_extract(phead[[i]][[1]],"\\d{4}")   
+                     
+                  }
+                  
+                  if(!is.na(phead[[i]][[3]])){
+                     mn <- str_extract(phead[[i]][[3]],"\\w+")
+                  }
+                  
+                 
+                  if(!is.na(phead[[i]][[4]])){
+                    typ <- phead[[i]][[4]]
+                  }
+                  
+                   if(!is.na(phead[[i]][[6]])){
+                    ttyp <- phead[[i]][[6]]
+                   }
+                  }
+                  ## Other Case mostly true for Final Dataset
+                  if(is.na(yr) & str_detect(phead[[i]][[1]],"Year-to-Date")) {
+                    ytd <- TRUE # set True to we know its Year to date column GROUP
+                              yr=str_extract(phead[[i]][[3]],"\\d{4}")
+                              mn <- paste0( str_extract(phead[[i]][[1]],"\\w+"),"-Year-to-Date") 
+                              typ<-str_extract(phead[[i]][[3]],"[[:alpha:]]+")   
+                            
+                  }
+                  
+                  if(ytd){
+                    
+                    if(!is.na(phead[[i]][[3]])){
+                     yr=str_extract(phead[[i]][[3]],"\\d{4}")
+                      
+                    }
+                    
+                        if(!is.na(phead[[i]][[1]])){
+                        mn <- paste0( str_extract(phead[[i]][[1]],"\\w+"),"-Year-to-Date") 
+                        }else{
+                        
+                        }
+                    
+                    if(!is.na(phead[[i]][[6]])){
+                    ttyp <- phead[[i]][[6]]
+                   }
+                    
+                  }
+                  
+                    # print(paste(i,j,yr,mn,typ,ttyp))
+                    header[i] = paste(yr,mn,typ,ttyp)
+                }
+                return(header)
+  }
+                
+```
+
+There are several challenges of this untidy dataset:
+
+1) multiple layers of headers: year -> month -> quantity/value
+
+2) nonuniform values: some values are sums of other values
+
+3) database structure: how many tables are sufficient to create a relational database?
+
+4) this dataset consists of monthly data, how do we derive yearly data from separate csv files?
+---
+
+
+```{r}
+# unzip("h1b_kaggle.csv.zip")
+
+# Read in the coal dataset
+
+phead <- suppressWarnings(read_xls("steel3p.xls",skip = 6,n_max=6,col_names = c("Region","A","B","C","D","E","F","G","H","I","J"))) 
+
+phead <- read_xls("steel3p.xls",skip = 6,n_max=6,col_names = character(11))
+
+# Buliding Header 
+pheader<-c("Region", getHeader(phead))
+
+
+datatable(pdata)
+datatable(phead)
+
+ pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
+ 
+ 
+
+#                 
+#               c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
+#               "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
+#               "2018_September_Final_Quantity","2018_September_Final_Value",
+#               "2017_October_Final_Quantity","2017_October_Final_Value",
+#               "2017_September_Final_Quantity","2017_September_Final_Value")   
+#                 
+                
+                
+```
+
+```{r}  
+                
+
+
+ # pheader <- c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
+ #              "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
+ #              "2018_September_Final_Quantity","2018_September_Final_Value",
+ #              "2017_October_Final_Quantity","2017_October_Final_Value",
+ #              "2017_September_Final_Quantity","2017_September_Final_Value")   
+
+
+ 
+ pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
+ 
+ # Getting rid of NOTE: and extra blank row at the end 
+   
+ pdata   <- pdata[1:(which(str_extract(pdata$Region,":")==":")-2),]   
+ # str_which(fdata$Region,":")
+ 
+
+ datatable(pdata)
+                
+```
+   
+```{r}
+# Look at region values - they contain both continents and countries
+unique(pdata$Region)
+
+# Create a vector of "noncountry" values that appear in the region variable
+noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World")
+
+# Look for matches
+matches <- which(!is.na(match(pdata$Region, noncountries)))
+#which(pdata$Region %in% noncountries)
+# Row Matching to out search
+head(matches)
+
+
+# matches <- which(!is.na(match(pdata$Region, noncountries)))
+# # Row Matching to out search
+# head(matches)
+# filter(pdata,Region %in% noncountries)
+
+# create a tibble of country values
+pdata_country <- pdata[-matches,]
+
+glimpse(pdata_country)
+
+# Gathering data to make it Tidy 
+gather_pdata<- gather(pdata_country,key="COL NAMA","Data",-c("Region"))
+
+
+# Split the Col into row so that we can use the data. by Year, Month, Type .
+gather_pdata2<- bind_cols(gather_pdata[,-2],
+                           as.data.frame(str_split(gather_pdata$`COL NAMA`," ",simplify = TRUE))
+                           )
+
+ gather_pdata2<- bind_cols(gather_pdata[,-2],separate(gather_pdata, c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE))
+
+ #------------------------ABove using PIPE 
+ 
+ gather_pdata2_2 <-pdata[-matches,]%>%
+                    gather(key="COL NAMA","Data",-c("Region")) %>%
+                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE)
+ 
+ 
+ 
+   
+ 
+
+
+```
+   
+   
+```{r}
+head(gather_pdata2_2)
+unique(gather_pdata2_2$SampleType)
+# Remove SampleType = Final to avoid redundency
+# Spread the data of DataType to their respective Value. 
+
+pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
+  spread(DataType,Data)
+
+head(pdata_p1)
+
+```
+
+
+```{r}
+# Working for Final data file
+## Final Data
+readFinal <- function(fileName) {
+   File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
+fhead <- read_xls(fileName,skip = 6,n_max=6,col_names = character(File2Length))
+
+# Buliding Header 
+fheader<-c("Region", getHeader(fhead))
+
+fdata <- suppressWarnings(read_excel(fileName,skip = 15,col_names = fheader)) 
+
+ fdata <- fdata[1:(str_which(fdata$Region,":")-2),]
+ # create a tibble of country values
+fdata_country <- fdata[-matches,]
+
+ gather_fdata2 <-fdata[-matches,]%>%
+                    gather(key="COL NAMA","Data",-c("Region")) %>%
+                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE) %>%
+                    .[-str_which(.$Month,"\\w+-(?=Year-to-Date)"),]  %>%  ## Sort form for gather_fdata2[-str_which(gather_fdata2$Month,"\\w+-(?=Year-to-Date)"),]
+                    spread(DataType,Data)        ## Moving DataType COlumn to Header
+                  
+ fdata_p1 <- gather_fdata2
+ 
+ return( fdata_p1)
+
+  
+}
+
+
+ fdata <- suppressWarnings(read_excel("steel2f.xls",skip = 15,col_names = fheader)) 
+
+ fdata <- fdata[1:(str_which(fdata$Region,":")-2),]# fhead <- suppressWarnings(read_xls("steel2f.xls",skip = 6,n_max=6)) 
+ # 
+ #  fhead <- suppressWarnings(read_lines("steel2f.xls",skip = 6)) 
+
+ 
+File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
+fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Length))
+
+# Buliding Header 
+fheader<-c("Region", getHeader(fhead))
+
+#------------------------------------------------
+
+# File2Length<- dim(read_xls("final/steel3f.xls",skip = 16,n_max=1))[2]
+# fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Length))
+# 
+# # Buliding Header 
+# fheader<-c("Region", getHeader(fhead))
+
+#_------------------------------------------------
+
+
+
+# Read File 
+ fdata <- suppressWarnings(read_excel("steel2f.xls",skip = 15,col_names = fheader)) 
+
+ fdata <- fdata[1:(str_which(fdata$Region,":")-2),]
+ datatable(fhead)
+datatable(fdata)
+
+# create a tibble of country values
+fdata_country <- fdata[-matches,]
+
+glimpse(fdata_country)
+ 
+ gather_fdata2 <-fdata[-matches,]%>%
+                    gather(key="COL NAMA","Data",-c("Region")) %>%
+                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE) %>%
+                    .[-str_which(.$Month,"\\w+-(?=Year-to-Date)"),]  %>%  ## Sort form for gather_fdata2[-str_which(gather_fdata2$Month,"\\w+-(?=Year-to-Date)"),]
+                    spread(DataType,Data)        ## Moving DataType COlumn to Header
+                  
+ fdata_p1 <- gather_fdata2                
+ 
+ 
+                    unique(gather_fdata2$Month)
+                    unique(gather_fdata2$SampleType)
+                    
+#                     
+# pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
+#   spread(DataType,Data)
+# 
+# head(pdata_p1)
+                    
+# filter(gather_fdata2,Month !="October-Year-to-Date")
+# str_which(gather_fdata2$Month,"\\w+-(?=Year-to-Date)")
+                    
+# gather_fdata2[-str_which(gather_fdata2$Month,"\\w+-(?=Year-to-Date)"),]
+                    
+
+
+
+
+```
+
+```{r}
+head(fdata_p1)
+head(pdata_p1)
+
+# Merge the two P and F table data and Replce all(-) to zero.
+
+rData <- bind_rows(pdata_p1,fdata_p1)
+rData$Quantity <-   str_replace_all(rData$Quantity,"\\(-\\)","0")
+
+readFinal("steel2f.xls")
+readFinal("final/steel3f.xls")
+readFinal("steel4f.xls")
+
+```
+                
+```{r}           
+#                 
+# phead <- mutate(phead,
+#                 A = ifelse(
+#                   str_detect(A,"^\\d{4}$"),
+#                   paste(A,lead(A,2),lead(A,3),lead(A,5),sep="_"),
+#                   A),
+#                 
+#                 B = ifelse(
+#                   str_detect(B,"^\\d{4}$"),
+#                   B,
+#                    paste(str_split(lag(A,1),"_")[[1]][[1]],
+#                          str_split(lag(A,1),"_")[[1]][[2]],
+#                          lead(A,3),lead(A,5),sep="_")
+#                 
+#                 )
+# 
+#                 mutate(phead ,
+#                        A = ifelse(is.na(A),"Y",A)
+#                        )
+                # str_split("2018_October_Preliminary_Quantity","_")
+#str_split("2018_October_Preliminary_Quantity","_")[[1]][[1]]
+                
+             
+```
+

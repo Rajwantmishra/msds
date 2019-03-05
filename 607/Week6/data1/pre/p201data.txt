@@ -1,0 +1,344 @@
+1220 Canada                         Flat Products: Carbon & Alloy Steel Slab           0001089947 0000001477.888 000000737.50 0000001340.718 000000812.95 10 2018
+2010 Mexico                         Flat Products: Carbon & Alloy Steel Slab           0084974967 0000160165.934 000000530.54 0000145300.133 000000584.82 10 2018
+3510 Brazil                         Flat Products: Carbon & Alloy Steel Slab           0508361589 0000915055.619 000000555.55 0000830124.728 000000612.39 10 2018
+4120 United Kingdom                 Flat Products: Carbon & Alloy Steel Slab           0000098604 0000000092.425 000001066.84 0000000083.847 000001175.99 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Slab           0000020562 0000000025.353 000000811.02 0000000023.000 000000894.00 10 2018
+4621 Russia                         Flat Products: Carbon & Alloy Steel Slab           0065984898 0000131956.034 000000500.05 0000119708.535 000000551.21 10 2018
+4759 Italy                          Flat Products: Carbon & Alloy Steel Slab           0000180766 0000000272.072 000000664.40 0000000246.820 000000732.37 10 2018
+5330 India                          Flat Products: Carbon & Alloy Steel Slab           0001547366 0000002578.647 000000600.06 0000002339.310 000000661.46 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Slab           0000013762 0000000023.021 000000597.78 0000000020.885 000000658.94 10 2018
+1220 Canada                         Flat Products: Carbon & Alloy Steel Plate          0007892681 0000008936.245 000000883.22 0000008106.828 000000973.58 10 2018
+2010 Mexico                         Flat Products: Carbon & Alloy Steel Plate          0000852758 0000001188.120 000000717.73 0000001077.845 000000791.16 10 2018
+2050 Guatemala                      Flat Products: Carbon & Alloy Steel Plate          0000009199 0000000011.109 000000828.06 0000000010.078 000000912.78 10 2018
+2110 El Salvador                    Flat Products: Carbon & Alloy Steel Plate          0000113982 0000000149.223 000000763.83 0000000135.373 000000841.98 10 2018
+2470 Dominican Republic             Flat Products: Carbon & Alloy Steel Plate          0000020071 0000000021.148 000000949.03 0000000019.186 000001046.12 10 2018
+4010 Sweden                         Flat Products: Carbon & Alloy Steel Plate          0001615552 0000001220.360 000001323.83 0000001107.093 000001459.27 10 2018
+4050 Finland                        Flat Products: Carbon & Alloy Steel Plate          0000353877 0000000374.916 000000943.88 0000000340.119 000001040.45 10 2018
+4099 Denmark                        Flat Products: Carbon & Alloy Steel Plate          0000558898 0000000635.470 000000879.50 0000000576.489 000000969.48 10 2018
+4120 United Kingdom                 Flat Products: Carbon & Alloy Steel Plate          0000062519 0000000059.162 000001056.74 0000000053.671 000001164.85 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Plate          0000004294 0000000004.073 000001054.24 0000000003.695 000001162.11 10 2018
+4231 Belgium                        Flat Products: Carbon & Alloy Steel Plate          0001365538 0000001210.868 000001127.73 0000001098.482 000001243.11 10 2018
+4279 France                         Flat Products: Carbon & Alloy Steel Plate          0000002278 0000000005.579 000000408.25 0000000005.062 000000450.01 10 2018
+4280 Germany                        Flat Products: Carbon & Alloy Steel Plate          0000145196 0000000097.026 000001496.45 0000000088.021 000001649.56 10 2018
+4330 Austria                        Flat Products: Carbon & Alloy Steel Plate          0000091516 0000000068.899 000001328.24 0000000062.505 000001464.13 10 2018
+4623 Ukraine                        Flat Products: Carbon & Alloy Steel Plate          0002098490 0000003186.215 000000658.61 0000002890.487 000000725.99 10 2018
+4700 Spain                          Flat Products: Carbon & Alloy Steel Plate          0000027845 0000000022.434 000001241.18 0000000020.352 000001368.17 10 2018
+4759 Italy                          Flat Products: Carbon & Alloy Steel Plate          0000308114 0000000310.911 000000991.00 0000000282.054 000001092.39 10 2018
+4792 Slovenia                       Flat Products: Carbon & Alloy Steel Plate          0000127767 0000000118.801 000001075.46 0000000107.775 000001185.49 10 2018
+5170 Saudi Arabia                   Flat Products: Carbon & Alloy Steel Plate          0000036334 0000000046.352 000000783.86 0000000042.050 000000864.06 10 2018
+5200 United Arab Emirates           Flat Products: Carbon & Alloy Steel Plate          0000007000 0000000004.188 000001671.13 0000000003.800 000001842.10 10 2018
+5330 India                          Flat Products: Carbon & Alloy Steel Plate          0000032467 0000000021.457 000001513.07 0000000019.466 000001667.88 10 2018
+5700 China                          Flat Products: Carbon & Alloy Steel Plate          0000144294 0000000106.371 000001356.50 0000000096.499 000001495.29 10 2018
+5800 Korea, South                   Flat Products: Carbon & Alloy Steel Plate          0025602114 0000036053.694 000000710.11 0000032707.371 000000782.76 10 2018
+5830 Taiwan                         Flat Products: Carbon & Alloy Steel Plate          0000091055 0000000133.583 000000681.63 0000000121.185 000000751.37 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Plate          0000117296 0000000031.575 000003714.75 0000000028.645 000004094.81 10 2018
+6021 Australia                      Flat Products: Carbon & Alloy Steel Plate          0000339344 0000000094.798 000003579.62 0000000086.000 000003945.86 10 2018
+1220 Canada                         Flat Products: Carbon & Alloy Steel Hot-rolled     0116835687 0000158035.704 000000739.29 0000143367.620 000000814.93 10 2018
+2010 Mexico                         Flat Products: Carbon & Alloy Steel Hot-rolled     0023591965 0000037641.189 000000626.75 0000034147.522 000000690.88 10 2018
+2050 Guatemala                      Flat Products: Carbon & Alloy Steel Hot-rolled     0000017587 0000000021.237 000000828.12 0000000019.266 000000912.85 10 2018
+2110 El Salvador                    Flat Products: Carbon & Alloy Steel Hot-rolled     0000146627 0000000190.391 000000770.13 0000000172.720 000000848.92 10 2018
+3510 Brazil                         Flat Products: Carbon & Alloy Steel Hot-rolled     0000013700 0000000008.025 000001706.96 0000000007.281 000001881.60 10 2018
+4010 Sweden                         Flat Products: Carbon & Alloy Steel Hot-rolled     0002804756 0000003942.490 000000711.41 0000003576.568 000000784.20 10 2018
+4050 Finland                        Flat Products: Carbon & Alloy Steel Hot-rolled     0000961531 0000001328.433 000000723.80 0000001205.135 000000797.86 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Hot-rolled     0024242536 0000036179.913 000000670.05 0000032821.875 000000738.60 10 2018
+4231 Belgium                        Flat Products: Carbon & Alloy Steel Hot-rolled     0004650475 0000006078.120 000000765.11 0000005513.980 000000843.39 10 2018
+4279 France                         Flat Products: Carbon & Alloy Steel Hot-rolled     0000054321 0000000060.120 000000903.54 0000000054.540 000000995.98 10 2018
+4280 Germany                        Flat Products: Carbon & Alloy Steel Hot-rolled     0008855820 0000011135.090 000000795.30 0000010101.587 000000876.67 10 2018
+4330 Austria                        Flat Products: Carbon & Alloy Steel Hot-rolled     0000007235 0000000001.673 000004323.77 0000000001.518 000004766.13 10 2018
+4759 Italy                          Flat Products: Carbon & Alloy Steel Hot-rolled     0000017389 0000000004.850 000003585.23 0000000004.400 000003952.04 10 2018
+4792 Slovenia                       Flat Products: Carbon & Alloy Steel Hot-rolled     0000393763 0000000156.605 000002514.36 0000000142.070 000002771.61 10 2018
+4890 Turkey                         Flat Products: Carbon & Alloy Steel Hot-rolled     0000512851 0000000927.726 000000552.80 0000000841.620 000000609.36 10 2018
+5170 Saudi Arabia                   Flat Products: Carbon & Alloy Steel Hot-rolled     0000031696 0000000039.523 000000801.95 0000000035.855 000000884.00 10 2018
+5200 United Arab Emirates           Flat Products: Carbon & Alloy Steel Hot-rolled     0000119826 0000000139.135 000000861.21 0000000126.222 000000949.32 10 2018
+5330 India                          Flat Products: Carbon & Alloy Steel Hot-rolled     0000007400 0000000010.070 000000734.80 0000000009.136 000000809.98 10 2018
+5520 Vietnam                        Flat Products: Carbon & Alloy Steel Hot-rolled     0001495296 0000002423.474 000000617.00 0000002198.540 000000680.13 10 2018
+5700 China                          Flat Products: Carbon & Alloy Steel Hot-rolled     0000015555 0000000023.780 000000654.11 0000000021.573 000000721.04 10 2018
+5800 Korea, South                   Flat Products: Carbon & Alloy Steel Hot-rolled     0069263048 0000095327.698 000000726.57 0000086479.858 000000800.91 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Hot-rolled     0016341671 0000024973.680 000000654.35 0000022655.748 000000721.30 10 2018
+6021 Australia                      Flat Products: Carbon & Alloy Steel Hot-rolled     0000302453 0000000282.735 000001069.74 0000000256.493 000001179.18 10 2018
+6141 New Zealand                    Flat Products: Carbon & Alloy Steel Hot-rolled     0005344533 0000008323.274 000000642.11 0000007550.750 000000707.81 10 2018
+7290 Egypt                          Flat Products: Carbon & Alloy Steel Hot-rolled     0011110638 0000019280.389 000000576.26 0000017490.880 000000635.22 10 2018
+7910 South Africa                   Flat Products: Carbon & Alloy Steel Hot-rolled     0003160601 0000005485.816 000000576.14 0000004976.650 000000635.08 10 2018
+1220 Canada                         Flat Products: Carbon & Alloy Steel Cold-rolled    0028710686 0000031889.608 000000900.31 0000028929.774 000000992.42 10 2018
+2010 Mexico                         Flat Products: Carbon & Alloy Steel Cold-rolled    0010965050 0000017294.613 000000634.01 0000015689.414 000000698.88 10 2018
+4010 Sweden                         Flat Products: Carbon & Alloy Steel Cold-rolled    0002935434 0000003000.371 000000978.35 0000002721.892 000001078.45 10 2018
+4099 Denmark                        Flat Products: Carbon & Alloy Steel Cold-rolled    0000005411 0000000004.903 000001103.59 0000000004.448 000001216.50 10 2018
+4120 United Kingdom                 Flat Products: Carbon & Alloy Steel Cold-rolled    0000384534 0000000127.939 000003005.58 0000000116.065 000003313.09 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Cold-rolled    0005565026 0000008332.282 000000667.88 0000007558.922 000000736.21 10 2018
+4231 Belgium                        Flat Products: Carbon & Alloy Steel Cold-rolled    0001328667 0000001590.612 000000835.31 0000001442.980 000000920.77 10 2018
+4279 France                         Flat Products: Carbon & Alloy Steel Cold-rolled    0000856144 0000000862.718 000000992.37 0000000782.645 000001093.91 10 2018
+4280 Germany                        Flat Products: Carbon & Alloy Steel Cold-rolled    0006379585 0000003880.903 000001643.84 0000003520.697 000001812.02 10 2018
+4330 Austria                        Flat Products: Carbon & Alloy Steel Cold-rolled    0001887709 0000000490.181 000003851.04 0000000444.685 000004245.04 10 2018
+4359 Slovakia                       Flat Products: Carbon & Alloy Steel Cold-rolled    0000080818 0000000067.119 000001204.08 0000000060.890 000001327.27 10 2018
+4419 Switzerland                    Flat Products: Carbon & Alloy Steel Cold-rolled    0000095896 0000000020.171 000004754.10 0000000018.299 000005240.50 10 2018
+4621 Russia                         Flat Products: Carbon & Alloy Steel Cold-rolled    0000684515 0000001131.257 000000605.09 0000001026.260 000000666.99 10 2018
+4759 Italy                          Flat Products: Carbon & Alloy Steel Cold-rolled    0000033939 0000000025.195 000001347.02 0000000022.857 000001484.84 10 2018
+4890 Turkey                         Flat Products: Carbon & Alloy Steel Cold-rolled    0011130026 0000017733.149 000000627.63 0000016087.247 000000691.85 10 2018
+5330 India                          Flat Products: Carbon & Alloy Steel Cold-rolled    0000397723 0000000214.117 000001857.50 0000000194.244 000002047.54 10 2018
+5490 Thailand                       Flat Products: Carbon & Alloy Steel Cold-rolled    0004043992 0000005382.926 000000751.26 0000004883.310 000000828.12 10 2018
+5520 Vietnam                        Flat Products: Carbon & Alloy Steel Cold-rolled    0015425235 0000025053.595 000000615.68 0000022728.246 000000678.68 10 2018
+5700 China                          Flat Products: Carbon & Alloy Steel Cold-rolled    0000013337 0000000006.888 000001936.16 0000000006.249 000002134.26 10 2018
+5800 Korea, South                   Flat Products: Carbon & Alloy Steel Cold-rolled    0002198408 0000002646.259 000000830.76 0000002400.647 000000915.75 10 2018
+5830 Taiwan                         Flat Products: Carbon & Alloy Steel Cold-rolled    0002134469 0000002582.090 000000826.64 0000002342.434 000000911.21 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Cold-rolled    0003297038 0000002864.542 000001150.98 0000002598.670 000001268.74 10 2018
+6021 Australia                      Flat Products: Carbon & Alloy Steel Cold-rolled    0017644337 0000023356.092 000000755.44 0000021188.297 000000832.73 10 2018
+7290 Egypt                          Flat Products: Carbon & Alloy Steel Cold-rolled    0000324376 0000000469.507 000000690.88 0000000425.930 000000761.57 10 2018
+1220 Canada                         Flat Products: Carbon & Alloy Steel Coated         0075722535 0000081341.076 000000930.92 0000073791.403 000001026.17 10 2018
+2010 Mexico                         Flat Products: Carbon & Alloy Steel Coated         0023570883 0000026804.289 000000879.36 0000024316.449 000000969.33 10 2018
+2150 Honduras                       Flat Products: Carbon & Alloy Steel Coated         0000133900 0000000123.128 000001087.48 0000000111.700 000001198.74 10 2018
+2230 Costa Rica                     Flat Products: Carbon & Alloy Steel Coated         0000562895 0000000596.448 000000943.74 0000000541.089 000001040.30 10 2018
+2250 Panama                         Flat Products: Carbon & Alloy Steel Coated         0000037125 0000000022.654 000001638.73 0000000020.552 000001806.39 10 2018
+2470 Dominican Republic             Flat Products: Carbon & Alloy Steel Coated         0000152077 0000000138.913 000001094.76 0000000126.020 000001206.76 10 2018
+3010 Colombia                       Flat Products: Carbon & Alloy Steel Coated         0000438824 0000000545.103 000000805.02 0000000494.510 000000887.39 10 2018
+3310 Ecuador                        Flat Products: Carbon & Alloy Steel Coated         0000041760 0000000026.623 000001568.56 0000000024.152 000001729.04 10 2018
+3510 Brazil                         Flat Products: Carbon & Alloy Steel Coated         0013121690 0000013316.756 000000985.35 0000012080.762 000001086.16 10 2018
+4010 Sweden                         Flat Products: Carbon & Alloy Steel Coated         0000852868 0000000843.049 000001011.64 0000000764.802 000001115.14 10 2018
+4050 Finland                        Flat Products: Carbon & Alloy Steel Coated         0000013177 0000000019.323 000000681.91 0000000017.530 000000751.68 10 2018
+4099 Denmark                        Flat Products: Carbon & Alloy Steel Coated         0000097465 0000000010.133 000009618.05 0000000009.193 000010602.08 10 2018
+4120 United Kingdom                 Flat Products: Carbon & Alloy Steel Coated         0009961170 0000008266.380 000001205.02 0000007499.136 000001328.30 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Coated         0003905391 0000004805.312 000000812.72 0000004359.307 000000895.87 10 2018
+4231 Belgium                        Flat Products: Carbon & Alloy Steel Coated         0004167608 0000003748.428 000001111.82 0000003400.518 000001225.58 10 2018
+4239 Luxembourg                     Flat Products: Carbon & Alloy Steel Coated         0000347824 0000000348.716 000000997.44 0000000316.350 000001099.49 10 2018
+4279 France                         Flat Products: Carbon & Alloy Steel Coated         0002085310 0000001930.241 000001080.33 0000001751.086 000001190.86 10 2018
+4280 Germany                        Flat Products: Carbon & Alloy Steel Coated         0021133214 0000018887.853 000001118.87 0000017134.777 000001233.35 10 2018
+4330 Austria                        Flat Products: Carbon & Alloy Steel Coated         0010083886 0000010000.320 000001008.35 0000009072.141 000001111.52 10 2018
+4411 Liechtenstein                  Flat Products: Carbon & Alloy Steel Coated         0000008780 0000000001.450 000006052.49 0000000001.316 000006671.73 10 2018
+4419 Switzerland                    Flat Products: Carbon & Alloy Steel Coated         0000035477 0000000007.806 000004544.50 0000000007.082 000005009.46 10 2018
+4550 Poland                         Flat Products: Carbon & Alloy Steel Coated         0000519812 0000000233.978 000002221.62 0000000212.262 000002448.91 10 2018
+4700 Spain                          Flat Products: Carbon & Alloy Steel Coated         0000051805 0000000044.780 000001156.87 0000000040.624 000001275.23 10 2018
+4710 Portugal                       Flat Products: Carbon & Alloy Steel Coated         0000243702 0000000137.804 000001768.46 0000000125.014 000001949.39 10 2018
+4759 Italy                          Flat Products: Carbon & Alloy Steel Coated         0000237927 0000000135.566 000001755.05 0000000122.984 000001934.61 10 2018
+4890 Turkey                         Flat Products: Carbon & Alloy Steel Coated         0011387607 0000015974.574 000000712.85 0000014491.894 000000785.79 10 2018
+5170 Saudi Arabia                   Flat Products: Carbon & Alloy Steel Coated         0000018165 0000000020.543 000000884.20 0000000018.637 000000974.67 10 2018
+5200 United Arab Emirates           Flat Products: Carbon & Alloy Steel Coated         0016399660 0000018700.142 000000876.98 0000016964.489 000000966.70 10 2018
+5330 India                          Flat Products: Carbon & Alloy Steel Coated         0000029506 0000000009.634 000003062.63 0000000008.740 000003375.97 10 2018
+5350 Pakistan                       Flat Products: Carbon & Alloy Steel Coated         0001708443 0000001982.589 000000861.72 0000001798.575 000000949.88 10 2018
+5490 Thailand                       Flat Products: Carbon & Alloy Steel Coated         0000323490 0000000335.361 000000964.60 0000000304.235 000001063.28 10 2018
+5520 Vietnam                        Flat Products: Carbon & Alloy Steel Coated         0051127204 0000065439.967 000000781.28 0000059366.157 000000861.21 10 2018
+5570 Malaysia                       Flat Products: Carbon & Alloy Steel Coated         0000570860 0000000777.915 000000733.83 0000000705.713 000000808.91 10 2018
+5600 Indonesia                      Flat Products: Carbon & Alloy Steel Coated         0001052377 0000001153.889 000000912.02 0000001046.791 000001005.33 10 2018
+5700 China                          Flat Products: Carbon & Alloy Steel Coated         0000339785 0000000306.770 000001107.61 0000000278.298 000001220.93 10 2018
+5800 Korea, South                   Flat Products: Carbon & Alloy Steel Coated         0027492559 0000028083.103 000000978.97 0000025476.570 000001079.13 10 2018
+5830 Taiwan                         Flat Products: Carbon & Alloy Steel Coated         0027584056 0000030877.633 000000893.33 0000028011.726 000000984.73 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Coated         0007905830 0000007465.531 000001058.97 0000006772.618 000001167.32 10 2018
+6021 Australia                      Flat Products: Carbon & Alloy Steel Coated         0009294918 0000007346.733 000001265.17 0000006664.846 000001394.61 10 2018
+7290 Egypt                          Flat Products: Carbon & Alloy Steel Coated         0000023665 0000000037.313 000000634.22 0000000033.850 000000699.11 10 2018
+7910 South Africa                   Flat Products: Carbon & Alloy Steel Coated         0011707650 0000013633.428 000000858.74 0000012368.042 000000946.60 10 2018
+1220 Canada                         Flat Products: Carbon & Alloy Steel Tin            0019257428 0000018436.873 000001044.50 0000016725.655 000001151.37 10 2018
+4120 United Kingdom                 Flat Products: Carbon & Alloy Steel Tin            0002585451 0000002448.219 000001056.05 0000002220.988 000001164.09 10 2018
+4210 Netherlands                    Flat Products: Carbon & Alloy Steel Tin            0025819597 0000028567.294 000000903.81 0000025915.821 000000996.28 10 2018
+4231 Belgium                        Flat Products: Carbon & Alloy Steel Tin            0000005897 0000000010.163 000000580.22 0000000009.220 000000639.58 10 2018
+4279 France                         Flat Products: Carbon & Alloy Steel Tin            0000345501 0000000456.257 000000757.24 0000000413.910 000000834.72 10 2018
+4280 Germany                        Flat Products: Carbon & Alloy Steel Tin            0016110158 0000017121.548 000000940.92 0000015532.412 000001037.19 10 2018
+4700 Spain                          Flat Products: Carbon & Alloy Steel Tin            0001796576 0000002004.530 000000896.25 0000001818.480 000000987.95 10 2018
+4890 Turkey                         Flat Products: Carbon & Alloy Steel Tin            0000102466 0000000131.549 000000778.91 0000000119.340 000000858.60 10 2018
+5700 China                          Flat Products: Carbon & Alloy Steel Tin            0005117673 0000005147.257 000000994.25 0000004669.515 000001095.97 10 2018
+5800 Korea, South                   Flat Products: Carbon & Alloy Steel Tin            0001790612 0000002185.893 000000819.16 0000001983.010 000000902.97 10 2018
+5830 Taiwan                         Flat Products: Carbon & Alloy Steel Tin            0000217175 0000000219.521 000000989.30 0000000199.147 000001090.52 10 2018
+5880 Japan                          Flat Products: Carbon & Alloy Steel Tin            0002188811 0000002024.203 000001081.31 0000001836.327 000001191.95 10 2018
+1220 Canada                         Carbon & Alloy Steel Hot-rolled bar                0036010041 0000044241.195 000000813.94 0000040134.949 000000897.22 10 2018
+2010 Mexico                         Carbon & Alloy Steel Hot-rolled bar                0010147036 0000014474.617 000000701.02 0000013131.156 000000772.74 10 2018
+2050 Guatemala                      Carbon & Alloy Steel Hot-rolled bar                0000027668 0000000025.238 000001096.26 0000000022.896 000001208.42 10 2018
+2470 Dominican Republic             Carbon & Alloy Steel Hot-rolled bar                0000049616 0000000038.428 000001291.11 0000000034.862 000001423.21 10 2018
+4010 Sweden                         Carbon & Alloy Steel Hot-rolled bar                0001105729 0000000667.375 000001656.83 0000000605.433 000001826.34 10 2018
+4050 Finland                        Carbon & Alloy Steel Hot-rolled bar                0000170616 0000000179.340 000000951.35 0000000162.695 000001048.68 10 2018
+4120 United Kingdom                 Carbon & Alloy Steel Hot-rolled bar                0007996313 0000008475.172 000000943.49 0000007688.549 000001040.02 10 2018
+4210 Netherlands                    Carbon & Alloy Steel Hot-rolled bar                0000473478 0000000317.666 000001490.48 0000000288.182 000001642.98 10 2018
+4231 Belgium                        Carbon & Alloy Steel Hot-rolled bar                0000451609 0000000113.503 000003978.79 0000000102.969 000004385.87 10 2018
+4239 Luxembourg                     Carbon & Alloy Steel Hot-rolled bar                0000154352 0000000260.788 000000591.86 0000000236.583 000000652.42 10 2018
+4279 France                         Carbon & Alloy Steel Hot-rolled bar                0009758158 0000011348.267 000000859.88 0000010294.978 000000947.85 10 2018
+4280 Germany                        Carbon & Alloy Steel Hot-rolled bar                0010098854 0000009750.297 000001035.74 0000008845.324 000001141.71 10 2018
+4330 Austria                        Carbon & Alloy Steel Hot-rolled bar                0000573080 0000000128.471 000004460.77 0000000116.547 000004917.15 10 2018
+4351 Czech Republic                 Carbon & Alloy Steel Hot-rolled bar                0000037296 0000000025.284 000001475.03 0000000022.938 000001625.94 10 2018
+4419 Switzerland                    Carbon & Alloy Steel Hot-rolled bar                0002284800 0000001549.996 000001474.06 0000001406.134 000001624.88 10 2018
+4550 Poland                         Carbon & Alloy Steel Hot-rolled bar                0000043492 0000000041.028 000001060.05 0000000037.220 000001168.51 10 2018
+4623 Ukraine                        Carbon & Alloy Steel Hot-rolled bar                0001656033 0000001211.240 000001367.22 0000001098.819 000001507.10 10 2018
+4700 Spain                          Carbon & Alloy Steel Hot-rolled bar                0002718267 0000003160.608 000000860.04 0000002867.257 000000948.03 10 2018
+4759 Italy                          Carbon & Alloy Steel Hot-rolled bar                0001708900 0000000935.949 000001825.84 0000000849.079 000002012.65 10 2018
+4792 Slovenia                       Carbon & Alloy Steel Hot-rolled bar                0000045976 0000000020.497 000002243.00 0000000018.595 000002472.49 10 2018
+4850 Romania                        Carbon & Alloy Steel Hot-rolled bar                0000080304 0000000043.619 000001841.00 0000000039.571 000002029.36 10 2018
+4890 Turkey                         Carbon & Alloy Steel Hot-rolled bar                0000992337 0000001432.377 000000692.79 0000001299.431 000000763.67 10 2018
+5081 Israel                         Carbon & Alloy Steel Hot-rolled bar                0000038154 0000000016.880 000002260.20 0000000015.314 000002491.44 10 2018
+5330 India                          Carbon & Alloy Steel Hot-rolled bar                0000086089 0000000075.730 000001136.77 0000000068.702 000001253.07 10 2018
+5520 Vietnam                        Carbon & Alloy Steel Hot-rolled bar                0000023859 0000000022.329 000001068.49 0000000020.257 000001177.81 10 2018
+5700 China                          Carbon & Alloy Steel Hot-rolled bar                0010011354 0000011053.444 000000905.72 0000010027.519 000000998.38 10 2018
+5800 Korea, South                   Carbon & Alloy Steel Hot-rolled bar                0000002911 0000000000.163 000017843.34 0000000000.148 000019668.91 10 2018
+5830 Taiwan                         Carbon & Alloy Steel Hot-rolled bar                0000838883 0000001071.149 000000783.16 0000000971.731 000000863.28 10 2018
+5880 Japan                          Carbon & Alloy Steel Hot-rolled bar                0026705717 0000031006.722 000000861.28 0000028128.833 000000949.40 10 2018
+6021 Australia                      Carbon & Alloy Steel Hot-rolled bar                0000019447 0000000021.958 000000885.64 0000000019.920 000000976.25 10 2018
+7290 Egypt                          Carbon & Alloy Steel Hot-rolled bar                0000002160 0000000002.595 000000832.06 0000000002.355 000000917.19 10 2018
+7910 South Africa                   Carbon & Alloy Steel Hot-rolled bar                0000246920 0000000150.510 000001640.54 0000000136.541 000001808.39 10 2018
+1220 Canada                         Carbon & Alloy Steel Cold-Finished Bar             0003050177 0000002521.264 000001209.78 0000002287.253 000001333.55 10 2018
+2010 Mexico                         Carbon & Alloy Steel Cold-Finished Bar             0001684582 0000001036.202 000001625.72 0000000940.027 000001792.05 10 2018
+4010 Sweden                         Carbon & Alloy Steel Cold-Finished Bar             0001845843 0000000944.263 000001954.79 0000000856.622 000002154.79 10 2018
+4050 Finland                        Carbon & Alloy Steel Cold-Finished Bar             0000120611 0000000066.401 000001816.40 0000000060.238 000002002.24 10 2018
+4120 United Kingdom                 Carbon & Alloy Steel Cold-Finished Bar             0001015317 0000000644.265 000001575.92 0000000584.468 000001737.16 10 2018
+4279 France                         Carbon & Alloy Steel Cold-Finished Bar             0001061815 0000000611.368 000001736.78 0000000554.624 000001914.47 10 2018
+4280 Germany                        Carbon & Alloy Steel Cold-Finished Bar             0005894083 0000004053.626 000001454.02 0000003677.389 000001602.79 10 2018
+4330 Austria                        Carbon & Alloy Steel Cold-Finished Bar             0000527354 0000000314.462 000001676.99 0000000285.276 000001848.57 10 2018
+4351 Czech Republic                 Carbon & Alloy Steel Cold-Finished Bar             0000003011 0000000001.499 000002008.48 0000000001.360 000002213.97 10 2018
+4419 Switzerland                    Carbon & Alloy Steel Cold-Finished Bar             0000039550 0000000010.245 000003860.05 0000000009.295 000004254.97 10 2018
+4700 Spain                          Carbon & Alloy Steel Cold-Finished Bar             0001060391 0000000967.522 000001095.98 0000000877.722 000001208.11 10 2018
+4759 Italy                          Carbon & Alloy Steel Cold-Finished Bar             0002377605 0000001625.213 000001462.94 0000001474.369 000001612.62 10 2018
+4792 Slovenia                       Carbon & Alloy Steel Cold-Finished Bar             0002327816 0000000756.877 000003075.55 0000000686.628 000003390.21 10 2018
+4850 Romania                        Carbon & Alloy Steel Cold-Finished Bar             0000122097 0000000067.940 000001797.10 0000000061.635 000001980.96 10 2018
+5330 India                          Carbon & Alloy Steel Cold-Finished Bar             0000107707 0000000115.044 000000936.21 0000000104.367 000001032.00 10 2018
+5570 Malaysia                       Carbon & Alloy Steel Cold-Finished Bar             0000016090 0000000026.082 000000616.87 0000000023.662 000000679.99 10 2018
+5700 China                          Carbon & Alloy Steel Cold-Finished Bar             0002886031 0000002871.282 000001005.13 0000002604.784 000001107.97 10 2018
+5800 Korea, South                   Carbon & Alloy Steel Cold-Finished Bar             0001081662 0000000771.032 000001402.87 0000000699.469 000001546.40 10 2018
+5830 Taiwan                         Carbon & Alloy Steel Cold-Finished Bar             0000521380 0000000222.058 000002347.94 0000000201.448 000002588.16 10 2018
+5880 Japan                          Carbon & Alloy Steel Cold-Finished Bar             0000581531 0000000313.986 000001852.08 0000000284.844 000002041.57 10 2018
+1220 Canada                         Carbon & Alloy Steel Rebar                         0000111721 0000000153.124 000000729.61 0000000138.912 000000804.25 10 2018
+2010 Mexico                         Carbon & Alloy Steel Rebar                         0005399529 0000010156.039 000000531.65 0000009213.407 000000586.05 10 2018
+2230 Costa Rica                     Carbon & Alloy Steel Rebar                         0000021445 0000000026.455 000000810.60 0000000024.000 000000893.54 10 2018
+2470 Dominican Republic             Carbon & Alloy Steel Rebar                         0001885505 0000002534.146 000000744.03 0000002298.940 000000820.16 10 2018
+4280 Germany                        Carbon & Alloy Steel Rebar                         0000636675 0000000813.272 000000782.85 0000000737.789 000000862.94 10 2018
+4330 Austria                        Carbon & Alloy Steel Rebar                         0000037776 0000000022.235 000001698.88 0000000020.172 000001872.69 10 2018
+4700 Spain                          Carbon & Alloy Steel Rebar                         0005770157 0000007266.627 000000794.06 0000006592.175 000000875.30 10 2018
+4759 Italy                          Carbon & Alloy Steel Rebar                         0014577969 0000028807.707 000000506.04 0000026133.920 000000557.81 10 2018
+4890 Turkey                         Carbon & Alloy Steel Rebar                         0000303852 0000000581.076 000000522.91 0000000527.144 000000576.41 10 2018
+5800 Korea, South                   Carbon & Alloy Steel Rebar                         0000866335 0000001251.599 000000692.18 0000001135.432 000000763.00 10 2018
+6021 Australia                      Carbon & Alloy Steel Rebar                         0000022213 0000000020.152 000001102.24 0000000018.282 000001215.02 10 2018
+1220 Canada                         Carbon & Alloy Steel Welded Tubular                0056134880 0000050503.759 000001111.49 0000045816.252 000001225.21 10 2018
+2010 Mexico                         Carbon & Alloy Steel Welded Tubular                0038166302 0000032953.727 000001158.17 0000029895.127 000001276.67 10 2018
+2050 Guatemala                      Carbon & Alloy Steel Welded Tubular                0001966965 0000002163.806 000000909.02 0000001962.973 000001002.03 10 2018
+2230 Costa Rica                     Carbon & Alloy Steel Welded Tubular                0000096785 0000000114.993 000000841.65 0000000104.320 000000927.77 10 2018
+2470 Dominican Republic             Carbon & Alloy Steel Welded Tubular                0000658502 0000000664.714 000000990.65 0000000603.019 000001092.00 10 2018
+3010 Colombia                       Carbon & Alloy Steel Welded Tubular                0000017482 0000000022.725 000000769.27 0000000020.616 000000847.98 10 2018
+4010 Sweden                         Carbon & Alloy Steel Welded Tubular                0000055375 0000000025.447 000002176.01 0000000023.086 000002398.63 10 2018
+4050 Finland                        Carbon & Alloy Steel Welded Tubular                0001645234 0000000572.244 000002875.05 0000000519.132 000003169.20 10 2018
+4120 United Kingdom                 Carbon & Alloy Steel Welded Tubular                0000032760 0000000011.272 000002906.25 0000000010.226 000003203.59 10 2018
+4210 Netherlands                    Carbon & Alloy Steel Welded Tubular                0000002130 0000000000.270 000007886.95 0000000000.245 000008693.87 10 2018
+4231 Belgium                        Carbon & Alloy Steel Welded Tubular                0000004692 0000000000.059 000078824.29 0000000000.054 000086888.88 10 2018
+4279 France                         Carbon & Alloy Steel Welded Tubular                0000545620 0000000150.981 000003613.82 0000000136.968 000003983.55 10 2018
+4280 Germany                        Carbon & Alloy Steel Welded Tubular                0016153669 0000013590.900 000001188.56 0000012329.461 000001310.16 10 2018
+4330 Austria                        Carbon & Alloy Steel Welded Tubular                0000931689 0000000487.428 000001911.43 0000000442.188 000002106.99 10 2018
+4351 Czech Republic                 Carbon & Alloy Steel Welded Tubular                0000008652 0000000000.767 000011277.24 0000000000.696 000012431.03 10 2018
+4359 Slovakia                       Carbon & Alloy Steel Welded Tubular                0000056186 0000000020.534 000002736.11 0000000018.629 000003016.05 10 2018
+4419 Switzerland                    Carbon & Alloy Steel Welded Tubular                0001894698 0000000649.072 000002919.08 0000000588.829 000003217.73 10 2018
+4470 Estonia                        Carbon & Alloy Steel Welded Tubular                0000003752 0000000001.221 000003071.98 0000000001.108 000003386.28 10 2018
+4550 Poland                         Carbon & Alloy Steel Welded Tubular                0000030571 0000000006.844 000004466.66 0000000006.209 000004923.65 10 2018
+4621 Russia                         Carbon & Alloy Steel Welded Tubular                0000003165 0000000001.187 000002665.96 0000000001.077 000002938.71 10 2018
+4623 Ukraine                        Carbon & Alloy Steel Welded Tubular                0002910447 0000004227.602 000000688.43 0000003835.218 000000758.87 10 2018
+4700 Spain                          Carbon & Alloy Steel Welded Tubular                0000494533 0000000255.767 000001933.52 0000000232.028 000002131.35 10 2018
+4710 Portugal                       Carbon & Alloy Steel Welded Tubular                0000006831 0000000004.928 000001386.03 0000000004.471 000001527.84 10 2018
+4759 Italy                          Carbon & Alloy Steel Welded Tubular                0007157803 0000008108.924 000000882.70 0000007356.295 000000973.01 10 2018
+4792 Slovenia                       Carbon & Alloy Steel Welded Tubular                0000013144 0000000002.293 000005729.95 0000000002.081 000006316.19 10 2018
+4840 Greece                         Carbon & Alloy Steel Welded Tubular                0033349020 0000035868.827 000000929.74 0000032539.662 000001024.87 10 2018
+4850 Romania                        Carbon & Alloy Steel Welded Tubular                0000007170 0000000002.105 000003405.50 0000000001.910 000003753.92 10 2018
+4890 Turkey                         Carbon & Alloy Steel Welded Tubular                0026747436 0000029985.060 000000892.02 0000027201.997 000000983.28 10 2018
+5110 Jordan                         Carbon & Alloy Steel Welded Tubular                0000200390 0000000260.741 000000768.53 0000000236.541 000000847.16 10 2018
+5200 United Arab Emirates           Carbon & Alloy Steel Welded Tubular                0004853920 0000006247.413 000000776.94 0000005667.560 000000856.43 10 2018
+5230 Oman                           Carbon & Alloy Steel Welded Tubular                0004617110 0000006620.054 000000697.44 0000006005.614 000000768.79 10 2018
+5330 India                          Carbon & Alloy Steel Welded Tubular                0005906292 0000006270.522 000000941.91 0000005688.524 000001038.28 10 2018
+5490 Thailand                       Carbon & Alloy Steel Welded Tubular                0002110039 0000002724.394 000000774.49 0000002471.530 000000853.73 10 2018
+5520 Vietnam                        Carbon & Alloy Steel Welded Tubular                0008985102 0000011947.030 000000752.07 0000010838.167 000000829.02 10 2018
+5570 Malaysia                       Carbon & Alloy Steel Welded Tubular                0000054902 0000000043.102 000001273.75 0000000039.102 000001404.07 10 2018
+5600 Indonesia                      Carbon & Alloy Steel Welded Tubular                0000728952 0000000903.999 000000806.36 0000000820.095 000000888.86 10 2018
+5650 Philippines                    Carbon & Alloy Steel Welded Tubular                0000021298 0000000031.316 000000680.08 0000000028.410 000000749.66 10 2018
+5700 China                          Carbon & Alloy Steel Welded Tubular                0001807846 0000001854.167 000000975.01 0000001682.073 000001074.77 10 2018
+5800 Korea, South                   Carbon & Alloy Steel Welded Tubular                0004865591 0000004441.506 000001095.48 0000004029.268 000001207.56 10 2018
+5830 Taiwan                         Carbon & Alloy Steel Welded Tubular                0003209999 0000002120.553 000001513.75 0000001923.734 000001668.62 10 2018
+5880 Japan                          Carbon & Alloy Steel Welded Tubular                0003637077 0000002863.302 000001270.23 0000002597.545 000001400.19 10 2018
+7910 South Africa                   Carbon & Alloy Steel Welded Tubular                0002005175 0000002599.395 000000771.40 0000002358.133 000000850.32 10 2018
+1220 Canada                         Carbon & Alloy Steel Fittings & Flanges            0005865809 0000000808.532 000007254.87 0000000733.489 000007997.13 10 2018
+2010 Mexico                         Carbon & Alloy Steel Fittings & Flanges            0004898149 0000001390.501 000003522.57 0000001261.442 000003882.97 10 2018
+3010 Colombia                       Carbon & Alloy Steel Fittings & Flanges            0004626936 0000000668.729 000006918.99 0000000606.661 000007626.88 10 2018
+3510 Brazil                         Carbon & Alloy Steel Fittings & Flanges            0000418387 0000000027.724 000015091.02 0000000025.151 000016635.00 10 2018
+3570 Argentina                      Carbon & Alloy Steel Fittings & Flanges            0000642264 0000000148.328 000004330.02 0000000134.561 000004773.03 10 2018
+4010 Sweden                         Carbon & Alloy Steel Fittings & Flanges            0000187807 0000000012.887 000014573.23 0000000011.691 000016064.23 10 2018
+4039 Norway                         Carbon & Alloy Steel Fittings & Flanges            0000063732 0000000000.649 000098160.80 0000000000.589 000108203.73 10 2018
+4050 Finland                        Carbon & Alloy Steel Fittings & Flanges            0000015295 0000000000.631 000024215.34 0000000000.573 000026692.84 10 2018
+4099 Denmark                        Carbon & Alloy Steel Fittings & Flanges            0000011726 0000000000.328 000035696.81 0000000000.298 000039348.99 10 2018
+4120 United Kingdom                 Carbon & Alloy Steel Fittings & Flanges            0000433899 0000000014.852 000029213.79 0000000013.474 000032202.68 10 2018
+4190 Ireland                        Carbon & Alloy Steel Fittings & Flanges            0000029250 0000000000.644 000045359.24 0000000000.585 000050000.00 10 2018
+4210 Netherlands                    Carbon & Alloy Steel Fittings & Flanges            0000891435 0000000035.564 000025064.97 0000000032.264 000027629.40 10 2018
+4231 Belgium                        Carbon & Alloy Steel Fittings & Flanges            0000564948 0000000045.292 000012473.22 0000000041.089 000013749.37 10 2018
+4279 France                         Carbon & Alloy Steel Fittings & Flanges            0000914688 0000000248.116 000003686.51 0000000225.088 000004063.69 10 2018
+4280 Germany                        Carbon & Alloy Steel Fittings & Flanges            0004410680 0000000834.411 000005285.97 0000000756.966 000005826.78 10 2018
+4330 Austria                        Carbon & Alloy Steel Fittings & Flanges            0001635055 0000000340.811 000004797.53 0000000309.179 000005288.37 10 2018
+4351 Czech Republic                 Carbon & Alloy Steel Fittings & Flanges            0000021720 0000000000.662 000032785.45 0000000000.601 000036139.76 10 2018
+4370 Hungary                        Carbon & Alloy Steel Fittings & Flanges            0000051919 0000000000.326 000159122.08 0000000000.296 000175402.02 10 2018
+4419 Switzerland                    Carbon & Alloy Steel Fittings & Flanges            0000062328 0000000002.469 000025242.42 0000000002.240 000027825.00 10 2018
+4550 Poland                         Carbon & Alloy Steel Fittings & Flanges            0000104547 0000000008.105 000012898.60 0000000007.353 000014218.27 10 2018
+4621 Russia                         Carbon & Alloy Steel Fittings & Flanges            0000029607 0000000009.919 000002984.66 0000000008.999 000003290.03 10 2018
+4700 Spain                          Carbon & Alloy Steel Fittings & Flanges            0003635853 0000001484.571 000002449.09 0000001346.781 000002699.66 10 2018
+4710 Portugal                       Carbon & Alloy Steel Fittings & Flanges            0000007611 0000000000.675 000011263.59 0000000000.613 000012415.98 10 2018
+4759 Italy                          Carbon & Alloy Steel Fittings & Flanges            0012826183 0000003613.503 000003549.51 0000003278.116 000003912.66 10 2018
+4850 Romania                        Carbon & Alloy Steel Fittings & Flanges            0000757120 0000000354.100 000002138.14 0000000321.235 000002356.90 10 2018
+4890 Turkey                         Carbon & Alloy Steel Fittings & Flanges            0000866896 0000000188.976 000004587.31 0000000171.437 000005056.64 10 2018
+5081 Israel                         Carbon & Alloy Steel Fittings & Flanges            0000028713 0000000000.788 000036430.77 0000000000.715 000040158.04 10 2018
+5200 United Arab Emirates           Carbon & Alloy Steel Fittings & Flanges            0000030803 0000000008.107 000003799.32 0000000007.355 000004188.03 10 2018
+5330 India                          Carbon & Alloy Steel Fittings & Flanges            0017384301 0000009269.616 000001875.40 0000008409.257 000002067.28 10 2018
+5490 Thailand                       Carbon & Alloy Steel Fittings & Flanges            0001994413 0000000867.593 000002298.78 0000000787.068 000002533.97 10 2018
+5520 Vietnam                        Carbon & Alloy Steel Fittings & Flanges            0001392051 0000000465.313 000002991.64 0000000422.125 000003297.72 10 2018
+5550 Cambodia                       Carbon & Alloy Steel Fittings & Flanges            0000693867 0000000400.537 000001732.33 0000000363.362 000001909.57 10 2018
+5570 Malaysia                       Carbon & Alloy Steel Fittings & Flanges            0000971629 0000000504.383 000001926.37 0000000457.569 000002123.45 10 2018
+5590 Singapore                      Carbon & Alloy Steel Fittings & Flanges            0000046340 0000000003.390 000013666.75 0000000003.076 000015065.01 10 2018
+5600 Indonesia                      Carbon & Alloy Steel Fittings & Flanges            0000475168 0000000201.412 000002359.18 0000000182.718 000002600.55 10 2018
+5650 Philippines                    Carbon & Alloy Steel Fittings & Flanges            0001008746 0000000455.242 000002215.84 0000000412.989 000002442.54 10 2018
+5700 China                          Carbon & Alloy Steel Fittings & Flanges            0046243409 0000014461.829 000003197.61 0000013119.555 000003524.76 10 2018
+5800 Korea, South                   Carbon & Alloy Steel Fittings & Flanges            0013449287 0000005558.926 000002419.40 0000005042.975 000002666.93 10 2018
+5820 Hong Kong                      Carbon & Alloy Steel Fittings & Flanges            0000019829 0000000006.568 000003018.72 0000000005.959 000003327.57 10 2018
+5830 Taiwan                         Carbon & Alloy Steel Fittings & Flanges            0001587966 0000000500.873 000003170.39 0000000454.385 000003494.75 10 2018
+5880 Japan                          Carbon & Alloy Steel Fittings & Flanges            0002749618 0000000294.722 000009329.50 0000000267.368 000010284.02 10 2018
+6021 Australia                      Carbon & Alloy Steel Fittings & Flanges            0000154205 0000000010.422 000014795.60 0000000009.455 000016309.36 10 2018
+1220 Canada                         Stainless Steel Bar                                0000193016 0000000014.801 000013040.00 0000000013.428 000014374.14 10 2018
+2010 Mexico                         Stainless Steel Bar                                0000006957 0000000003.422 000002032.62 0000000003.105 000002240.57 10 2018
+3510 Brazil                         Stainless Steel Bar                                0000531912 0000000136.396 000003899.74 0000000123.737 000004298.73 10 2018
+4010 Sweden                         Stainless Steel Bar                                0001649748 0000000466.225 000003538.51 0000000422.953 000003900.54 10 2018
+4120 United Kingdom                 Stainless Steel Bar                                0000800219 0000000167.184 000004786.45 0000000151.667 000005276.15 10 2018
+4190 Ireland                        Stainless Steel Bar                                0000005246 0000000000.881 000005948.86 0000000000.800 000006557.50 10 2018
+4210 Netherlands                    Stainless Steel Bar                                0000013786 0000000004.149 000003322.64 0000000003.764 000003662.59 10 2018
+4279 France                         Stainless Steel Bar                                0001746377 0000000586.829 000002975.95 0000000532.363 000003280.42 10 2018
+4280 Germany                        Stainless Steel Bar                                0004435835 0000001235.838 000003589.33 0000001121.134 000003956.56 10 2018
+4330 Austria                        Stainless Steel Bar                                0001569827 0000000224.697 000006986.40 0000000203.842 000007701.19 10 2018
+4351 Czech Republic                 Stainless Steel Bar                                0000013202 0000000003.683 000003583.67 0000000003.342 000003950.32 10 2018
+4419 Switzerland                    Stainless Steel Bar                                0000413076 0000000063.991 000006455.18 0000000058.052 000007115.62 10 2018
+4623 Ukraine                        Stainless Steel Bar                                0001127033 0000000360.669 000003124.83 0000000327.194 000003444.54 10 2018
+4700 Spain                          Stainless Steel Bar                                0000018811 0000000003.568 000005271.87 0000000003.237 000005811.24 10 2018
+4710 Portugal                       Stainless Steel Bar                                0003548442 0000000826.362 000004294.04 0000000749.664 000004733.37 10 2018
+4759 Italy                          Stainless Steel Bar                                0018451602 0000004822.886 000003825.84 0000004375.250 000004217.26 10 2018
+4792 Slovenia                       Stainless Steel Bar                                0000518262 0000000141.393 000003665.38 0000000128.270 000004040.39 10 2018
+5081 Israel                         Stainless Steel Bar                                0000008000 0000000001.654 000004835.09 0000000001.501 000005329.78 10 2018
+5170 Saudi Arabia                   Stainless Steel Bar                                0000316235 0000000144.865 000002182.95 0000000131.420 000002406.29 10 2018
+5200 United Arab Emirates           Stainless Steel Bar                                0000516907 0000000219.281 000002357.27 0000000198.929 000002598.44 10 2018
+5330 India                          Stainless Steel Bar                                0004431119 0000001445.984 000003064.43 0000001311.775 000003377.95 10 2018
+5520 Vietnam                        Stainless Steel Bar                                0000125956 0000000009.058 000013904.28 0000000008.218 000015326.84 10 2018
+5700 China                          Stainless Steel Bar                                0000645166 0000000161.150 000004003.50 0000000146.193 000004413.11 10 2018
+5800 Korea, South                   Stainless Steel Bar                                0000115063 0000000025.338 000004540.97 0000000022.987 000005005.56 10 2018
+5830 Taiwan                         Stainless Steel Bar                                0009449803 0000003104.694 000003043.71 0000002816.532 000003355.12 10 2018
+5880 Japan                          Stainless Steel Bar                                0000097435 0000000012.256 000007949.59 0000000011.119 000008762.92 10 2018
+1220 Canada                         Stainless Steel Rod                                0000005099 0000000001.319 000003864.44 0000000001.197 000004259.81 10 2018
+4010 Sweden                         Stainless Steel Rod                                0002676484 0000000600.347 000004458.22 0000000544.626 000004914.35 10 2018
+4120 United Kingdom                 Stainless Steel Rod                                0001462158 0000000440.852 000003316.65 0000000399.935 000003655.98 10 2018
+4279 France                         Stainless Steel Rod                                0001865246 0000000401.375 000004647.13 0000000364.122 000005122.58 10 2018
+4280 Germany                        Stainless Steel Rod                                0000315026 0000000142.003 000002218.44 0000000128.823 000002445.41 10 2018
+4700 Spain                          Stainless Steel Rod                                0000057584 0000000021.471 000002681.82 0000000019.479 000002956.20 10 2018
+4759 Italy                          Stainless Steel Rod                                0001193182 0000000347.834 000003430.31 0000000315.550 000003781.27 10 2018
+5700 China                          Stainless Steel Rod                                0001828782 0000000800.102 000002285.68 0000000725.841 000002519.53 10 2018
+5830 Taiwan                         Stainless Steel Rod                                0001500857 0000000471.078 000003186.00 0000000427.355 000003511.96 10 2018
+5880 Japan                          Stainless Steel Rod                                0000059803 0000000018.407 000003248.84 0000000016.699 000003581.23 10 2018
+1220 Canada                         Stainless Steel Wire                               0001015796 0000000171.960 000005907.14 0000000156.000 000006511.51 10 2018
+2010 Mexico                         Stainless Steel Wire                               0000006694 0000000001.531 000004371.99 0000000001.389 000004819.29 10 2018
+2230 Costa Rica                     Stainless Steel Wire                               0000041087 0000000001.793 000022909.34 0000000001.627 000025253.22 10 2018
+4010 Sweden                         Stainless Steel Wire                               0000572924 0000000082.790 000006920.19 0000000075.106 000007628.20 10 2018
+4120 United Kingdom                 Stainless Steel Wire                               0000311684 0000000026.786 000011636.01 0000000024.300 000012826.50 10 2018
+4190 Ireland                        Stainless Steel Wire                               0000069187 0000000004.887 000014155.48 0000000004.434 000015603.74 10 2018
+4210 Netherlands                    Stainless Steel Wire                               0000059985 0000000001.724 000034793.79 0000000001.564 000038353.58 10 2018
+4231 Belgium                        Stainless Steel Wire                               0000002438 0000000000.938 000002598.96 0000000000.851 000002864.86 10 2018
+4279 France                         Stainless Steel Wire                               0000683192 0000000113.721 000006007.61 0000000103.166 000006622.25 10 2018
+4280 Germany                        Stainless Steel Wire                               0001683878 0000000497.089 000003387.47 0000000450.952 000003734.05 10 2018
+4351 Czech Republic                 Stainless Steel Wire                               0000270665 0000000068.730 000003938.08 0000000062.351 000004340.98 10 2018
+4370 Hungary                        Stainless Steel Wire                               0000004236 0000000000.104 000040450.90 0000000000.095 000044589.47 10 2018
+4419 Switzerland                    Stainless Steel Wire                               0000323855 0000000021.921 000014773.28 0000000019.887 000016284.75 10 2018
+4759 Italy                          Stainless Steel Wire                               0000555814 0000000134.912 000004119.79 0000000122.391 000004541.29 10 2018
+5200 United Arab Emirates           Stainless Steel Wire                               0000310834 0000000121.653 000002555.08 0000000110.362 000002816.49 10 2018
+5330 India                          Stainless Steel Wire                               0005919847 0000001951.059 000003034.17 0000001769.972 000003344.59 10 2018
+5490 Thailand                       Stainless Steel Wire                               0000209380 0000000056.142 000003729.41 0000000050.932 000004110.97 10 2018
+5520 Vietnam                        Stainless Steel Wire                               0000182628 0000000066.247 000002756.74 0000000060.099 000003038.78 10 2018
+5570 Malaysia                       Stainless Steel Wire                               0000028476 0000000000.041 000679815.78 0000000000.038 000749368.42 10 2018
+5700 China                          Stainless Steel Wire                               0002473362 0000000719.659 000003436.85 0000000652.864 000003788.47 10 2018
+5800 Korea, South                   Stainless Steel Wire                               0002063780 0000000421.880 000004891.85 0000000382.724 000005392.34 10 2018
+5830 Taiwan                         Stainless Steel Wire                               0001204598 0000000253.627 000004749.47 0000000230.087 000005235.40 10 2018
+5880 Japan                          Stainless Steel Wire                               0001346960 0000000160.770 000008378.13 0000000145.849 000009235.30 10 2018

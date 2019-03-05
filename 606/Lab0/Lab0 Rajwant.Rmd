@@ -1,0 +1,35 @@
+---
+title: "Lab0 606"
+author: "Rajwant Mishra"
+date: "January 29, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# install.packages(c('openintro','OIdata','devtools','ggplot2','psych','reshape2',
+#                    'knitr','markdown','shiny'))
+# devtools::install_github("jbryer/DATA606")
+
+#install.packages(c('openintro','OIdata','devtools','ggplot2','psych','reshape2',                   'knitr','markdown','shiny'))
+#devtools::install_github("jbryer/DATA606", force = TRUE)
+devtools::install_github('jbryer/DATA606')
+
+```
+
+## R Markdown
+```{r}
+getwd()
+
+setwd("C:\\Users\\951250\\Documents\\myR\\MS\\606\\Lab0")
+
+#devtools::install_github("jbryer/DATA606Spring2019")
+library(DATA606)
+startLab('Lab0')
+startLab('Lab1')
+startLab('Lab2')
+startLab('Lab3')
+
+```
+
