@@ -99,23 +99,24 @@ There are several challenges of this untidy dataset:
 ```{r}
 # unzip("h1b_kaggle.csv.zip")
 
-# Read in the coal dataset
 
-phead <- suppressWarnings(read_xls("steel3p.xls",skip = 6,n_max=6,col_names = c("Region","A","B","C","D","E","F","G","H","I","J"))) 
+# phead <- suppressWarnings(read_xls("steel3p.xls",skip = 6,n_max=6,col_names = c("Region","A","B","C","D","E","F","G","H","I","J"))) 
 
-phead <- read_xls("steel3p.xls",skip = 6,n_max=6,col_names = character(11))
+  File1Length<- dim(read_xls("steel3p.xls",skip = 16,n_max=1))[2]
+phead <- read_xls("steel3p.xls",skip = 6,n_max=6,col_names = character(File1Length))
+
 
 # Buliding Header 
 pheader<-c("Region", getHeader(phead))
 
 
-datatable(pdata)
-datatable(phead)
+
+
 
  pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
  
- 
-
+ datatable(phead)
+datatable(pdata)
 #                 
 #               c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
 #               "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
@@ -156,7 +157,7 @@ datatable(phead)
 unique(pdata$Region)
 
 # Create a vector of "noncountry" values that appear in the region variable
-noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World")
+noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World","Euro Area")
 
 # Look for matches
 matches <- which(!is.na(match(pdata$Region, noncountries)))
@@ -216,18 +217,105 @@ head(pdata_p1)
 
 
 ```{r}
-# Working for Final data file
-## Final Data
-readFinal <- function(fileName) {
-   File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
-fhead <- read_xls(fileName,skip = 6,n_max=6,col_names = character(File2Length))
+#--------------------------Preliminary Data -------------------------------
+
+readPre <- function(fileName) {
+# fileName = "steel1p.xls"
+  # Get the total No of columns in file 
+File1Length<- dim(read_xls(fileName,skip = 16,n_max=1))[2]
+
+# Get the Header of the File and Give them Header so that we can use data and not loose it in header.
+phead <- read_xls(fileName,n_max=14,col_names = character(File1Length))
+
+
+  
+from <- str_which(phead$X__2,"\\d{4}")
+to <- from + 6
+phead <- phead[from:to,]
+
 
 # Buliding Header 
+pheader<-c("Region", getHeader(phead))
+
+#Load the Prilim data with the header
+#pdata <- suppressWarnings(read_excel(fileName,skip = 15,col_names = pheader))
+
+# There are some NA Columns and we don't need to load them so we will force to read only certain columns.using cell_cols(1:n)
+
+pdata <- suppressWarnings(read_excel(fileName,skip = 15,col_names = pheader))
+ # Getting rid of text with pattern "NOTE: and extra blank row at the end 
+   
+ pdata   <- pdata[1:(which(str_extract(pdata$Region,":")==":")-2),]   
+
+ #------------------Alternate Method 
+ # str_which(fdata$Region,":")
+
+# Create a vector of "noncountry" values that appear in the region variable
+noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World","Euro Area")
+
+
+# Look for matches
+matches <- which(!is.na(match(pdata$Region, noncountries)))
+# create a tibble of country values
+pdata_country <- pdata[-matches,]
+
+# Gathering data to make it Tidy 
+# Split the Col into row so that we can use the data. by Year, Month, Type .
+ gather_pdata2_2 <-pdata[-matches,]%>%
+                    gather(key="COL NAMA","Data",-c("Region")) %>%
+                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE)
+
+
+# Remove SampleType = Final to avoid redundency
+# Spread the data of DataType to their respective Value. 
+pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
+  spread(DataType,Data)
+return(pdata_p1)
+  
+}
+
+
+
+#--------------------------Preliminary Data -------------------------------
+```
+
+
+
+```{r}
+# Working for Final data file
+
+## Final Data
+readFinal <- function(fileName) {
+  
+  File2Length<- dim(read_xls(fileName,skip = 16,n_max=1))[2]
+# fhead <- read_xls(fileName,skip = 6,n_max=6,col_names = character(File2Length))
+fhead <- read_xls(fileName,n_max=14,col_names = character(File2Length))
+from <- str_which(fhead$X__2,"\\d{4}")
+to <- from + 6
+fhead <- fhead[from:to,]
+
+# Buliding Header
 fheader<-c("Region", getHeader(fhead))
+  
+  
+  
+#    File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
+# fhead <- read_xls(fileName,skip = 6,n_max=6,col_names = character(File2Length))
+# 
+# # Buliding Header 
+# fheader<-c("Region", getHeader(fhead))
 
 fdata <- suppressWarnings(read_excel(fileName,skip = 15,col_names = fheader)) 
 
  fdata <- fdata[1:(str_which(fdata$Region,":")-2),]
+ 
+ # Create a vector of "noncountry" values that appear in the region variable
+noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World","Euro Area")
+
+
+# Look for matches
+matches <- which(!is.na(match(fdata$Region, noncountries)))
+
  # create a tibble of country values
 fdata_country <- fdata[-matches,]
 
@@ -239,35 +327,52 @@ fdata_country <- fdata[-matches,]
                   
  fdata_p1 <- gather_fdata2
  
- return( fdata_p1)
+ return( gather_fdata2)
 
   
 }
 
 
- fdata <- suppressWarnings(read_excel("steel2f.xls",skip = 15,col_names = fheader)) 
-
- fdata <- fdata[1:(str_which(fdata$Region,":")-2),]# fhead <- suppressWarnings(read_xls("steel2f.xls",skip = 6,n_max=6)) 
- # 
- #  fhead <- suppressWarnings(read_lines("steel2f.xls",skip = 6)) 
 
  
+# #------------------------------------------------
+# 
+# File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
+# # fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Length))
+# fhead <- read_xls("steel2f.xls",n_max=14,col_names = character(File2Length))
+# from <- str_which(fhead$X__2,"\\d{4}")
+# to <- from +6
+# fhead <- fhead[from:to,]
+# 
+# # Buliding Header
+# fheader<-c("Region", getHeader(fhead))
+# 
+# #_------------------------------------------------
+# 
+# #------------------------------------------------
+# 
+# File2Length<- dim(read_xls("steel3f.xls",skip = 16,n_max=1))[2]
+# fhead <- read_xls("steel3f.xls",skip = 6,n_max=6,col_names = character(File2Length))
+# fhead <- read_xls("steel3f.xls",n_max=14,col_names = character(File2Length))
+# 
+# # Buliding Header
+# fheader<-c("Region", getHeader(fhead))
+# str_which(fhead$X__1,"Exhibit")
+# 
+# str_which(fhead$X__2,"\\d{4}")
+# #_------------------------------------------------
+```
+
+
+
+```{r}
+
+# FINAL FILE 
 File2Length<- dim(read_xls("steel2f.xls",skip = 16,n_max=1))[2]
 fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Length))
 
 # Buliding Header 
 fheader<-c("Region", getHeader(fhead))
-
-#------------------------------------------------
-
-# File2Length<- dim(read_xls("final/steel3f.xls",skip = 16,n_max=1))[2]
-# fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Length))
-# 
-# # Buliding Header 
-# fheader<-c("Region", getHeader(fhead))
-
-#_------------------------------------------------
-
 
 
 # Read File 
@@ -312,17 +417,107 @@ glimpse(fdata_country)
 ```
 
 ```{r}
-head(fdata_p1)
-head(pdata_p1)
+datatable(fdata_p1)
+datatable(pdata_p1)
 
 # Merge the two P and F table data and Replce all(-) to zero.
 
 rData <- bind_rows(pdata_p1,fdata_p1)
 rData$Quantity <-   str_replace_all(rData$Quantity,"\\(-\\)","0")
+rData$Value<-   str_replace_all(rData$Value,"\\(-\\)","0")
 
-readFinal("steel2f.xls")
-readFinal("final/steel3f.xls")
-readFinal("steel4f.xls")
+# readFinal("steel2f.xls")
+# # readFinal("steel3f.xls")
+# readFinal("steel4f.xls")
+
+
+# -------------------------------Using Function ---------
+# to get data and replace (-) with ZERO  
+
+
+USImport <- bind_rows(readPre("steel3p.xls"),readFinal("steel2f.xls"),readFinal("steel4f.xls"))
+
+USImport <- USImport[which(!is.na(USImport$Region)),]
+ USImport$Quantity <-   str_replace_all(USImport$Quantity,"\\(-\\)","0")
+ USImport$Value <-   str_replace_all(USImport$Value,"\\(-\\)","0")
+
+ datatable(USImport)
+ 
+ 
+```
+     
+     
+## Data Analysis     
+     
+```{r}
+glimpse(USImport)
+
+# Convert numbers to Integar
+USImport$Quantity <- as.integer(USImport$Quantity)
+USImport$Value <- as.integer(USImport$Value)
+USImport$SampleType <- as.factor(USImport$SampleType)
+# Check numbers fromat 
+glimpse(USImport)
+ungroup(USImport)
+USImportStat<- group_by(USImport,SampleType) %>%
+  summarise(MeanQty = mean(Quantity), MeanVal =  mean(Value),MedQ = median(Quantity), MedV = median(Value))
+
+
+# All COuntry Data
+
+ggplot(USImport,aes(x=Region, y=Quantity,fill=SampleType))+
+  geom_col( position="dodge")
+
+#TOP 10 by SampleType
+group_by(USImport,SampleType) %>% top_n(10,Quantity) %>%
+ggplot(aes(x=Region, y=Quantity,fill=SampleType))+
+  geom_col( position="dodge")+
+  ggtitle("U.S. Imports For Consumption of Steel Products by Qty")
+  
+
+#TOP 10 by SampleType
+group_by(USImport,SampleType) %>% top_n(10,Value) %>%
+ggplot(aes(x=Region, y=Value,fill=SampleType))+
+  geom_col( position="dodge")+
+   ggtitle("U.S. Imports For Consumption of Steel Products by Value")
+
+```
+
+
+
+
+```{r}
+
+# Read Devloping country   
+DevCountry <- read_excel("devCont.xlsx")
+
+USImport<- mutate(USImport,CTYPE = ifelse(str_to_upper(Region) %in% DevCountry$Country,"Growing","Developed"))
+unique(USImport$CTYPE)
+
+# This indicates all the Country that are importing Steep are in World Bank Classifications for Developing Countries                          
+group_by(USImport,CTYPE) %>% 
+ggplot(aes(x=Region, y=Quantity,fill=CTYPE))+
+  geom_col( position="dodge")+
+  ggtitle("U.S. Imports of Steel by Qty:All Countries")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Reading only Developing country Data
+
+filter(USImport,USImport$CTYPE=="Growing") %>% 
+ggplot(aes(x=Region, y=Quantity,fill=SampleType))+
+  geom_col( position="dodge")+
+  ggtitle("U.S. Imports of Steel by Qty: Developing Countries ")+
+  theme(axis.text.x = element_text(angle = 70, hjust = 1))+
+  geom_hline(USImportStat,linetype = 2, 
+                 yintercept = USImportStat$MedQ)+
+  geom_hline(USImportStat,linetype = 1,
+                 yintercept = USImportStat$MeanQty)+
+        annotate("text",label = sprintf("Median %.2f", USImportStat$MedQ), x= 4, y= USImportStat$MedQ+100000, color="red")+
+  annotate("text",label = sprintf("Mean %.2f", USImportStat$MeanQty), x= 4, y= USImportStat$MeanQty+100000, color="red")
+
+
+
+
 
 ```
                 
