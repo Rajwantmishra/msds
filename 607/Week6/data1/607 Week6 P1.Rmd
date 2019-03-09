@@ -5,10 +5,12 @@ date: "March 3, 2019"
 output:
  html_document:
     df_print: paged
-    toc: true
     toc_float: true
     highlight: tango
+    code_folding: show
+runtime: shiny
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -20,6 +22,34 @@ library(stringr)
 library(data.table)
 library(DT)
 library(ggplot2)
+```
+
+
+## About Datasset  {.tabset .tabset-fade .tabset-pills}
+
+There are several challenges of this untidy dataset:
+
+1) multiple layers of headers: year -> month -> quantity/value
+
+2) nonuniform values: some values are sums of other values
+
+
+### Data 
+In this process there are two file one is Priliminary and other is Final US IMport file 
+
+*Prliminiary File before reading 
+![](Sample0.png)
+
+*Final File before reading 
+![](Sample2.png)
+
+
+### Funcation {.tabset .tabset-fade .tabset}
+
+#### Read Header Function 
+
+```{r}
+# Function to Read Header from File 
 
   getHeader <-  function(phead,startFrom = 2) {  
     
@@ -84,137 +114,7 @@ library(ggplot2)
                 
 ```
 
-There are several challenges of this untidy dataset:
-
-1) multiple layers of headers: year -> month -> quantity/value
-
-2) nonuniform values: some values are sums of other values
-
-3) database structure: how many tables are sufficient to create a relational database?
-
-4) this dataset consists of monthly data, how do we derive yearly data from separate csv files?
----
-
-
-```{r}
-# unzip("h1b_kaggle.csv.zip")
-
-
-# phead <- suppressWarnings(read_xls("steel3p.xls",skip = 6,n_max=6,col_names = c("Region","A","B","C","D","E","F","G","H","I","J"))) 
-
-  File1Length<- dim(read_xls("steel3p.xls",skip = 16,n_max=1))[2]
-phead <- read_xls("steel3p.xls",skip = 6,n_max=6,col_names = character(File1Length))
-
-
-# Buliding Header 
-pheader<-c("Region", getHeader(phead))
-
-
-
-
-
- pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
- 
- datatable(phead)
-datatable(pdata)
-#                 
-#               c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
-#               "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
-#               "2018_September_Final_Quantity","2018_September_Final_Value",
-#               "2017_October_Final_Quantity","2017_October_Final_Value",
-#               "2017_September_Final_Quantity","2017_September_Final_Value")   
-#                 
-                
-                
-```
-
-```{r}  
-                
-
-
- # pheader <- c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
- #              "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
- #              "2018_September_Final_Quantity","2018_September_Final_Value",
- #              "2017_October_Final_Quantity","2017_October_Final_Value",
- #              "2017_September_Final_Quantity","2017_September_Final_Value")   
-
-
- 
- pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
- 
- # Getting rid of NOTE: and extra blank row at the end 
-   
- pdata   <- pdata[1:(which(str_extract(pdata$Region,":")==":")-2),]   
- # str_which(fdata$Region,":")
- 
-
- datatable(pdata)
-                
-```
-   
-```{r}
-# Look at region values - they contain both continents and countries
-unique(pdata$Region)
-
-# Create a vector of "noncountry" values that appear in the region variable
-noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World","Euro Area")
-
-# Look for matches
-matches <- which(!is.na(match(pdata$Region, noncountries)))
-#which(pdata$Region %in% noncountries)
-# Row Matching to out search
-head(matches)
-
-
-# matches <- which(!is.na(match(pdata$Region, noncountries)))
-# # Row Matching to out search
-# head(matches)
-# filter(pdata,Region %in% noncountries)
-
-# create a tibble of country values
-pdata_country <- pdata[-matches,]
-
-glimpse(pdata_country)
-
-# Gathering data to make it Tidy 
-gather_pdata<- gather(pdata_country,key="COL NAMA","Data",-c("Region"))
-
-
-# Split the Col into row so that we can use the data. by Year, Month, Type .
-gather_pdata2<- bind_cols(gather_pdata[,-2],
-                           as.data.frame(str_split(gather_pdata$`COL NAMA`," ",simplify = TRUE))
-                           )
-
- gather_pdata2<- bind_cols(gather_pdata[,-2],separate(gather_pdata, c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE))
-
- #------------------------ABove using PIPE 
- 
- gather_pdata2_2 <-pdata[-matches,]%>%
-                    gather(key="COL NAMA","Data",-c("Region")) %>%
-                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE)
- 
- 
- 
-   
- 
-
-
-```
-   
-   
-```{r}
-head(gather_pdata2_2)
-unique(gather_pdata2_2$SampleType)
-# Remove SampleType = Final to avoid redundency
-# Spread the data of DataType to their respective Value. 
-
-pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
-  spread(DataType,Data)
-
-head(pdata_p1)
-
-```
-
+#### Reading Prelimnary File Function 
 
 ```{r}
 #--------------------------Preliminary Data -------------------------------
@@ -274,12 +174,10 @@ return(pdata_p1)
   
 }
 
-
-
 #--------------------------Preliminary Data -------------------------------
 ```
 
-
+#### Working with Final File
 
 ```{r}
 # Working for Final data file
@@ -363,8 +261,199 @@ fdata_country <- fdata[-matches,]
 # #_------------------------------------------------
 ```
 
+### Read Prliminary file  {.tabset .tabset-fade .tabset}
+
+* File before reading 
+![](Sample0.png)
+```{r}
+
+# unzip("h1b_kaggle.csv.zip")
 
 
+# Get the column Length of File , so that we can put some dummy name to column and read data including header as data row.
+  File1Length <- dim(read_xls("steel3p.xls",skip = 16,n_max=1))[2]
+
+# Read File by skipping 6 row and only reading next 6 row to build header.
+phead <- read_xls("steel3p.xls",skip = 6,n_max=6,col_names = character(File1Length))
+
+
+# Buliding Header by calling Function and passing. 
+pheader<-c("Region", getHeader(phead))
+
+# Set the column name for the read file , and read only data for rest of row. 
+pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
+
+# Preview Data 
+datatable(phead)
+
+pheader
+
+
+
+
+#                 
+#               c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
+#               "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
+#               "2018_September_Final_Quantity","2018_September_Final_Value",
+#               "2017_October_Final_Quantity","2017_October_Final_Value",
+#               "2017_September_Final_Quantity","2017_September_Final_Value")   
+#                 
+
+
+                
+```
+
+#### Header 
+```{r}
+# Preview Data 
+datatable(phead)
+```
+
+
+#### Final Header
+
+```{r}
+pheader
+```
+
+#### Preview Final Data
+
+```{r}
+
+datatable(pdata)
+```
+
+#### Data Wrangling  {.tabset .tabset-fade .tabset-pills}
+
+
+```{r}
+                
+
+
+ # pheader <- c("Region","2018_October_Preliminary_Quantity","2018_October_Preliminary_Value",
+ #              "2018_September_Preliminary_Quantity","2018_September_Preliminary_Value",
+ #              "2018_September_Final_Quantity","2018_September_Final_Value",
+ #              "2017_October_Final_Quantity","2017_October_Final_Value",
+ #              "2017_September_Final_Quantity","2017_September_Final_Value")   
+
+
+ 
+ #pdata <- suppressWarnings(read_excel("steel3p.xls",skip = 15,col_names = pheader))
+ 
+
+# Getting rid of "NOTE:" and extra blank row at the end 
+pdata   <- pdata[1:(which(str_extract(pdata$Region,":")==":")-2),]  
+  
+ # str_which(fdata$Region,":")
+
+ datatable(pdata)
+                
+```
+   
+
+#### Method 1
+Look at region values - they contain both continents and countries, creating vector of non countries and then droping those records from main data. 
+
+> Using match, which,filter, gather, spread, bind_cols and Pipe %>% 
+
+
+```{r}
+# Look at region values - they contain both continents and countries
+unique(pdata$Region)
+
+# Create a vector of "noncountry" values that appear in the region variable
+noncountries <- c("North America", "South/Central America", "Antarctica", "Europe", "Eurasia","European Union","Pacific Rim Countries","Other Countries","Middle East", "Africa", "Asia & Oceania", "World","Euro Area")
+
+# Look for matches
+matches <- which(!is.na(match(pdata$Region, noncountries)))
+#which(pdata$Region %in% noncountries)
+# Row Matching to out search
+head(matches)
+
+
+# matches <- which(!is.na(match(pdata$Region, noncountries)))
+# # Row Matching to out search
+# head(matches)
+# filter(pdata,Region %in% noncountries)
+
+# create a tibble of country values
+pdata_country <- pdata[-matches,]
+
+glimpse(pdata_country)
+
+# Gathering data to make it Tidy 
+gather_pdata<- gather(pdata_country,key="COL NAMA","Data",-c("Region"))
+
+
+# Split the Col into row so that we can use the data. by Year, Month, Type .
+gather_pdata2<- bind_cols(gather_pdata[,-2],
+                           as.data.frame(str_split(gather_pdata$`COL NAMA`," ",simplify = TRUE))
+                           )
+
+ gather_pdata2<- bind_cols(gather_pdata[,-2],separate(gather_pdata, c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE))
+
+```
+
+#### Final Data
+```{r}
+ datatable(gather_pdata2)
+
+```
+   
+  
+#### Method 2 (#using PIPE )
+
+```{r}
+#------------------------ABove using PIPE 
+
+gather_pdata2_2 <-pdata[-matches,]%>%
+                    gather(key="COL NAMA","Data",-c("Region")) %>%
+                    separate(., c("COL NAMA"), c("Year","Month","SampleType","DataType"), sep = " ", remove = TRUE)
+ 
+
+```
+
+#### Final Data (Method 2)
+
+```{r}
+ 
+ datatable(gather_pdata2_2)
+
+# Check Data 
+unique(gather_pdata2_2$SampleType)
+
+```
+   
+
+#### Only Keeping Preliminary Data
+
+```{r}
+
+
+# Remove SampleType = Final to avoid redundency
+# Spread the data of DataType to their respective Value. 
+
+pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
+  spread(DataType,Data)
+
+datatable(pdata_p1)
+
+```
+
+
+### Read Final File (stee2.f) {.tabset .tabset-fade .tabset}
+
+Getheader funcation is written in such a way that it groups header by year and treat header with "Year-to-Date" differently as they have different data structure. 
+Year in 1st two group column [B:E] and column[F:I] is in row 7, but third group has year in Row 9. Getheader function takes care of this as long as I pass right subset of data to it. Even Readfinal function calls getheader by passing right subset of data.
+
+* Final File before reading 
+![](Sample3.png)
+
+* Reading Final File 
+* Removing continent info from data
+* Using Gather and separate and then spread to allign data of final file
+
+#### Header
 ```{r}
 
 # FINAL FILE 
@@ -373,14 +462,31 @@ fhead <- read_xls("steel2f.xls",skip = 6,n_max=6,col_names = character(File2Leng
 
 # Buliding Header 
 fheader<-c("Region", getHeader(fhead))
+# Header from File 
+datatable(fhead)
 
+#Final Header
+print(fheader)
+```
+
+#### Final Data
+
+```{r}
 
 # Read File 
  fdata <- suppressWarnings(read_excel("steel2f.xls",skip = 15,col_names = fheader)) 
 
- fdata <- fdata[1:(str_which(fdata$Region,":")-2),]
- datatable(fhead)
 datatable(fdata)
+```
+
+#### Data Wrangling
+
+* Removing continent info from data 
+
+```{r}
+# Removing all the data with : from Region column and last 2 row after it. 
+ fdata <- fdata[1:(str_which(fdata$Region,":")-2),]
+ 
 
 # create a tibble of country values
 fdata_country <- fdata[-matches,]
@@ -396,8 +502,10 @@ glimpse(fdata_country)
  fdata_p1 <- gather_fdata2                
  
  
-                    unique(gather_fdata2$Month)
-                    unique(gather_fdata2$SampleType)
+unique(gather_fdata2$Month)
+unique(gather_fdata2$SampleType)
+
+datatable(fdata)
                     
 #                     
 # pdata_p1<- filter(gather_pdata2_2,SampleType != c("Final")) %>%
@@ -415,6 +523,9 @@ glimpse(fdata_country)
 
 
 ```
+#### Final  and Priliminary Data
+
+* Merge two file 'Priliminary' and 'Final' , repalce all occurrences of '(-)' with '0'
 
 ```{r}
 datatable(fdata_p1)
@@ -426,9 +537,17 @@ rData <- bind_rows(pdata_p1,fdata_p1)
 rData$Quantity <-   str_replace_all(rData$Quantity,"\\(-\\)","0")
 rData$Value<-   str_replace_all(rData$Value,"\\(-\\)","0")
 
-# readFinal("steel2f.xls")
-# # readFinal("steel3f.xls")
-# readFinal("steel4f.xls")
+# Final data with Priliminary data.
+datatable(rData)
+```
+
+### Using Generic Function 
+* Read Preliminary and Final File
+* Read 'readPre("steel3p.xls")','readFinal("steel2f.xls")', 'readFinal("steel4f.xls")'
+* To get data and replace (-) with ZERO  
+
+
+```{r}
 
 
 # -------------------------------Using Function ---------
@@ -447,7 +566,10 @@ USImport <- USImport[which(!is.na(USImport$Region)),]
 ```
      
      
-## Data Analysis     
+### Data Analysis     {.tabset .tabset-fade .tabset}
+
+* Which are top country contributing to the expprt 
+* Checking How data stand against Developing country vs Developed country.
      
 ```{r}
 glimpse(USImport)
@@ -462,12 +584,56 @@ ungroup(USImport)
 USImportStat<- group_by(USImport,SampleType) %>%
   summarise(MeanQty = mean(Quantity), MeanVal =  mean(Value),MedQ = median(Quantity), MedV = median(Value))
 
+# Stats of the data point 
+datatable(USImportStat)
 
+
+```
+
+
+#### Top Contributor 
+* Full Data Points for each country.
+
+* Its very clear from the below data that Forcast for months vs Actaul data has gone up in every month except for Brazil ths points are very close for the month of October.
+* We can clearly see that Brazil, Canada, Korea and Mexico are the top contributor to the imports of Steel
+
+```{r}
 # All COuntry Data
 
 ggplot(USImport,aes(x=Region, y=Quantity,fill=SampleType))+
-  geom_col( position="dodge")
+  geom_col( position="dodge")+
+    theme(axis.text.x = element_text(angle = 70, hjust = 1))+
+  ggtitle("U.S. Imports For Consumption of Steel All COuntry")
 
+
+
+# as.data.frame(prop.table(table(USImport$Quantity)))[2]
+# as.data.frame(prop.table(table(USImport$Value)))[2]
+
+# Top 5 Country with Sum of Qunatity and Value .
+group_by(USImport,SampleType) %>% top_n(5,Quantity+Value) %>%
+ggplot(aes(x=Value, y=Quantity))+ geom_line(aes(color=SampleType))+geom_point()+geom_text(aes(label = paste(Region,str_sub(Month,1,3))),color="red")+
+  facet_wrap(~SampleType)+ggtitle("TOP 5 Country of U.S. Imports of Steel")
+
+# top_n(10,Quantity+Value)
+
+group_by(USImport,SampleType) %>% top_n(10,Quantity+Value) %>%
+ggplot(aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(Month)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+  ggrepel:: geom_text_repel(
+    nudge_y      = 0.05,
+    direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    segment.size = 0.2
+  ) +
+  ggtitle("TOP 10 Country of U.S. Imports of Steel")
+
+#Its very clear from the above data that Forcast for months vs Actaul data has gone up in every month except for Brazil ths points are very close for the month of October.
+# We can clearly see that Brazil, Canada, Korea and Mexico are the top contributor to the imports of Steel
+
+
+
+# Checking data only by Quantity and Value now.
 #TOP 10 by SampleType
 group_by(USImport,SampleType) %>% top_n(10,Quantity) %>%
 ggplot(aes(x=Region, y=Quantity,fill=SampleType))+
@@ -483,8 +649,10 @@ ggplot(aes(x=Region, y=Value,fill=SampleType))+
 
 ```
 
-
-
+#### Imports from Growing Market 
+* Read Devloping country from DevCount.xlsx
+* Store the new info in existing dataset as Growing or Developed country 
+* Analyse the reult of USIMPORT
 
 ```{r}
 
@@ -517,6 +685,170 @@ ggplot(aes(x=Region, y=Quantity,fill=SampleType))+
 
 
 
+# Simple plot of data showing Growing and Developed Country in terms of imports . 
+# Its intresting to know that major importers are Not growing countries, also only  two Growing Country's are seen in the datapoints. 
+
+group_by(USImport,SampleType) %>% top_n(10,Quantity+Value) %>%
+ggplot(aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(CTYPE)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+  ggrepel:: geom_text_repel(
+    nudge_y      = 0.05,
+    direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    segment.size = 0.2
+  )
+
+
+# Display Name only for October month . 
+
+dmt<- group_by(USImport,SampleType) %>% top_n(10,Quantity+Value)
+ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(CTYPE)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+  ggrepel:: geom_text_repel(
+    data          = subset(dmt,Month == "October"),
+     nudge_x       = 3.5 ,
+    direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    segment.size = 0.2
+  ) 
+
+```
+
+## Shiny App
+
+```{r}
+
+
+library(shiny)
+library(shinythemes)
+
+shinyApp(
+  ui = fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        
+         selectInput("in_CTYPE", label = "Country Type:",
+              choices = c("Growing","Developed"), selected = "Developed"),
+         
+         selectInput("in_Top", label = "Top n:",
+              choices = c(1:50), selected = 5),
+         
+   
+    
+    uiOutput("xlim_ui")
+      ),
+    mainPanel(plotOutput("USI"))
+    )
+  ),
+  server = function(input, output){
+    
+    output$xlim_ui <- renderUI({
+      if(is.null(input$mean)){
+        return()
+      }
+      sliderInput("xlim", label = "xlim",
+                  min = input$mean,
+                  max = 10,
+                  value = input$mean,
+                  step = 1)
+    })
+    
+    data_for_plot <- reactive({
+      rnorm(input$no_data, mean = input$mean, sd = input$sd)
+    })
+    
+    output$histogram <- renderPlot({
+      if(is.null(input$xlim)){
+        return()
+      }
+      
+      data_for_plot <- data_for_plot()
+      
+      hist(data_for_plot, xlim = c(-input$xlim,input$xlim))
+    })
+    
+    
+    
+     data_for_plot_US <- reactive({
+        print("US IMport DATA LOADED")
+     
+    })
+     
+     
+    output$USI <- renderPlot({
+      print("US IMport")
+      # if(is.null(input$xlim)){
+      #   return()
+      # }
+      
+      data_for_plot_US <- data_for_plot_US()
+      
+     dmt<- group_by(USImport,SampleType) %>% top_n(as.numeric(input$in_Top),Quantity+Value)
+  ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(CTYPE)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+    ggrepel:: geom_text_repel(
+      data          = subset(dmt,CTYPE == input$in_CTYPE),
+       nudge_x       = 3.5 ,
+      direction    = "x",
+      angle        = 90,
+      vjust        = 0,
+      segment.size = 0.2
+    )+  ggtitle(paste(input$in_CTYPE," Countries in TOP",input$in_Top ,": U.S. ", "Imports of Steel"))
+    
+  
+    })
+  }
+)
+
+
+
+# inputPanel(
+#   selectInput("in_CTYPE", label = "Country Type:",
+#               choices = c("Growing","Developed"), selected = "Developed"),
+#   
+#   sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+#               min = 0.2, max = 2, value = 1, step = 0.2)
+# )
+# 
+# renderPlot({
+#    print("Sitaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+# 
+#         dmt<- group_by(USImport,SampleType) %>% top_n(10,Quantity+Value)
+#   ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(CTYPE)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+#     ggrepel:: geom_text_repel(
+#       data          = subset(dmt,CTYPE == input$in_CTYPE),
+#        nudge_x       = 3.5 ,
+#       direction    = "x",
+#       angle        = 90,
+#       vjust        = 0,
+#       segment.size = 0.2
+#     )
+# })
+
+
+
+
+
+
+```
+
+## Conclusion 
++ US Imports are Increaseing their planned forcast 
++ COuntres like Korea, Canada,Brazil and Mexico are high contributor to the Import
++ Brazil and Mexico are two Growing Market in Top 5 
++ Use the ShinyApp to Check Developeing and Growing country in the plot.
+
+```{r eval=FALSE, include=FALSE}
+
+dmt<- group_by(USImport,SampleType) %>% top_n(10,Quantity+Value)
+ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),color = factor(CTYPE)))+ geom_line(aes(color=SampleType))+geom_point( )+  facet_wrap(~SampleType)+
+  ggrepel:: geom_text_repel(
+    data          = subset(dmt,CTYPE == "Growing" & Region == "Brazil"),
+     nudge_x       = 3.5 ,
+    direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    segment.size = 0.2
+  ) 
 
 
 ```

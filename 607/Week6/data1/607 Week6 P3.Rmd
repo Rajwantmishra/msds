@@ -7,5 +7,339 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
+
+```{r}
+# Load the tidyverse and the food inspections dataset
+library(tidyverse)
+# 
+# Attribute Information: 
+# > 1. age 
+# > 2. sex 
+# > 3. chest pain type (4 values) 
+# > 4. resting blood pressure 
+# > 5. serum cholestoral in mg/dl 
+# > 6. fasting blood sugar > 120 mg/dl ( )
+# > 7. resting electrocardiographic results (values 0,1,2)
+# > 8. maximum heart rate achieved 
+# > 9. exercise induced angina 
+# > 10. oldpeak = ST depression induced by exercise relative to rest 
+# > 11. the slope of the peak exercise ST segment 
+# > 12. number of major vessels (0-3) colored by flourosopy 
+# > 13. thal: 3 = normal; 6 = fixed defect; 7 = reversable defec
+
+
+# ageage in years
+# sex(1 = male; 0 = female)
+# cpchest pain type
+# trestbpsresting blood pressure (in mm Hg on admission to the hospital)
+# cholserum cholestoral in mg/dl
+# fbs(fasting blood sugar > 120 mg/dl) (1 = true; 0 = false)
+# restecg resting electrocardiographic results
+# thalach maximum heart rate achieved
+# exangexercise induced angina (1 = yes; 0 = no)
+# oldpeakST depression induced by exercise relative to rest
+# slopethe slope of the peak exercise ST segment
+# canumber of major vessels (0-3) colored by flourosopy
+# thal3 = normal; 6 = fixed defect; 7 = reversable defect
+# target 1= Probelm or 0 (NO Probelm )
+
+
+
+ctype = c("numeric","factor","numeric","numeric","numeric", "boolean","numeric","numeric","boolean","double","numeric","numeric","numeric","boolean")
+
+ctype1 = c(col_integer(),col_logical(),col_integer(),col_integer(),col_integer(), col_logical(),col_integer(),col_integer(),col_logical(),col_double(),col_double(),col_double(),col_double(),col_logical())
+
+# "text","text","text","text","text","text","text")
+
+
+hdata <- read_csv('https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/Week6/data1/heart.csv',col_types = cols(
+  age = col_double(),
+  sex = col_factor(),
+  cp = col_double(),
+  trestbps = col_double(),
+  chol = col_double(),
+  fbs = col_logical(),
+  restecg = col_double(),
+  thalach = col_double(),
+  exang = col_logical(),
+  oldpeak = col_double(),
+  slope = col_double(),
+  ca = col_factor(),
+  thal = col_factor(),
+  target = col_logical())
+)
+
+hdata
+```
+
+
+
+```{r}
+# install.packages("entropy")
+library(entropy)
+library(tidyverse)
+table(hdata$target)
+
+group_by(hdata,hdata$target)%>%summarise(probTarget = median(trestbps))
+
+entropy(hdata$age)
+prop.table(table(hdata$age))
+hdata$age <- as.numeric(hdata$age)
+
+
+IG_cat(hdata,"age","target")
+weights <- information.gain(age~., hdata,unit = "log2")
+  print(weights)
+
+entropy(0.7)
+
+Eage <- data.frame(prop.table(table(hdata$age)))
+
+```
+
+```{r}
+# load entropy library
+library("entropy")
+### 1D example ####
+# sample from continuous uniform distribution
+x1 = runif(10000)
+hist(x1, xlim=c(0,1), freq=FALSE)
+# discretize into 10 categories
+y1 = discretize(x1, numBins=10, r=c(0,1))
+y1
+# compute entropy from counts
+entropy(y1) # empirical estimate near theoretical maximum
+
+
+
+# observed counts for each bin
+y = c(1,1,1,2,2,2,2,2,2,2)
+prop.table(table(y))
+sum((prop.table(table(y))*log2(prop.table(table(y))))*-1)
+
+
+
+y = c(0,4,3,6,7,3,2,3,4,5)
+prop.table(table(y))
+sum((prop.table(table(y))*log2(prop.table(table(y))))*-1)
+entropy(y)
+
+p <- table(y); 
+p <- p/sum(p); 
+sum(-p*log(p))
+
+
+
+
+entropy(c(16,14))
+entropy(y, method="ML")
+entropy(y, method="MM")
+entropy(y, method="Jeffreys")
+entropy(y, method="Laplace")
+entropy(y, method="SG")
+entropy(y, method="minimax")
+entropy(y, method="CS")
+#entropy(y, method="NSB")
+entropy(y, method="shrink")
+entropy.empirical(y)
+
+```
+```{r}
+pt <- 30
+ps <- 14
+pd <- 16
+
+pg50<- 13
+pl50 <- 17
+
+pg50s <- (12/16) * (1/14)
+pg50s
+
+```
+
+```{r eval=FALSE, include=FALSE}
+ data(iris)
+
+# install.packages("FSelector")
+library( FSelector)
+data(iris)
+
+  weights <- information.gain(Species~., iris)
+  print(weights)
+  subset <- cutoff.k(weights, 2)
+  f <- as.simple.formula(subset, "Species")
+  print(f)
+
+  weights <- information.gain(Species~., iris, unit = "log2")
+  print(weights)
+
+  weights <- gain.ratio(Species~., iris)
+  print(weights)
+  subset <- cutoff.k(weights, 2)
+  f <- as.simple.formula(subset, "Species")
+  print(f)
+
+  weights <- symmetrical.uncertainty(Species~., iris)
+  print(weights)
+  subset <- cutoff.biggest.diff(weights)
+  f <- as.simple.formula(subset, "Species")
+  print(f)
+```
+```{r eval=FALSE, include=FALSE}
+y = c(1,1,1,2,2,2,2,2)
+prop.table(table(y))
+sum((prop.table(table(y))*log2(prop.table(table(y))))*-1)
+entropy(y)
+
+
+
+y = c(1,1,1,2,2,2,2,2)
+prop.table(table(y))
+sum((prop.table(table(y)) * log2(prop.table(table(y))))*-1)
+entropy(y)
+sum((3/8 *log2(3/8))     +     (5/8 *log2(5/8)))
+
+sum((9/16 *log2(9/16))     +     (7/16 *log2(7/16)))
+
+sum((8/16 *log2(8/16))     +     (8/16 *log2(8/16)))
+
+entropy(y)
+
+data(iris)
+unique(iris$Species)
+prop.table(table(iris$Species))
+weights <- information.gain(Species~., iris)
+
+ weights <- information.gain(Species~., iris, unit = "log2")
+  print(weights)
+ subset <- cutoff.k(weights, 2)
+
+f <- as.simple.formula(subset, "Species")
+print(f)
+
+
+
+weights <- information.gain(age~., hdata,unit = "log2")
+ weights <- information.gain(Species~., iris, unit = "log2")
+entropy(iris$Species)
+IG_numeric(iris, "Sepal.Length","Species")
+IG_numeric(iris, "Sepal.Width","Species")
+IG_numeric(iris, "Petal.Length","Species")
+IG_numeric(iris, "Petal.Width","Species")
+  print(weights)
+
+  IG_cat(iris, "Sepal.Length","Species")
+IG_cat(iris, "Sepal.Width","Species")
+IG_numeric(iris, "Petal.Length","Species")
+IG_numeric(iris, "Petal.Width","Species")
+IG_cat(data,feature,target)
+
+```
+
+
+```{r}
+# https://stackoverflow.com/questions/3289589/can-the-value-of-information-gain-be-negative?answertab=active#tab-top
+
+library(plyr)
+#compute Shannon entropy
+entropy <- function(target) {
+  freq <- table(target)/length(target)
+  # vectorize
+  vec <- as.data.frame(freq)[,2]
+  #drop 0 to avoid NaN resulting from log2
+  vec<-vec[vec>0]
+  #compute entropy
+  -sum(vec * log2(vec))
+}
+
+#returns IG for numerical variables.
+IG_numeric<-function(data, feature, target, bins=4) {
+  #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),]
+  #compute entropy for the parent
+  e0<-entropy(data[,target])
+  
+  data$cat<-cut(data[,feature], breaks=bins, labels=c(1:bins))
+  
+  dd_data<-ddply(data, "cat", here(summarise), 
+                 e=entropy(get(target)), 
+                 N=length(get(target)),
+                 min=min(get(feature)),
+                 max=max(get(feature))
+                 )
+  
+  #calculate p for each value of feature
+  dd_data$p<-dd_data$N/nrow(data)
+  #compute IG
+  IG<-e0-sum(dd_data$p*dd_data$e)
+  
+  return(IG)
+}
+
+#returns IG for categorical variables.
+IG_cat<-function(data,feature,target){
+  #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),] 
+  #use ddply to compute e and p for each value of the feature
+  dd_data<-ddply(data, feature, here(summarise), e=entropy(get(target)), N=length(get(target)))
+  #compute entropy for the parent
+  e0<-entropy(data[,target])
+  #calculate p for each value of feature
+  dd_data$p<-dd_data$N/nrow(data)
+  #compute IG
+  IG<-e0-sum(dd_data$p*dd_data$e)
+  
+  return(IG)
+}
+
+ r <- ddply(hdata, "age", here(summarise), e=entropy(get("target")), N=length(get("target"))) 
+ 
+ ggplot(r,aes(x=age,y= e,fill = N))+geom_col(position = "dodge")
+ table(hdata$age)
+ 
+  r <- ddply(hdata, "chol", here(summarise), e=entropy(get("target")), N=length(get("target"))) 
+ 
+ ggplot(r,aes(x=N,y= e,fill=age))+geom_col(position="dodge")
+ 
+ ggplot(ssaDF, aes(y = delayed, x = FlyingFrom,fill= AirPort)) + 
+  geom_bar(stat = "identity",position="dodge")
+ 
+ 
+ table(hdata$age)
+ 
+ EntropyGraph <- function(data,target) {
+  
+   # print(target)
+   #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),] 
+  #use ddply to compute e and p for each value of the feature
+
+ 
+  for (i in 1:length(data)){
+     dd_data<-ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target))
+     
+      # assign(paste0("EPLT",names(data[i])),
+      #        ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target)))
+      print (names(data[i]))
+   print(
+     ggplot(dd_data,aes(x=N,y= e,fill=get(names(data[i]))))+
+       geom_col(position="dodge"))+ ggtitle(" WELCOME ")
+   }
+  
+ }
+ 
+ 
+ EntropyGraph(hdata,target)
+ 
+ 
+
+ 
+```
+
+
+
+
+
 
