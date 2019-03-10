@@ -7,28 +7,30 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+# Load the tidyverse and the dataset
+library(tidyverse)
+library(DT)
 ```
 
-```{r}
-# Load the tidyverse and the food inspections dataset
-library(tidyverse)
-# 
-# Attribute Information: 
-# > 1. age 
-# > 2. sex 
-# > 3. chest pain type (4 values) 
-# > 4. resting blood pressure 
-# > 5. serum cholestoral in mg/dl 
-# > 6. fasting blood sugar > 120 mg/dl ( )
-# > 7. resting electrocardiographic results (values 0,1,2)
-# > 8. maximum heart rate achieved 
-# > 9. exercise induced angina 
-# > 10. oldpeak = ST depression induced by exercise relative to rest 
-# > 11. the slope of the peak exercise ST segment 
-# > 12. number of major vessels (0-3) colored by flourosopy 
-# > 13. thal: 3 = normal; 6 = fixed defect; 7 = reversable defec
 
+## About Dataset 
+  # Attribute Information: 
+  # > 1. age 
+  # > 2. sex 
+  # > 3. chest pain type (4 values) 
+  # > 4. resting blood pressure 
+  # > 5. serum cholestoral in mg/dl 
+  # > 6. fasting blood sugar > 120 mg/dl ( )
+  # > 7. resting electrocardiographic results (values 0,1,2)
+  # > 8. maximum heart rate achieved 
+  # > 9. exercise induced angina 
+  # > 10. oldpeak = ST depression induced by exercise relative to rest 
+  # > 11. the slope of the peak exercise ST segment 
+  # > 12. number of major vessels (0-3) colored by flourosopy 
+  # > 13. thal: 3 = normal; 6 = fixed defect; 7 = reversable defec
+  # > 14. target 1= Probelm or 0 (NO Probelm )
+  
+```{r}
 
 # ageage in years
 # sex(1 = male; 0 = female)
@@ -47,11 +49,11 @@ library(tidyverse)
 
 
 
-ctype = c("numeric","factor","numeric","numeric","numeric", "boolean","numeric","numeric","boolean","double","numeric","numeric","numeric","boolean")
-
-ctype1 = c(col_integer(),col_logical(),col_integer(),col_integer(),col_integer(), col_logical(),col_integer(),col_integer(),col_logical(),col_double(),col_double(),col_double(),col_double(),col_logical())
-
-# "text","text","text","text","text","text","text")
+# ctype = c("numeric","factor","numeric","numeric","numeric", "boolean","numeric","numeric","boolean","double","numeric","numeric","numeric","boolean")
+# 
+# ctype1 = c(col_integer(),col_logical(),col_integer(),col_integer(),col_integer(), col_logical(),col_integer(),col_integer(),col_logical(),col_double(),col_double(),col_double(),col_double(),col_logical())
+# 
+# # "text","text","text","text","text","text","text")
 
 
 hdata <- read_csv('https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/Week6/data1/heart.csv',col_types = cols(
@@ -71,9 +73,12 @@ hdata <- read_csv('https://raw.githubusercontent.com/Rajwantmishra/msds/master/6
   target = col_logical())
 )
 
-hdata
+datatable(hdata)
 ```
 
+## Analysis 
+
+Here I haev decided to find Entropy of Traget varible for each observation present in the dataset. 
 
 
 ```{r eval=FALSE, include=FALSE}
@@ -99,7 +104,7 @@ Eage <- data.frame(prop.table(table(hdata$age)))
 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # load entropy library
 library("entropy")
 ### 1D example ####
@@ -297,20 +302,20 @@ IG_cat<-function(data,feature,target){
 }
 
 
-data <- iris
-feature <- "Petal.Length"
-bins  <- 50 
-data$cat<-cut(data[,feature], breaks=bins, labels=c(1:bins))
- 
-  dd_data<-ddply(data, "cat", here(summarise), 
-                 e=entropy(get(target)), 
-                 N=length(get(target)),
-                 min=min(get(feature)),
-                 max=max(get(feature))
-                 )
-   dd_data$p<-dd_data$N/nrow(data)
-
-ggplot(dd_data,aes(x=N,y= e,fill=cat))+geom_col()
+# data <- iris
+# feature <- "Petal.Length"
+# bins  <- 50 
+# data$cat<-cut(data[,feature], breaks=bins, labels=c(1:bins))
+#  
+#   dd_data<-ddply(data, "cat", here(summarise), 
+#                  e=entropy(get(target)), 
+#                  N=length(get(target)),
+#                  min=min(get(feature)),
+#                  max=max(get(feature))
+#                  )
+#    dd_data$p<-dd_data$N/nrow(data)
+# 
+# ggplot(dd_data,aes(x=N,y= e,fill=cat))+geom_col()
 
  
  EntropyGraph <- function(data,target,var = NA) {
@@ -456,7 +461,7 @@ DT::datatable(filter(hdataF,thal==3))
     geom_text(aes(label = oldpeak),color="red")+
    geom_rect(mapping=aes(xmin= .5,xmax=1,ymin=0,ymax=.5,color="green"),color="red", alpha=0)
  
- ggplot(r,aes(x=p,y= e,fill=fbs))+geom_point(aes(shape=fbs,color=fbs))+geom_col(position="dodge")
+ # ggplot(r,aes(x=p,y= e,fill=fbs))+geom_point(aes(shape=fbs,color=fbs))+geom_col(position="dodge")
  
  
   table(filter(hdata,fbs==TRUE)$target)
@@ -473,7 +478,7 @@ gather(hdata,key = "R1", value = "RAJ",)
 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 
 

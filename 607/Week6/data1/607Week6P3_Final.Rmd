@@ -1,0 +1,411 @@
+---
+title: "607 Week6 P3"
+author: "Rajwant Mishra"
+date: "March 6, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Load the tidyverse and the dataset
+library(tidyverse)
+library(plyr)
+library(DT)
+library(spelling)
+spell_check_files("607_Week6_P2.rmd", ignore = character(), lang = "en_US")
+```
+
+[RpubLink](http://rpubs.com/Rajwantmishra/week6_607_p3of3)
+
+## About Dataset  {.tabset .tabset-fade .tabset}
+
+This data set list following variables of the heart patient with following variables:
+  
+     1. age 
+     2. sex 
+     3. chest pain type (4 values) 
+     4. resting blood pressure 
+     5. serum cholestoral in mg/dl 
+     6. fasting blood sugar > 120 mg/dl ( )
+     7. resting electrocardiographic results (values 0,1,2)
+     8. maximum heart rate achieved 
+     9. exercise induced angina 
+     10. oldpeak = STf the peak exercise ST segment 
+     12. number of depression induced by exercise relative to rest 
+     11. the slope o major vessels (0-3) colored by flourosopy 
+     13. thal: 3 = normal; 6 = fixed defect; 7 = reversable defec
+     14. target 1= Probelm or 0 (NO Probelm )
+  
+  
+### Read File  
+```{r}
+
+# ageage in years
+# sex(1 = male; 0 = female)
+# cpchest pain type
+# trestbpsresting blood pressure (in mm Hg on admission to the hospital)
+# cholserum cholestoral in mg/dl
+# fbs(fasting blood sugar > 120 mg/dl) (1 = true; 0 = false)
+# restecg resting electrocardiographic results
+# thalach maximum heart rate achieved
+# exangexercise induced angina (1 = yes; 0 = no)
+# oldpeakST depression induced by exercise relative to rest
+# slopethe slope of the peak exercise ST segment
+# canumber of major vessels (0-3) colored by flourosopy
+# thal3 = normal; 6 = fixed defect; 7 = reversable defect
+# target 1= Probelm or 0 (NO Probelm )
+
+
+
+# ctype = c("numeric","factor","numeric","numeric","numeric", "boolean","numeric","numeric","boolean","double","numeric","numeric","numeric","boolean")
+# 
+# ctype1 = c(col_integer(),col_logical(),col_integer(),col_integer(),col_integer(), col_logical(),col_integer(),col_integer(),col_logical(),col_double(),col_double(),col_double(),col_double(),col_logical())
+# 
+# # "text","text","text","text","text","text","text")
+
+
+hdata <- read_csv('https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/Week6/data1/heart.csv',col_types = cols(
+  age = col_double(),
+  sex = col_factor(),
+  cp = col_double(),
+  trestbps = col_double(),
+  chol = col_double(),
+  fbs = col_logical(),
+  restecg = col_double(),
+  thalach = col_double(),
+  exang = col_logical(),
+  oldpeak = col_double(),
+  slope = col_double(),
+  ca = col_factor(),
+  thal = col_factor(),
+  target = col_logical())
+)
+datatable(hdata)
+```
+
+### Entropy Function  {.tabset .tabset-fade .tabset}
+
+Here I haev decided to find Entropy of Traget varible for each observation present in the dataset. 
+
+  + Creating Function to calculate Entropy.
+  
+  + Creating Function to  Plot Entropy graph for each varaible in the dataset for evaluation.
+
+#### Read Entropy 
+
+```{r}
+entropy <- function(target) {
+  freq <- table(target)/length(target)
+  # vectorize
+  vec <- as.data.frame(freq)[,2]
+  #drop 0 to avoid NaN resulting from log2
+  vec<-vec[vec>0]
+  #compute entropy
+  -sum(vec * log2(vec))
+}
+```
+
+#### Entropy Graph Function 
++ Pass dataset with "Target" variable 
++ Pass dataset with 'Target variable' and the 'Dependendt variable' for which you want to find the Entropy agaist Target.
+
+```{r}
+EntropyGraph <- function(data,target,var = NA) {
+
+  
+   
+   if (is.na(var)){
+     
+       #use ddply to compute e and p for each value of the feature
+  for (i in 1:length(data)){
+     if(names(data[i])==target){next}
+      #Strip out rows where feature is NA
+     data<-data[!is.na(data[,names(data[i])]),] 
+     dd_data<-ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target))
+     dd_data$p <- as.data.frame(prop.table(table(data[i])))[[2]]
+      # assign(paste0("EPLT",names(data[i])),
+      #        ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target)))
+      # print (names(data[i]))
+  
+    g <- ggplot(dd_data,aes(x=p,y= e,fill=get(names(data[i]))))
+          g <- g+ geom_col(position = "dodge") 
+          g <- g+ ggtitle(paste("Entropy proportion of",names(data[i]), "for Target: ",target)) 
+          g <- g +geom_text(aes(label = get(names(data[i]))),color="red")
+          # g <- g +geom_text(aes(label = p),color="green",nudge_x = .5)
+          g <- g+ ylab("Entropy") + xlab("Proportion") 
+          g <- g+  guides(fill=guide_legend(title=names(data[i])))
+        # g <- g+ geom_rect(mapping=aes(xmin= median(p) ,xmax= max(p),ymin=0,ymax=max(e),color="green"),color="black", alpha=0.01)
+           g <- g +    geom_rect(mapping=aes(xmin= .5,xmax=1,ymin=0,ymax=.5,color="green"),color="red", alpha=0)
+
+        print(g)
+    }
+     
+   }else{
+           #use ddply to compute e and p for each value of the feature
+      for (i in 1:length(data)){
+        if(names(data[i])!=var){next}
+          #Strip out rows where feature is NA
+      data<-data[!is.na(data[,names(data[i])]),] 
+         dd_data<-ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target))
+         dd_data$p <- round(as.data.frame(prop.table(table(data[i])))[[2]],2)
+          # assign(paste0("EPLT",names(data[i])),
+          #        ddply(data, names(data[i]), here(summarise), e=entropy(target), N=length(target)))
+          # print (names(data[i]))
+      
+         g <- ggplot(dd_data,aes(x=p,y= e,fill=get(names(data[i]))))
+          g <- g+ geom_col(position = "dodge") 
+          g <- g+ ggtitle(paste("Entropy proportion of",names(data[i]), "for Target: ",target)) 
+          #g <- g + geom_text(aes(label = get(names(data[i]))),                            color="white" , fill= "black",nudge_y = -0.02)
+          g <- g + geom_label(aes(label = get(names(data[i]))), color="white", size=5, nudge_y = -0.02)
+           g <- g +geom_text(aes(label = p),color="blue",nudge_x = .01, nudge_y= 0.04)
+          g <- g+ ylab("Entropy") + xlab("Proportion") 
+          g <- g+ guides(fill=guide_legend(title=var))
+          #g <- g+ geom_rect(mapping=aes(xmin= median(p) ,xmax= max(p),ymin=0,ymax=max(e),color="green"),color="black", alpha=0.01)
+          g <- g +    geom_rect(mapping=aes(xmin= .5,xmax=1,ymin=0,ymax=.5,color="green"),color="red", alpha=0)
+          #g <- g + geom_point(aes(shape=names(data[i]),color=names(data[i])))
+          
+
+            
+        print(g)
+      }
+     
+   }
+  
+ }
+
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+# https://stackoverflow.com/questions/3289589/can-the-value-of-information-gain-be-negative?answertab=active#tab-top
+
+library(plyr)
+#compute Shannon entropy
+entropy <- function(target) {
+  freq <- table(target)/length(target)
+  # vectorize
+  vec <- as.data.frame(freq)[,2]
+  #drop 0 to avoid NaN resulting from log2
+  vec<-vec[vec>0]
+  #compute entropy
+  -sum(vec * log2(vec))
+}
+
+#returns IG for numerical variables.
+IG_numeric<-function(data, feature, target, bins=4) {
+  #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),]
+  #compute entropy for the parent
+  e0<-entropy(data[,target])
+  
+  data$cat<-cut(data[,feature], breaks=bins, labels=c(1:bins))
+  
+  dd_data<-ddply(data, "cat", here(summarise), 
+                 e=entropy(get(target)), 
+                 N=length(get(target)),
+                 min=min(get(feature)),
+                 max=max(get(feature))
+                 )
+  
+  #calculate p for each value of feature
+  dd_data$p<-dd_data$N/nrow(data)
+  #compute IG
+  IG<-e0-sum(dd_data$p*dd_data$e)
+  
+  return(IG)
+}
+
+#returns IG for categorical variables.
+IG_cat<-function(data,feature,target){
+  #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),] 
+  #use ddply to compute e and p for each value of the feature
+  dd_data<-ddply(data, feature, here(summarise), e=entropy(get(target)), N=length(get(target)))
+  #compute entropy for the parent
+  e0<-entropy(data[,target])
+  #calculate p for each value of feature
+  dd_data$p<-dd_data$N/nrow(data)
+  #compute IG
+  IG<-e0-sum(dd_data$p*dd_data$e)
+  
+  return(IG)
+}
+
+
+ 
+ 
+  
+  EntropyGraph(hdata,"target")
+  EntropyGraph(hdata,"target","age")
+  EntropyGraph(hdata,"target","cp")
+  # slope
+  # oldpeak
+  # thal
+  
+```
+
+### Analysis  {.tabset .tabset-fade .tabset}
+
+Based on dataset Lets check our data with following observations : 
+
++ Check how entropy is impacting when Target = False (No Heart Probelm)
++ Check how Entropy is impacting when Target = TRUE (Heart Problem)
+
+#### Full Data Entropy 
++ Calculate Entropy of full data
+Boundry of the rectangle shows how much imporatnt that value of the variable can be for the dataset.
+
+Based on the graph I found two variable from `hdata` dataset *ca* and "*thal*" with high proportion of in data and with compartive Lower entropy . Our objective is to find value with lower entropy and high proportion. 
+
+* Inside the bar you see the value , and out side the bar you see probability of that in the dataset .
+
+```{r}
+
+# ***Below*** Commented to avoid big list of garph 
+ # EntropyGraph(hdata,"target")
+
+ EntropyGraph(hdata,"target","ca")
+ EntropyGraph(hdata,"target","thal")
+```
+
+
+#### TARGET = TRUE
+
+Doing our analysis further on subset of data, Creating subset of data with Target == TRUE
+
+  >      Bases on below plots we can say that important variable to check Heart problem can be : 
+    # slope = 2
+    # ca= 0
+    # thal = 2
+    # exang= false
+    # fbs = false
+    # restecg = 1
+
+```{r}
+  hdataT <- filter(hdata,target==TRUE) 
+    EntropyGraph(hdataT,"target")
+    
+    
+```
+
+
+#### TARGET = FALSE
+Creating subset of data with Target == FASLE
+
+  > Based on this data we can say that with following points we can have healthy heart. 
+    # FASLE
+    # sex = 1
+    # cp = 0
+    # fbs = false
+    # slop = 1
+    # thal = 3
+
+
+```{r}
+hdataF <- filter(hdata,target==FALSE) 
+EntropyGraph(hdataF,"target") 
+    
+```
+
+#### Subset Analysis 
+
+From Last two subset of data ``hdataF`` and ``hdataT`` we found some variables that can make some prediction about heart health condition. 
+
+
+<details>
+
+<summary> Attribute Information </summary>
+
+     1. age 
+     2. sex 
+     3. chest pain type (4 values) 
+     4. resting blood pressure 
+     5. serum cholestoral in mg/dl 
+     6. fasting blood sugar > 120 mg/dl ( )
+     7. resting electrocardiographic results (values 0,1,2)
+     8. maximum heart rate achieved 
+     9. exercise induced angina 
+     10. oldpeak = STf the peak exercise ST segment 
+     12. number of depression induced by exercise relative to rest 
+     11. the slope o major vessels (0-3) colored by flourosopy 
+     13. thal: 3 = normal; 6 = fixed defect; 7 = reversable defec
+     14. target 1= Probelm or 0 (NO Probelm )
+    
+
+</details>
+
+<details>
+  <summary> Analysis for "FBS" : fasting blood sugar </summary>
+  
+  > FBS (fasting blood sugar) : it can be noted that FBS is not very imporant as it tends to show negative result with other varaibles . FBS is FALSE ~ 86%  in population with heart probelm. Whereas in contrast its ~84% in case where heart probelm is not present. Even though entropy of this varible is not leading us to a pure mix of dataset, but avaibility of FBS in conjustion with other varaible can be used to predict right heart health condition. 
+  
+```{r}
+# Lets take only TARGET = FALSE 
+
+    EntropyGraph(hdataF,"target","fbs") 
+    EntropyGraph(hdataT,"target","fbs") 
+
+
+```
+
+
+</detail>
+
+***
+<detail>
+  <summary> Analysis for "thal" : 3 = normal; 6 = fixed defect; 7 = reversable defect </summary>
+  
+  > Thal = 2 is 79% strong variable which can be a good indicator of good heart health. 
+  similarly Thal = 3 is also bad indicator of heart heath with 64% porobability . 
+
+```{r}
+# Lets break it further. checking thal 
+    
+ EntropyGraph(hdataF,"target","thal") 
+    EntropyGraph(hdataT,"target","thal") 
+    
+    # Thal = 2 is 79% strong variable which can be a good indicator of good heart health. 
+    # similarly Thal = 3 is also bad indicator of heart heath with 64% porobability . 
+    
+    
+# Lets see if entropy with Target is really ZERO when Thal ==3
+DT::datatable(filter(hdataF,thal==3))    
+    
+```
+ 
+
+</detail>
+
+
+<detail>
+  <summary> exang : exercise induced angina (1 = yes; 0 = no) </summary>
+  > Its intresting to note that Excersize has very high contribution to the heart problem. 86% of people didn't do exercise in the group of people with heart problem.
+  
+  > In contrast 55% people did exercise ( 45% didn't) in the population of people with no heart problem.  
+  
+```{r}
+ EntropyGraph(hdataT,"target","exang") ## Data where heart probelm is noted 
+ EntropyGraph(hdataF,"target","exang")  ## Data where heart probelm was not noted
+```
+  
+</detail>
+
+***
+
+### Conclusion 
+
+<i>FBS: fasting blood sugar > 120 mg/dl) (1 = true; 0 = false) </i>
+
+<b>FBS (fasting blood sugar) : </b>it can be noted that FBS is not very imporant as it tends to show negative result with other varaibles . FBS is FALSE ~ 86%  in population with heart probelm. Whereas in contrast its ~84% in case where heart probelm is not present. Even though entropy of this varible is not leading us to a pure mix of dataset, but <u>avaibility of FBS in conjustion with other varaible can be used to predict right heart health condition. </u>
+
+<i> Thal = 3 = normal; 6 = fixed defect; 7 = reversable defect </i>
+
+<b>`Thal = 2` </b> is 79% strong variable which can be a <b>good indicator</b> of good heart health. 
+  similarly 
+<b>`Thal = 3`  </b> is also <b>bad indicator</b> of heart heath with 64% porobability . 
+
+<b> Exercise </b>
+It's intresting to note that <b> Excersize has very high contribution to the heart problem </b>. <u> 86% of people didn't do exercise in the group of people with heart problem. </u>
+  
+ In contrast <b> 55% people did exercise ( 45% didn't) </b> in the population of people with no heart problem.  

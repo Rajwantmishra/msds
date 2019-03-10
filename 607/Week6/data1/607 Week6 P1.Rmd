@@ -24,6 +24,7 @@ library(DT)
 library(ggplot2)
 ```
 
+[Live Link](https://rajwantmishra.shinyapps.io/Week6_P1/)
 
 ## About Datasset  {.tabset .tabset-fade .tabset-pills}
 
@@ -37,14 +38,18 @@ There are several challenges of this untidy dataset:
 ### Data 
 In this process there are two file one is Priliminary and other is Final US IMport file 
 
-*Prliminiary File before reading 
-![](Sample0.png)
+> There are TWo File Priliminary and Final File .
 
-*Final File before reading 
-![](Sample2.png)
+*Prliminiary File before reading *
+
+![](https://github.com/Rajwantmishra/msds/blob/master/607/Week6/data1/Sample0.png?raw=true)
+
+*Final File before reading *
+
+![](https://github.com/Rajwantmishra/msds/blob/master/607/Week6/data1/Sample2.png?raw=true)
 
 
-### Funcation {.tabset .tabset-fade .tabset}
+### Function {.tabset .tabset-fade .tabset}
 
 #### Read Header Function 
 
@@ -264,7 +269,7 @@ fdata_country <- fdata[-matches,]
 ### Read Prliminary file  {.tabset .tabset-fade .tabset}
 
 * File before reading 
-![](Sample0.png)
+![](https://github.com/Rajwantmishra/msds/blob/master/607/Week6/data1/Sample1.png?raw=true)
 ```{r}
 
 # unzip("h1b_kaggle.csv.zip")
@@ -447,7 +452,7 @@ Getheader funcation is written in such a way that it groups header by year and t
 Year in 1st two group column [B:E] and column[F:I] is in row 7, but third group has year in Row 9. Getheader function takes care of this as long as I pass right subset of data to it. Even Readfinal function calls getheader by passing right subset of data.
 
 * Final File before reading 
-![](Sample3.png)
+![](https://github.com/Rajwantmishra/msds/blob/master/607/Week6/data1/Sample3.png?raw=true)
 
 * Reading Final File 
 * Removing continent info from data
@@ -714,7 +719,7 @@ ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),c
 
 ```
 
-## Shiny App
+### Shiny App
 
 ```{r}
 
@@ -831,7 +836,7 @@ shinyApp(
 
 ```
 
-## Conclusion 
+### Conclusion 
 + US Imports are Increaseing their planned forcast 
 + COuntres like Korea, Canada,Brazil and Mexico are high contributor to the Import
 + Brazil and Mexico are two Growing Market in Top 5 
@@ -854,27 +859,7 @@ ggplot(dmt,aes(x=Value, y=Quantity  ,label = paste(Region,str_sub(Month,1,3) ),c
 ```
                 
 ```{r}           
-#                 
-# phead <- mutate(phead,
-#                 A = ifelse(
-#                   str_detect(A,"^\\d{4}$"),
-#                   paste(A,lead(A,2),lead(A,3),lead(A,5),sep="_"),
-#                   A),
-#                 
-#                 B = ifelse(
-#                   str_detect(B,"^\\d{4}$"),
-#                   B,
-#                    paste(str_split(lag(A,1),"_")[[1]][[1]],
-#                          str_split(lag(A,1),"_")[[1]][[2]],
-#                          lead(A,3),lead(A,5),sep="_")
-#                 
-#                 )
-# 
-#                 mutate(phead ,
-#                        A = ifelse(is.na(A),"Y",A)
-#                        )
-                # str_split("2018_October_Preliminary_Quantity","_")
-#str_split("2018_October_Preliminary_Quantity","_")[[1]][[1]]
+
                 
              
 ```
