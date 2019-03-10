@@ -5,8 +5,8 @@ account: rajwantmishra
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 777677
-bundleId: 1928089
+bundleId: 1928935
 url: https://rajwantmishra.shinyapps.io/Week6_P1/
-when: 1552183648.392
+when: 1552241826.007
 asMultiple: FALSE
 asStatic: FALSE

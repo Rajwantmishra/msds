@@ -1,5 +1,5 @@
 ---
-title: "Week6_Submit"
+title: "Week6 Final Submitted"
 author: "Rajwant Mishra"
 date: "March 9, 2019"
 output: 
@@ -24,12 +24,15 @@ iframe {
     width: 100vw;
 }
 .container-fluid.main-container {
-    max-width: 95%;
+    max-width: 99%;
 }
 </style>
 
-## Project For week 6 3 Dataset{.tabset .tabset-fade .tabset-pills}
+## Project For week 6 (3 Dataset)
 
+
+
+### Analysis Disability Data
 
 <details>
 <summary>
@@ -39,15 +42,15 @@ Please give it time to load .
 
 Data is from US disability, it list number of applications being submitted from online and offline . Objective is to find that if Online service has helped Gov. to get more application through online mode. * Data has lots of problem + Data is wide by Month, AND also Fiscal Year may Not equal to same year.
 
-
-<a href="http://rpubs.com/Rajwantmishra/week6_607_p2of3">
+(it opens in new window)
+<a target="_blank" href="http://rpubs.com/Rajwantmishra/week6_607_p2of3">
 Direct Link</a>
 </summary>
 <iframe src="http://rpubs.com/Rajwantmishra/week6_607_p2of3" width="100%" height="100%"></iframe>
 
 </details>
 
-
+### Analysis using Entropy 
 <details>
 <summary>
 <b><i>Project 2</i></b>
@@ -55,26 +58,28 @@ Please give it time to load .
 
 This dataset of the heart patient.
 
-<a href="http://rpubs.com/Rajwantmishra/week6_607_p3of3">
+(it opens in new window)
+<a target="_blank" href="http://rpubs.com/Rajwantmishra/week6_607_p3of3">
 Direct Link</a>
 </summary>
 <iframe src="http://rpubs.com/Rajwantmishra/week6_607_p3of3" width="100%" height="100%"></iframe>
 
 </details>
 
+### With Shiny App for countries 
 <details>
 <summary>
 <b><i>Project 3</i></b>
-Please give it time to load .
+Please give it time to load.
 
 There are several challenges of this untidy dataset steel imports.
 
 1 .multiple layers of headers: year -> month -> quantity/value
-
 2. nonuniform values: some values are sums of other values
 
 
-<a href="https://rajwantmishra.shinyapps.io/Week6_P1/">
+(it opens in new window)
+<a target="_blank" href="https://rajwantmishra.shinyapps.io/Week6_P1/">
 Direct Link</a>
 </summary>
 <iframe src="https://rajwantmishra.shinyapps.io/Week6_P1/" width="100%" height="100%"></iframe>
