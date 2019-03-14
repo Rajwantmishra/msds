@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<reports>
+  <report type="standard">
+    <data> xxx </data>
+    <data> xxx </data>
+    <data> xxx </data>
+  </report>
+  <report type="enhanced">
+    <pages>
+      <page>
+        <X.xxx.>xxx</X.xxx.>
+        <X.yyy.>yyy</X.yyy.>
+      </page>
+    </pages>
+  </report>
+</reports>

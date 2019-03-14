@@ -1,0 +1,263 @@
+---
+title: "Week 7 Work"
+author: "Rajwant Mishra"
+date: "March 12, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Parsing of HTML/XML files  
+library(rvest)    
+
+# String manipulation
+library(stringr)   
+
+# Verbose regular expressions
+#install.packages("rebus")
+library(rebus)     
+
+# Eases DateTime manipulation
+library(lubridate)
+
+library(DT)
+```
+
+
+
+
+```{r}
+library(tidyverse)
+library(rjson)
+library(XML)
+library(xml2)
+library(plyr)
+
+
+
+```
+
+## Read URL to get Book Info
+```{r}
+    url <- "https://www.booksamillion.com/search?id=7523317361322&query=&filter=product_type%3Abooks"
+   first_page <- read_html(url)
+   
+   # Read Title
+   Title <- html_nodes(first_page,'.title') %>%   html_text()  %>%  str_trim() %>%    unlist() 
+   # Read Author
+   Author <- html_nodes(first_page,'.list') %>%   html_nodes('.byline') %>% html_text()  %>%  str_trim() %>%    unlist() 
+  
+   finaldf <- data.frame(title = Title,Auth = Author)
+   
+   #...... separate ...... Author to Authors and ISBN
+   finaldf <- separate(finaldf,Auth,c("Author","ISBN"),sep = "ISBN")
+   
+   #...... separate ...... ISBN to REL_Date and ISBN  , as they are separated by "/"  
+   finaldf <- separate(finaldf,ISBN,c("ISBN","REL_Date"),sep = "\\/")
+   
+   #...... separate ......Author to Author1 and Author2  , as they are separated by ","
+   finaldf <- separate(finaldf,Author,c("Author1","Author2"),sep = ",")
+  
+   #.......trimws.......
+   finaldf$Author1 <- trimws(str_sub(finaldf$Author1,3,-1L))
+   finaldf$Author2 <- trimws(finaldf$Author2)
+    
+   #.......Write CSV File .....
+    write.csv(finaldf,"book.csv")
+    
+   
+    
+```
+
+## Create XML from the Table 
+Excepected XML view:
+
+~~~~~~
+  <?xml version="1.0" encoding="UTF-8"?>
+  # <root>
+  #    <book>
+  #       <element>
+  #          <Author1>Sarah J Maas </Author1>
+  #          <Author2 />
+  #          <ISBN>9.78155E+12</ISBN>
+  #          <REL_Date> May 2018</REL_Date>
+  #          <id>1</id>
+  #          <title>A Court of Frost and Starlight BAM Exclusive </title>
+  #       </element>
+  #       <element>
+  #          <Author1>Sarah J Maas </Author1>
+  #          <Author2 />
+  #          <ISBN>9.78155E+12</ISBN>
+  #          <REL_Date> May 2018</REL_Date>
+  #          <id>2</id>
+  #          <title>A Cou#$rt of Frost and Starlight BAM Exclusive </title>
+  #       </element>
+  #       <element>
+  #          <Author1>Sarah J Maas </Author1>
+  #          <Author2 />
+  #          <ISBN>9.78155E+12</ISBN>
+  #          <REL_Date> May 2018</REL_Date>
+  #          <id>3</id>
+  #          <title>A Court of Frdon't ost and Starlight BAM Exclusive </title>
+  #       </element>
+  #    </book>
+  # </root>
+~~~~~~
+
+```{r}
+library(XML)
+
+prefix.xml <- "<reports>
+                  <report type='standard'>
+                    <data> xxx </data>
+                    <data> xxx </data>
+                    <data> xxx </data>
+                  </report>     
+               </reports>"
+
+# DUMMY DATA FRAME
+df <- data.frame("xxx","yyy")
+
+# BUILD XML TREE
+doc = xmlTreeParse(prefix.xml, useInternalNodes = T)     # PARSE STRING
+root = xmlRoot(doc)                                      # FIND ROOT
+
+reportNode = newXMLNode("report", parent=root)           # ADD TO ROOT
+xmlAttrs(reportNode) = c(type = "enhanced")              # ADD ATTRIBUTE
+pagesNode = newXMLNode("pages", parent=reportNode)       # ADD TO REPORT
+
+for (i in 1:nrow(df)){
+  pageNode = newXMLNode("page", parent=pagesNode)        # ADD PAGE FOR EACH RECORD
+  for (j in 1:nrow(df)){
+    newXMLNode("X.xxx.", df$X.xxx.[i], parent=pageNode)  # ADD COL/ROW VALUE
+    newXMLNode("X.yyy.", df$X.yyy.[i], parent=pageNode)  # ADD COL/ROW VALUE
+  }  
+}
+
+# VIEW XML
+print(doc)
+
+# SAVE XML TO FILE
+saveXML(doc, file="OutputFile.xml")
+```
+
+```{r}
+prefix.xml <- "<?xml version='1.0' encoding='UTF-8'?><root>
+                  <element>
+                    <title> 'MS DS Work'</title>
+                    <author> 'Rajwant Mishra'</author>
+                   </element>   
+               </root>"
+
+# DUMMY DATA FRAME
+df <- tibble(title= finaldf$title,Author1 = finaldf$Author1,Author2 = finaldf$Author2,ISBN = finaldf$ISBN,REL_Date = finaldf$REL_Date,na.action="")
+
+# BUILD XML TREE
+doc = xmlTreeParse(prefix.xml, useInternalNodes = T)     # PARSE STRING
+root = xmlRoot(doc)                                      # FIND ROOT
+
+bookNode = newXMLNode("book", parent=root)           # ADD TO ROOT
+xmlAttrs(bookNode) = c(type = "web")              # ADD ATTRIBUTE
+ # pagesNode = newXMLNode("Element", parent=bookNode)       # ADD TO REPORT
+
+for (i in 1:nrow(df)){
+  eleNode = newXMLNode("Element", parent=bookNode)        # ADD PAGE FOR EACH RECORD
+  xmlAttrs(eleNode) = c(ID = i) 
+  # for (j in 1:ncol(df)){
+    newXMLNode("title", df$title[i], parent=eleNode)  # ADD COL/ROW VALUE
+    newXMLNode("author1", df$Author1[i], parent=eleNode)  # ADD COL/ROW VALUE
+    newXMLNode("author2", df$Author2[i], parent=eleNode)  # ADD COL/ROW VALUE
+     newXMLNode("ISBN", df$ISBN[i], parent=eleNode)  # ADD COL/ROW VALUE
+     newXMLNode("REL_Date", df$REL_Date[i], parent=eleNode)  # ADD COL/ROW VALUE
+  # }  
+}
+
+# VIEW XML
+print(doc)
+saveXML(doc, file="bookRXml.xml")
+```
+
+
+
+#xml to JOSN
+```{r}
+
+jsonlite::toJSON(df)
+
+write_file(jsonlite::toJSON(df),"bookR.json")
+
+# rjson::toJSON(df,method = "C")
+
+```
+
+
+
+## READ From XML 
+```{r}
+
+
+readBookXML <- read_xml("bookRXml.xml")
+
+readBookXML <- xmlParse(readBookXML)
+print(readBookXML)
+xml_name(readBookXML)
+
+xbook <- xml_children(readBookXML)
+xbook.element <- xml_children(xbook[2])
+xml_children(xbook.element[1])
+
+xml_path(xbook)
+# -----
+class(xml_find_all(readBookXML, ".//title"))
+
+
+xml_title <- xml_find_all(xbook.element, ".//title")
+xml_author1 <- xml_find_all(readBookXML, ".//author1")
+xml_author2 <-xml_find_all(readBookXML, ".//author2")
+xml_ISBN <- xml_find_all(readBookXML, ".//ISBN")
+xml_REL_Date <-xml_find_all(readBookXML, ".//REL_Date")
+
+xml_titleAll <- (xml_find_all(readBookXML, ".//title"))
+
+ldply(xml_text(xml_children(xbook.element[1])))
+
+
+x <- read_xml("<root id='1'><child id ='a' /><child id='b' d='b'/></root>")
+xml_attr(x, "id")
+xml_attr(x, "apple")
+xml_attrs(xbook.element,"ID")
+
+xml_children(xml_children(xbook[2]))
+
+
+xml_find_first(xbook.element, ".//title")
+xml_text(xml_find_all(xbook.element, ".//title"))
+
+XML_Book <- tibble( title = unlist(xml_title), 
+                    author = unlist(xml_author1),
+                    author2 = unlist(xml_author2),
+                    ISBN = unlist(xml_ISBN),
+                    REL_Date = unlist(xml_REL_Date)
+                    )
+
+ldply(xml_text(xml_children(xbook.element[1:10])))
+
+xml_ns(xbook)
+
+xbook.element
+```
+
+
+## Read from JSON
+
+```{r}
+
+```
+
+
+
+
+
+
+
+

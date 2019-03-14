@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <book>
+      <element>
+         <Author1>Sarah J Maas </Author1>
+         <Author2 />
+         <ISBN>9.78155E+12</ISBN>
+         <REL_Date> May 2018</REL_Date>
+         <id>1</id>
+         <title>A Court of Frost and Starlight BAM Exclusive </title>
+      </element>
+      <element>
+         <Author1>Sarah J Maas </Author1>
+         <Author2 />
+         <ISBN>9.78155E+12</ISBN>
+         <REL_Date> May 2018</REL_Date>
+         <id>2</id>
+         <title>A Cou#$rt of Frost and Starlight BAM Exclusive </title>
+      </element>
+      <element>
+         <Author1>Sarah J Maas </Author1>
+         <Author2 />
+         <ISBN>9.78155E+12</ISBN>
+         <REL_Date> May 2018</REL_Date>
+         <id>3</id>
+         <title>A Court of Frdon't ost and Starlight BAM Exclusive </title>
+      </element>
+   </book>
+</root>
