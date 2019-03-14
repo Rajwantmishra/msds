@@ -220,6 +220,12 @@ readbookJOSN <- read_file(jsonURL)
 
 jsonlite::fromJSON(readbookJOSN)
 
+
+#LOCAL READ 
+
+readbookJOSN <- read_file("book.json")
+jsonlite::fromJSON(readbookJOSN)
+
 ```
 
 
