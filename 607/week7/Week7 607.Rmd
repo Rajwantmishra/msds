@@ -104,42 +104,6 @@ Excepected XML view:
   # </root>
 ~~~~~~
 
-```{r}
-library(XML)
-
-prefix.xml <- "<reports>
-                  <report type='standard'>
-                    <data> xxx </data>
-                    <data> xxx </data>
-                    <data> xxx </data>
-                  </report>     
-               </reports>"
-
-# DUMMY DATA FRAME
-df <- data.frame("xxx","yyy")
-
-# BUILD XML TREE
-doc = xmlTreeParse(prefix.xml, useInternalNodes = T)     # PARSE STRING
-root = xmlRoot(doc)                                      # FIND ROOT
-
-reportNode = newXMLNode("report", parent=root)           # ADD TO ROOT
-xmlAttrs(reportNode) = c(type = "enhanced")              # ADD ATTRIBUTE
-pagesNode = newXMLNode("pages", parent=reportNode)       # ADD TO REPORT
-
-for (i in 1:nrow(df)){
-  pageNode = newXMLNode("page", parent=pagesNode)        # ADD PAGE FOR EACH RECORD
-  for (j in 1:nrow(df)){
-    newXMLNode("X.xxx.", df$X.xxx.[i], parent=pageNode)  # ADD COL/ROW VALUE
-    newXMLNode("X.yyy.", df$X.yyy.[i], parent=pageNode)  # ADD COL/ROW VALUE
-  }  
-}
-
-# VIEW XML
-print(doc)
-
-# SAVE XML TO FILE
-saveXML(doc, file="OutputFile.xml")
-```
 
 ```{r}
 prefix.xml <- "<?xml version='1.0' encoding='UTF-8'?><root>
@@ -150,7 +114,7 @@ prefix.xml <- "<?xml version='1.0' encoding='UTF-8'?><root>
                </root>"
 
 # DUMMY DATA FRAME
-df <- tibble(title= finaldf$title,Author1 = finaldf$Author1,Author2 = finaldf$Author2,ISBN = finaldf$ISBN,REL_Date = finaldf$REL_Date,na.action="")
+df <- tibble(title= finaldf$title,Author1 = finaldf$Author1,Author2 = finaldf$Author2,ISBN = finaldf$ISBN,REL_Date = finaldf$REL_Date)
 
 # BUILD XML TREE
 doc = xmlTreeParse(prefix.xml, useInternalNodes = T)     # PARSE STRING
@@ -195,13 +159,10 @@ write_file(jsonlite::toJSON(df),"bookR.json")
 ## READ From XML 
 ```{r}
 
-
+XMLurl <- "https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/week7/bookRXml.xml"
 readBookXML <- read_xml("bookRXml.xml")
-
-readBookXML <- xmlParse(readBookXML)
+readBookXML <- read_xml(XMLurl)
 print(readBookXML)
-xml_name(readBookXML)
-
 xbook <- xml_children(readBookXML)
 xbook.element <- xml_children(xbook[2])
 xml_children(xbook.element[1])
@@ -212,12 +173,12 @@ class(xml_find_all(readBookXML, ".//title"))
 
 
 xml_title <- xml_find_all(xbook.element, ".//title")
-xml_author1 <- xml_find_all(readBookXML, ".//author1")
-xml_author2 <-xml_find_all(readBookXML, ".//author2")
-xml_ISBN <- xml_find_all(readBookXML, ".//ISBN")
-xml_REL_Date <-xml_find_all(readBookXML, ".//REL_Date")
+xml_author1 <- xml_text(xml_find_all(readBookXML, ".//author1"))
+xml_author2 <-xml_text(xml_find_all(readBookXML, ".//author2"))
+xml_ISBN <- xml_text(xml_find_all(readBookXML, ".//ISBN"))
+xml_REL_Date <-xml_text(xml_find_all(readBookXML, ".//REL_Date"))
 
-xml_titleAll <- (xml_find_all(readBookXML, ".//title"))
+xml_titleAll <- xml_text(xml_find_all(readBookXML, ".//title"))
 
 ldply(xml_text(xml_children(xbook.element[1])))
 
@@ -233,24 +194,31 @@ xml_children(xml_children(xbook[2]))
 xml_find_first(xbook.element, ".//title")
 xml_text(xml_find_all(xbook.element, ".//title"))
 
-XML_Book <- tibble( title = unlist(xml_title), 
+XML_Book <- tibble( title = unlist(xml_text(xml_title)), 
                     author = unlist(xml_author1),
                     author2 = unlist(xml_author2),
                     ISBN = unlist(xml_ISBN),
                     REL_Date = unlist(xml_REL_Date)
                     )
 
-ldply(xml_text(xml_children(xbook.element[1:10])))
+ldply(xml_text(xml_title))
 
-xml_ns(xbook)
 
-xbook.element
+
+datatable(XML_Book)
 ```
 
 
 ## Read from JSON
 
 ```{r}
+
+
+jsonURL <- "https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/week7/bookR.json"
+
+readbookJOSN <- read_file(jsonURL)
+
+jsonlite::fromJSON(readbookJOSN)
 
 ```
 
