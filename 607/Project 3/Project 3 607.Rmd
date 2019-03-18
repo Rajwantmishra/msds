@@ -1,0 +1,54 @@
+---
+title: "Project 3 607"
+author: "Rajwant Mishra"
+date: "March 15, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rjson)
+library(XML)
+library(xml2)
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(ggmap)
+# install.packages("gridExtra")
+library(mongolite)
+library(lubridate)
+library(gridExtra)
+# Parsing of HTML/XML files  
+library(rvest)    
+
+# String manipulation
+library(stringr)   
+
+# Verbose regular expressions
+#install.packages("rebus")
+library(rebus)     
+
+# Eases DateTime manipulation
+library(lubridate)
+
+library(DT)
+
+
+
+#### Connect to MOngo
+mongoFile <- gridfs(db = "MSProject3", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
+
+# mongoCollection = mongo(collection = "project3", db = "MSProject3", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/") # create connection, database and collection
+
+# List All File from Mongo
+allfiles <- mongoFile$find()
+
+# Remove a file by id or Name
+mongoFile$download("tweet.csv")
+mongoFile$download("dataurlA.csv")
+
+
+
+```
+

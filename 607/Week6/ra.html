@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1,maximum-scale=1,user-scalable=no">
+<title>Live Feed from twiter</title>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<style>
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+#showLess{
+padding: 10px;
+    text-align: center;
+    background-color:#cecacc;
+    color: #fff;
+    border-width: 0 1px 1px 0;
+    border-style: solid;
+    border-color: #fff;
+    box-shadow: 0 1px 1px #ccc;
+    transition: all 600ms ease-in-out;
+    -webkit-transition: all 600ms ease-in-out;
+    -moz-transition: all 600ms ease-in-out;
+    -o-transition: all 600ms ease-in-out;
+    }
+#showLess:hover {
+    background-color: #fff;
+    color: #33739E;
+}
+
+#loadMore {
+    padding: 15px;
+    text-align: center;
+    background-color: #33739E;
+    color: #fff;
+    border-width: 0 1px 1px 0;
+    border-style: solid;
+    border-color: #fff;
+    box-shadow: 0 1px 1px #ccc;
+    transition: all 600ms ease-in-out;
+    -webkit-transition: all 600ms ease-in-out;
+    -moz-transition: all 600ms ease-in-out;
+    -o-transition: all 600ms ease-in-out;
+}
+#loadMore:hover {
+    background-color: #fff;
+    color: #33739E;
+}
+
+#myList ul{ 
+	display:none;
+}
+
+.list-group ul
+{
+    margin-bottom: 0px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #B3A9A9;
+}
+.left 
+{
+    margin-left: 60px;
+}
+
+.right 
+{
+    margin-right: 60px;
+}
+#loadMore {
+    
+    cursor:pointer;
+}
+#loadMore:hover {
+    color:black;
+}
+#showLess {
+    color:red;
+    cursor:pointer;
+}
+#showLess:hover {
+    color:black;
+}
+
+.overflow-hidden{
+    overflow:hidden;
+}
+ 
+.left-margin-10px{
+    margin:0 1em 0 0;
+}
+ 
+.margin-right-1em{
+    margin-right:1em;
+}
+ 
+.margin-right-2em{
+    margin-right:2em;
+}
+ 
+.text-align-center{
+    text-align:center;
+}
+ 
+.margin-top-4px{
+    margin-top:4px;
+}
+ 
+.color-gray{
+    color:#999;
+}
+ 
+.tweet-image{
+    float:left; width:15%;
+    margin-right:1em;
+}
+ 
+.tweet-image img{
+    width:100%;
+}
+ 
+.tweet-text{
+    float:left; width:80%;
+}
+ 
+.margin-zero{
+    margin:0;
+}
+ 
+.font-size-20px{
+    font-size:20px;
+}
+ 
+.float-left{
+    float:left;
+}
+
+.float-right{
+    float:right;
+
+}
+
+.only
+{
+
+    display: none;
+}
+
+@media  screen and (max-width: 956px){
+		a.custom-logo-link img {
+	    width: 30%;
+	        margin-left: 37%;
+	}
+.short {
+    display: none;
+}
+
+.only
+{
+width: 15%;
+    float: left;
+    margin-left: 2%;
+
+    display: initial;
+}
+
+}
+
+</style>
+<script language="javascript">
+
+
+
+
+function loadMore() {
+    size_li = $("#myList ul").size();
+    x=6;
+    $('#myList ul:lt('+x+')').show();
+    $('#loadMore').click(function () {
+        x= (x+5 <= size_li) ? x+5 : size_li;
+        $('#myList ul:lt('+x+')').show();
+    });
+  }
+
+</script>
+</head>
+<body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-40156935-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<div class="container" style="padding-right: 0px; padding-left: 0px;">
+<div class="col-lg-12 page-header short">
+<div class=" col-lg-6 logo-tagline-group ">
+<p class="site-title"><a class="custom-logo-link" href="https://whatsq.com/amp/" rel="home" title="whatsq.com | Home page"><img src="https://i2.wp.com/whatsq.com/wp-content/uploads/2017/04/cropped-cropped-Picture1.png?fit=290%2C73" alt="whatsq.com"></a></p>
+</div>
+<div class="col-lg-6 short">
+<h1>Live Feed from tweeter</h1>
+</div>
+</div>
+
+<div class="col-lg-4">
+
+<div class="overflow-hidden short">
+<img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"><div class="text-align-center">
+<div><h2>Sandeep Raut</h2></div>
+<div><a href="https://twitter.com/rautsan" target="_blank">@rautsan</a></div>
+</div>
+<hr>
+</div>
+</div> 
+<div class="col-lg-8" style="
+    padding-left: 0px;
+    padding-right: 0px;
+">
+
+<div class="overflow-hidden">
+<img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail only"><a href="https://twitter.com/rautsan" target="_blank" class="only">@rautsan</a><div class="float-right margin-right-2em text-align-center">
+<div class="color-gray">Tweets</div>
+<div class="badge font-size-20px">106,154</div>
+</div>
+<div class="float-right margin-right-2em text-align-center">
+<div class="color-gray">Followers</div>
+<div class="badge font-size-20px">12,654</div>
+</div>
+</div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1213733709341832" data-ad-slot="4540042917" data-ad-format="auto"></ins>
+<script>
+								(adsbygoogle = window.adsbygoogle || []).push({});
+								</script>
+<ul class="list-group" id="myList"><ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 03:57:09 +0000 2019</small>
+</h4>
+<div class="margin-zero">Here is my #BigData Daily! <a href="https://t.co/jGko8pih03" target="_blank">https://t.co/jGko8pih03</a> #bigdata #ai</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 03:55:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Transformation Habits | Rob Llewellyn <a href="https://t.co/Pm9qDTT3vV" target="_blank">https://t.co/Pm9qDTT3vV</a> <a href="https://t.co/GpoAQk8m4u" target="_blank">https://t.co/GpoAQk8m4u</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 03:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation An International Women’s Day question – where are the tech women who look like me?… <a href="https://t.co/MA4BVxNaVm" target="_blank">https://t.co/MA4BVxNaVm</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 03:08:02 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #ArtificialIntelligence Daily! <a href="https://t.co/ZDcqanNuVc" target="_blank">https://t.co/ZDcqanNuVc</a> Thanks to @i_bm @deepaknegi995 #ai #artificialintelligence</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 02:15:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top 7 Types Of Digital Marketing <a href="https://t.co/Y7idjY4PZO" target="_blank">https://t.co/Y7idjY4PZO</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 02:15:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Make your brand visible with my #DgitalMarketing Daily! <a href="https://t.co/bjA3gxKx9i" target="_blank">https://t.co/bjA3gxKx9i</a> Thanks to @nostop_content… <a href="https://t.co/gJmzJ14PFJ" target="_blank">https://t.co/gJmzJ14PFJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 02:01:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Nominet CTO describes running the DNS behind 10.5 million .uk domains <a href="https://t.co/1njgxrBGwO" target="_blank">https://t.co/1njgxrBGwO</a> <a href="https://t.co/vjec5b8mWL" target="_blank">https://t.co/vjec5b8mWL</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 02:00:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation The AI that Can Spot UTIs <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/qKUlOM2lR1" target="_blank">https://t.co/qKUlOM2lR1</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Tue Mar 12 01:55:19 +0000 2019</small>
+</h4>
+<div class="margin-zero">Enhance #CustomerExperience with my Daily! <a href="https://t.co/4M6ZTqanIc" target="_blank">https://t.co/4M6ZTqanIc</a> Thanks to @donscheibenreif @DobbinsGroupLLC… <a href="https://t.co/sXFQ6Id5q5" target="_blank">https://t.co/sXFQ6Id5q5</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:38:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: In Israel, A Stand Out Year For Artificial Intelligence Technologies <a href="https://t.co/DIhx1BZWox" target="_blank">https://t.co/DIhx1BZWox</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:37:37 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @dLabTz: '“What are causes of #Data gap? Equipment Malfunction; Records Inconsistency; Loss of History… <a href="https://t.co/ZfBSnI3GAj" target="_blank">https://t.co/ZfBSnI3GAj</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:37:36 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Going Digital - Organisation for Economic Co-operation and Development <a href="https://t.co/mQLYPtQUaD" target="_blank">https://t.co/mQLYPtQUaD</a>, see more <a href="https://t.co/4Edf7F0YPl" target="_blank">https://t.co/4Edf7F0YPl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:34:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation 26 Inspiring Women Blazing a Trail in the Data Science World <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/oZuRVLl8fv" target="_blank">https://t.co/oZuRVLl8fv</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:33:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Epson | How AI and Robotics Are Transforming Factories of The Future – Orange Magazine… <a href="https://t.co/0enoN3Xpyg" target="_blank">https://t.co/0enoN3Xpyg</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 17:10:11 +0000 2019</small>
+</h4>
+<div class="margin-zero">Specially curated #datascience Daily! <a href="https://t.co/nLFcdgZ9l3" target="_blank">https://t.co/nLFcdgZ9l3</a> Stories via @alagunapradas @guildai @chandu532 #datascience #bigdata</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 16:00:47 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Why companies ignore cybersecurity in digital transformations <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/dlULUwCsc8" target="_blank">https://t.co/dlULUwCsc8</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 15:59:06 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation How digital transformation affects the people of New York City <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/JGr1rHEev8" target="_blank">https://t.co/JGr1rHEev8</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 15:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#InternetofThings <a href="https://t.co/fNh33w79zl" target="_blank">https://t.co/fNh33w79zl</a> - top stories by @_neural, @prisederisque75, @furtherfield</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 14:30:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#CustomerExperience <a href="https://t.co/qGh8ZvxTqf" target="_blank">https://t.co/qGh8ZvxTqf</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 14:21:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation How digital transformation affects the people of New York City <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/d81zfRGvQ0" target="_blank">https://t.co/d81zfRGvQ0</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 14:20:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation A Closer Look Into The World Of Smart Lighting <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/QSUGLSmNkV" target="_blank">https://t.co/QSUGLSmNkV</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 14:03:05 +0000 2019</small>
+</h4>
+<div class="margin-zero">What does it mean to be a transformational IT leader today? <a href="https://t.co/Pfl7zSxNyG" target="_blank">https://t.co/Pfl7zSxNyG</a> #digitaltransformation</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 14:03:05 +0000 2019</small>
+</h4>
+<div class="margin-zero">The latest Check my #ChiefDigitalOfficer Daily! <a href="https://t.co/aHYFYF9sFx" target="_blank">https://t.co/aHYFYF9sFx</a> Thanks to @ABetterInnovat1 @chr_frei @WSJCS… <a href="https://t.co/BvOBsGjyCx" target="_blank">https://t.co/BvOBsGjyCx</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 13:40:15 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @CIOWaterCooler: User Experience Design - a key to Digital Transformation <a href="https://t.co/ZNYF0NErDx" target="_blank">https://t.co/ZNYF0NErDx</a> @RautSan #Digital <a href="https://t.co/qJQSjed" target="_blank">https://t.co/qJQSjed</a>…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 13:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation <a href="https://t.co/jszzWCAioT" target="_blank">https://t.co/jszzWCAioT</a> - top stories by @Neopost_UK, @Mark_Tucker9, @ukadmiral</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 13:02:31 +0000 2019</small>
+</h4>
+<div class="margin-zero">Be mobile with my #Mobility Daily! <a href="https://t.co/nxbnDUuNr4" target="_blank">https://t.co/nxbnDUuNr4</a> Thanks to @_digitalhouse @maelfosso @etletl #mobile #news</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:48:56 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: APIs for Dummies <a href="https://t.co/bESNha5jaX" target="_blank">https://t.co/bESNha5jaX</a>, see more <a href="https://t.co/PIX3uT6Neb" target="_blank">https://t.co/PIX3uT6Neb</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#Wearables <a href="https://t.co/aTF6hov37z" target="_blank">https://t.co/aTF6hov37z</a> - top stories by @Camilox, @a_almagrabi, @Aneel_Irfan</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:24:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Ron Vining on LinkedIn: "9 Tips to Boost Customer Experience and Profitability
+Part 2
+What’s the Conne… <a href="https://t.co/lBwfCt30Ij" target="_blank">https://t.co/lBwfCt30Ij</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:24:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Digital Design Jury |
+2019 D&amp;AD D&amp;AD Awards Winners
+| D&amp;AD <a href="https://t.co/BLtl4VQirp" target="_blank">https://t.co/BLtl4VQirp</a>, see more <a href="https://t.co/L2tL94UirJ" target="_blank">https://t.co/L2tL94UirJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:23:20 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @jatinmadhra: 'Artificial Intelligence Healthcare Market to Reach $6.6B by 2021. Acquisitions of #AI… <a href="https://t.co/IqDk9ogOxy" target="_blank">https://t.co/IqDk9ogOxy</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:23:20 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: How to take your at-home office from semi-digital to completely digital <a href="https://t.co/PU6QOSsriC" target="_blank">https://t.co/PU6QOSsriC</a>, see more <a href="https://t.co/4Edf7F0YPl" target="_blank">https://t.co/4Edf7F0YPl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:01:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation The do's and don'ts of franchise marketing <a href="https://t.co/Y5Vevs9Xb1" target="_blank">https://t.co/Y5Vevs9Xb1</a> <a href="https://t.co/oZWkhkhx2l" target="_blank">https://t.co/oZWkhkhx2l</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 12:00:06 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Banks are playing catch-up in the big-data game <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/IOq7GeDaBs" target="_blank">https://t.co/IOq7GeDaBs</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 11:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#UI #UX <a href="https://t.co/aThqcmyi4y" target="_blank">https://t.co/aThqcmyi4y</a> - top stories by @ChexXBalance, @madewithmode, @ElijahAugust</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 10:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DataScience <a href="https://t.co/2DsvAvwGjn" target="_blank">https://t.co/2DsvAvwGjn</a> - top stories by @Jus_tinian, @leobiscassi, @DataCamp</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 09:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#API <a href="https://t.co/OtfTSqrVgh" target="_blank">https://t.co/OtfTSqrVgh</a> - top stories by @itzabusiness, @theantduch, @Dani_Bice</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 08:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation C-Suite Whispers: Considering an event-centric data strategy? Here’s what you need to know… <a href="https://t.co/pBPjjLRWZe" target="_blank">https://t.co/pBPjjLRWZe</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 08:53:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Why Use a Multi Cloud Strategy? <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/moMCH2d5Wy" target="_blank">https://t.co/moMCH2d5Wy</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 08:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#BigData <a href="https://t.co/PZIyHA6pap" target="_blank">https://t.co/PZIyHA6pap</a> - top stories by @Wipro</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 08:06:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Why leaders can become a liability in the digital age <a href="https://t.co/Kztifu1d2z" target="_blank">https://t.co/Kztifu1d2z</a> <a href="https://t.co/hdTFuzs8cK" target="_blank">https://t.co/hdTFuzs8cK</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 08:00:43 +0000 2019</small>
+</h4>
+<div class="margin-zero">Connect with my #InternetofThings Daily! <a href="https://t.co/zNMO3F7IUW" target="_blank">https://t.co/zNMO3F7IUW</a> Thanks to @smesecurity #davidbowie #anyoneanywhere</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:48:50 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Owning the customer experience: the evolving role of the CMO <a href="https://t.co/ou8WhWPISo" target="_blank">https://t.co/ou8WhWPISo</a>, see more <a href="https://t.co/UD8OsHzfmo" target="_blank">https://t.co/UD8OsHzfmo</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:48:50 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: UI Design Trends for 2019: Free eBook by UXPin <a href="https://t.co/PsYGukS2Ar" target="_blank">https://t.co/PsYGukS2Ar</a>, see more <a href="https://t.co/L2tL94UirJ" target="_blank">https://t.co/L2tL94UirJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:47:41 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Intermediate Spreadsheets for Data Science | DataCamp <a href="https://t.co/PUrH1XG8cX" target="_blank">https://t.co/PUrH1XG8cX</a>, see more <a href="https://t.co/KCR3BRfYG0" target="_blank">https://t.co/KCR3BRfYG0</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:47:41 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @mnaEN: '#Republican Rep. Will Hurd: "If we're not leading on" #artificial intelligence, that's going to… <a href="https://t.co/iR8PJ5zfhR" target="_blank">https://t.co/iR8PJ5zfhR</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#ArtificialIntelligence <a href="https://t.co/CjHZ4r8dHw" target="_blank">https://t.co/CjHZ4r8dHw</a> - top stories by @mosio, @clinicoin, @DME_Jun</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 07:28:14 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #MachineLearning Daily <a href="https://t.co/ZEeUPVIUOT" target="_blank">https://t.co/ZEeUPVIUOT</a> Stories via @ShakirZari @szul @Minerva_DataLab #machinelearning #ai</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 06:45:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">Transforming Organisations, Changing The Nature Of Work <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/9BoRZiK7EZ" target="_blank">https://t.co/9BoRZiK7EZ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 06:44:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Cut out the middleman/women? Not with social media influencers! <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/Bb8juOxxgG" target="_blank">https://t.co/Bb8juOxxgG</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 06:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#MachineLearning <a href="https://t.co/EeghZr32zE" target="_blank">https://t.co/EeghZr32zE</a> - top stories by @propal_z</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 06:05:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">What is digital transformation? Everything you need to know <a href="https://t.co/kOV5zQycGa" target="_blank">https://t.co/kOV5zQycGa</a> <a href="https://t.co/KvfHBCKzYl" target="_blank">https://t.co/KvfHBCKzYl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 05:47:02 +0000 2019</small>
+</h4>
+<div class="margin-zero">It's Time To Build Digital-First Banking Units <a href="https://t.co/Uwuq6tswy6" target="_blank">https://t.co/Uwuq6tswy6</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 05:47:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">Disrupt your business with my #DigitalTransformation Daily! <a href="https://t.co/ujgIUVqCXc" target="_blank">https://t.co/ujgIUVqCXc</a> Stories via @3HTi_… <a href="https://t.co/9T0ti721nB" target="_blank">https://t.co/9T0ti721nB</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:57:08 +0000 2019</small>
+</h4>
+<div class="margin-zero">Here is my #BigData Daily! <a href="https://t.co/PQIq6naaJK" target="_blank">https://t.co/PQIq6naaJK</a> Thanks to @amir_math90 @Cash_Flow_Det @pawmal80 #bigdata #iot</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:55:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">Microsoft opens first African cloud regions <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/ICp5jr5baC" target="_blank">https://t.co/ICp5jr5baC</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Chicago Facility Is First Advanced-Manufacturing Institute To Have Funding Follow-On… <a href="https://t.co/4GYUxlNV46" target="_blank">https://t.co/4GYUxlNV46</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:48:27 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @PGATOUR: '🇮🇹 @F_Molinari's clutch birdie on the 72nd hole @APinv is even more exciting when called by… <a href="https://t.co/ttbbR0gjgk" target="_blank">https://t.co/ttbbR0gjgk</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:38:41 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Why Data Science Teams Need Generalists, Not Specialists <a href="https://t.co/URdGxhyYHf" target="_blank">https://t.co/URdGxhyYHf</a>, see more <a href="https://t.co/KCR3BRfYG0" target="_blank">https://t.co/KCR3BRfYG0</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:38:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: 5 Skills You Need to Become a Machine Learning Engineer | Udacity <a href="https://t.co/MtkLywDP4o" target="_blank">https://t.co/MtkLywDP4o</a>, see more <a href="https://t.co/NThubCuiOJ" target="_blank">https://t.co/NThubCuiOJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:38:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: The Internet of other people’s things - The Neural Archive <a href="https://t.co/rB65GcS7G9" target="_blank">https://t.co/rB65GcS7G9</a>, see more <a href="https://t.co/sPI63hbxJ5" target="_blank">https://t.co/sPI63hbxJ5</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:38:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @gigadgets_: 'Future of #skin #electronics.
+Researchers at @UTokyo_News_en developed the futuristic e-sk… <a href="https://t.co/Xt2m87ivMD" target="_blank">https://t.co/Xt2m87ivMD</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 03:08:13 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #ArtificialIntelligence Daily! <a href="https://t.co/iFG4MOpRJl" target="_blank">https://t.co/iFG4MOpRJl</a> Thanks to @Aksana_Belarus @accelerations #ai #artificialintelligence</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 02:51:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Want to know the 4 traps in your digital transformation journey? Engage us to avoid them.
+#DigitalMonday… <a href="https://t.co/1g2ckUZouJ" target="_blank">https://t.co/1g2ckUZouJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 02:15:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Don't Let Your Digital Marketing Go To Waste! <a href="https://t.co/k0Nz8PIuR1" target="_blank">https://t.co/k0Nz8PIuR1</a> #digitalmarketing</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 02:15:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Make your brand visible with my #DgitalMarketing Daily! <a href="https://t.co/J5BMirYybu" target="_blank">https://t.co/J5BMirYybu</a> Thanks to @ifrogdm @jimi_lewis… <a href="https://t.co/MRdJTfODzi" target="_blank">https://t.co/MRdJTfODzi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 02:01:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation From protection to management: Veeam focuses on data visibility, access and control… <a href="https://t.co/8F6oRrC0fV" target="_blank">https://t.co/8F6oRrC0fV</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 02:00:23 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation The Web Development Capabilities You Need For Your Small Business <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/V8lIqIeILp" target="_blank">https://t.co/V8lIqIeILp</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Mon Mar 11 01:55:18 +0000 2019</small>
+</h4>
+<div class="margin-zero">Enhance #CustomerExperience with my Daily! <a href="https://t.co/c6fuapCmJQ" target="_blank">https://t.co/c6fuapCmJQ</a> Thanks to @Andrew_Dennis @suardiaz @ACIWorld #cx #marketing</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 22:28:46 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @OECD: 'How are governments, businesses &amp; individuals addressing the #digital transformation?
+Tune in t… <a href="https://t.co/CPoouWNevM" target="_blank">https://t.co/CPoouWNevM</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 22:28:46 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: When It Comes to Big Data, Technology Is Not Everything - Wipro <a href="https://t.co/2R06Ke1xXV" target="_blank">https://t.co/2R06Ke1xXV</a>, see more <a href="https://t.co/fyQmqSZN47" target="_blank">https://t.co/fyQmqSZN47</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 22:28:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Artificial Intelligence in Healthcare: How AI Shapes Medicine <a href="https://t.co/4W2uo62wJk" target="_blank">https://t.co/4W2uo62wJk</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<img class="img-responsive" style="margin:0 auto;" src="https://pbs.twimg.com/media/D1UNCk-WoAEnjGt.jpg:small"><div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 22:28:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @cuneytdevecigil: 'Evolution of #Internet of Things! #SCSW2019 ' <a href="https://t.co/60ZiJ9WmrL" target="_blank">https://t.co/60ZiJ9WmrL</a>, see more <a href="https://t.co/sPI63hbxJ5" target="_blank">https://t.co/sPI63hbxJ5</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:38:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Use Machine Learning to Create Music Through Gestures | Custom | Maker Pro <a href="https://t.co/P1CSDCdSS3" target="_blank">https://t.co/P1CSDCdSS3</a>, see… <a href="https://t.co/d10FfFf7N5" target="_blank">https://t.co/d10FfFf7N5</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:38:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Heuristic Evaluation: How to Conduct a Heuristic Evaluation | Interaction Design Foundation… <a href="https://t.co/AWkyAFxxu2" target="_blank">https://t.co/AWkyAFxxu2</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:38:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @mashable: 'If for some reason you ever need an extra thumb, this device has you covered '… <a href="https://t.co/jCyd839KY3" target="_blank">https://t.co/jCyd839KY3</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:37:41 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Theme session N <a href="https://t.co/qm7Qwq6xm4" target="_blank">https://t.co/qm7Qwq6xm4</a>, see more <a href="https://t.co/KCR3BRfYG0" target="_blank">https://t.co/KCR3BRfYG0</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:34:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation 4 Ways To Better Care For Your B2B Customers At Trade Shows <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/tc6r7Uk2rC" target="_blank">https://t.co/tc6r7Uk2rC</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:33:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Google makes it easier for AI developers to ensure data privacy <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/F7m5YnsTl5" target="_blank">https://t.co/F7m5YnsTl5</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 17:10:10 +0000 2019</small>
+</h4>
+<div class="margin-zero">Specially curated #datascience Daily! <a href="https://t.co/mNLf9ULDHC" target="_blank">https://t.co/mNLf9ULDHC</a> Stories via @tealium @globalsign #machinelearning #datascience</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 16:00:26 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Gismart launches investment program for indie developers <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/y8f6Fl4MHW" target="_blank">https://t.co/y8f6Fl4MHW</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 15:59:03 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Rethinking Marketing Funnel Logistics: Understanding Adaptive Engagement… <a href="https://t.co/VRwez2rPyD" target="_blank">https://t.co/VRwez2rPyD</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 15:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#InternetofThings <a href="https://t.co/fNh33w79zl" target="_blank">https://t.co/fNh33w79zl</a> - top stories by @CamSecurityNow</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:30:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#CustomerExperience <a href="https://t.co/qGh8ZvxTqf" target="_blank">https://t.co/qGh8ZvxTqf</a> - top stories by @larryangeli</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:21:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Adopt Holacracy Approach to Help Your Organization To Be More Agile <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/5i4yX25RDG" target="_blank">https://t.co/5i4yX25RDG</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:21:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Annual Fraud Report Shows Friction in the Customer Experience is the New #1 Fraud Concern fo… <a href="https://t.co/E6cPh7BHPB" target="_blank">https://t.co/E6cPh7BHPB</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:20:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Threat intelligence market set to hit $13bn by 2025 <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/7X5JSpwoUc" target="_blank">https://t.co/7X5JSpwoUc</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:20:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Big data facilitates international money transfers <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/EHrEVXBCeI" target="_blank">https://t.co/EHrEVXBCeI</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:03:14 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Wearable fall detector <a href="https://t.co/Eq9DCc0IhE" target="_blank">https://t.co/Eq9DCc0IhE</a>, see more <a href="https://t.co/pzjFYdfNzC" target="_blank">https://t.co/pzjFYdfNzC</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:03:02 +0000 2019</small>
+</h4>
+<div class="margin-zero">VOA Experts <a href="https://t.co/FtgeLWQ2ob" target="_blank">https://t.co/FtgeLWQ2ob</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 14:03:02 +0000 2019</small>
+</h4>
+<div class="margin-zero">The latest Check my #ChiefDigitalOfficer Daily! <a href="https://t.co/pfKGCkvuDr" target="_blank">https://t.co/pfKGCkvuDr</a> Thanks to @pelatro @CitrixNetwork… <a href="https://t.co/MIAHmTPum4" target="_blank">https://t.co/MIAHmTPum4</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 13:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation <a href="https://t.co/jszzWCAioT" target="_blank">https://t.co/jszzWCAioT</a> - top stories by @Jaolmedagm, @iahalman, @PilatSTI</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 13:02:30 +0000 2019</small>
+</h4>
+<div class="margin-zero">Be mobile with my #Mobility Daily! <a href="https://t.co/HXb2OGREN4" target="_blank">https://t.co/HXb2OGREN4</a> Thanks to @CyberScoopNews @lapapera50 @Cennos_inc #digital #mobile</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 12:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#Wearables <a href="https://t.co/aTF6hov37z" target="_blank">https://t.co/aTF6hov37z</a> - top stories by @piscitelli, @SydWeedon</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 12:01:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Article Recommendation With Personalized PageRank and Full-Text Search… <a href="https://t.co/LX5GiTtvsF" target="_blank">https://t.co/LX5GiTtvsF</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 12:00:09 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Arcadis kicks off Digital Innovation Hub with City of 2030 accelerator and announces the 10… <a href="https://t.co/OBUkew45qs" target="_blank">https://t.co/OBUkew45qs</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 11:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#UI #UX <a href="https://t.co/aThqcmyi4y" target="_blank">https://t.co/aThqcmyi4y</a> - top stories by @Prajwal2611, @Samarth027, @alind_kamal</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 11:17:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @CIOWaterCooler: Difference between Digitization and Digital Transformation <a href="https://t.co/DUkMZ0a9ti" target="_blank">https://t.co/DUkMZ0a9ti</a> @RautSan #digital <a href="https://t.co/QjamD" target="_blank">https://t.co/QjamD</a>…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 10:38:29 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: The analysts' guide to APIs | ThoughtWorks <a href="https://t.co/ZZbdYJauAx" target="_blank">https://t.co/ZZbdYJauAx</a>, see more <a href="https://t.co/PIX3uT6Neb" target="_blank">https://t.co/PIX3uT6Neb</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 10:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DataScience <a href="https://t.co/2DsvAvwGjn" target="_blank">https://t.co/2DsvAvwGjn</a> - top stories by @BioDataJournal, @Pensoft, @johan_mols</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 10:22:41 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: This is How AI Will Change the Future of Leadership - Lolly Daskal | Leadership | Lolly Daskal… <a href="https://t.co/g8SVWEDlzm" target="_blank">https://t.co/g8SVWEDlzm</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 09:30:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#API <a href="https://t.co/OtfTSqrVgh" target="_blank">https://t.co/OtfTSqrVgh</a> - top stories by @APILegCaucus, @rpmuriera, @hanjangho76</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 08:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">Bayer Crop Science CIO and head of digital transformation: 5 keys to meeting goals <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/vmbTWtlCA2" target="_blank">https://t.co/vmbTWtlCA2</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 08:53:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Essential hyper-converged cloud questions answered <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/JTg6kd9nrR" target="_blank">https://t.co/JTg6kd9nrR</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 08:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#BigData <a href="https://t.co/PZIyHA6pap" target="_blank">https://t.co/PZIyHA6pap</a> - top stories by @Enongdeka, @MuhammadRidlo12, @murtgit</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 08:06:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Facebook to encrypt its messaging to tackle data concerns <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/dTdkNnldFK" target="_blank">https://t.co/dTdkNnldFK</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 07:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#ArtificialIntelligence <a href="https://t.co/CjHZ4r8dHw" target="_blank">https://t.co/CjHZ4r8dHw</a> - top stories by @bitoulas</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 07:28:14 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #MachineLearning Daily <a href="https://t.co/cPIUmAGDX3" target="_blank">https://t.co/cPIUmAGDX3</a> #machinelearning #ai</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 07:23:24 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @APILegCaucus: 'We are pleased to announce Treasurer @fionama will help kick off our 2019 Listening Tour… <a href="https://t.co/iytO2Pt18y" target="_blank">https://t.co/iytO2Pt18y</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 07:07:36 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Apple to Start Augmented Reality Smartglasses Production Later This Year, Report Says « Next Reality… <a href="https://t.co/K9psh9848F" target="_blank">https://t.co/K9psh9848F</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 06:45:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation News in Digital from The Digital Transformation People #27 <a href="https://t.co/6KtAPIhwpV" target="_blank">https://t.co/6KtAPIhwpV</a> <a href="https://t.co/l64eS1sk6F" target="_blank">https://t.co/l64eS1sk6F</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 06:44:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Fast Deterministic Prime Test for n Less Than Quintillion <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/V2ycQLrQhm" target="_blank">https://t.co/V2ycQLrQhm</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 06:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#MachineLearning <a href="https://t.co/EeghZr32zE" target="_blank">https://t.co/EeghZr32zE</a> - top stories by @manolomarcosp</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 06:05:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Cyber espionage group Whitefly behind SingHealth hack: Symantec <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/odnIzZkC6q" target="_blank">https://t.co/odnIzZkC6q</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 06:05:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Payomatic’s digital transformation towards mobile enablement for the citizens of New York… <a href="https://t.co/hqBNvynXYD" target="_blank">https://t.co/hqBNvynXYD</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 05:46:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">How businesses can overcome the key threats to digital transformation <a href="https://t.co/87eXeoe31l" target="_blank">https://t.co/87eXeoe31l</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 05:46:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Disrupt your business with my #DigitalTransformation Daily! <a href="https://t.co/tAwBvoFuUH" target="_blank">https://t.co/tAwBvoFuUH</a> Stories via @Alan_Nishihara… <a href="https://t.co/Lflb7ftPJT" target="_blank">https://t.co/Lflb7ftPJT</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:57:07 +0000 2019</small>
+</h4>
+<div class="margin-zero">Here is my #BigData Daily! <a href="https://t.co/5Ldg28E4uy" target="_blank">https://t.co/5Ldg28E4uy</a> Thanks to @sunce33 #bigdata #ai</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:55:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Could Machine Learning Make Intensive Care More Efficient? <a href="https://t.co/Y5Vevs9Xb1" target="_blank">https://t.co/Y5Vevs9Xb1</a> <a href="https://t.co/OTMGNxWw2w" target="_blank">https://t.co/OTMGNxWw2w</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation DataHack Radio #19: The Path to Artificial General Intelligence with Professor Melanie Mitch… <a href="https://t.co/WlpgZ8wjmG" target="_blank">https://t.co/WlpgZ8wjmG</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Hands-On Introduction to creditR: An Amazing R Package to Enhance Credit Risk Scoring and Va… <a href="https://t.co/Vyelc0Lswg" target="_blank">https://t.co/Vyelc0Lswg</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:48:22 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @CloudExpo: 'We Own 6 of the World’s 100 Most Influential IoT Brands Since 2017
+@CloudEXPO
+@ThingsEXPO… <a href="https://t.co/nS6yE7uD7f" target="_blank">https://t.co/nS6yE7uD7f</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:38:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: RSAC 2019: The Dark Side of Machine Learning | Threatpost <a href="https://t.co/fWVjdxMteG" target="_blank">https://t.co/fWVjdxMteG</a>, see more <a href="https://t.co/NThubCuiOJ" target="_blank">https://t.co/NThubCuiOJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:38:45 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @SK_InsPartners: 'From day one our team has valued the importance of a personal and relationship-driven… <a href="https://t.co/wwikJHoSYe" target="_blank">https://t.co/wwikJHoSYe</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:38:44 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: The Mystery Of Your Camera's IP Rating Solved! - The Security Camera Blog <a href="https://t.co/hgXxxdJnlO" target="_blank">https://t.co/hgXxxdJnlO</a>, see m… <a href="https://t.co/7GYlA4QX2g" target="_blank">https://t.co/7GYlA4QX2g</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 03:07:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #ArtificialIntelligence Daily! <a href="https://t.co/czjRrpzByo" target="_blank">https://t.co/czjRrpzByo</a> Thanks to @Ko123Owens @jeffngail @Sparkyparky82 #ai #machinelearning</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 02:15:36 +0000 2019</small>
+</h4>
+<div class="margin-zero">Digital Marketing Strategy Works in 2019 Under These Conditions <a href="https://t.co/IDOMPuYiN4" target="_blank">https://t.co/IDOMPuYiN4</a> #mariajohnsen</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 02:15:36 +0000 2019</small>
+</h4>
+<div class="margin-zero">Make your brand visible with my #DgitalMarketing Daily! <a href="https://t.co/V1biiq9qqx" target="_blank">https://t.co/V1biiq9qqx</a> Thanks to @JinxianF @GreyVisual #digitalmarketing #marketing</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 02:01:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation B2B Buyers Are Bored to Death with Your Marketing Speak <a href="https://t.co/DPTSU0qSvH" target="_blank">https://t.co/DPTSU0qSvH</a> <a href="https://t.co/y72nccwDRm" target="_blank">https://t.co/y72nccwDRm</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 02:00:10 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation AI will change or eliminate 130,000 federal jobs over the next two decades… <a href="https://t.co/521jdGKJBC" target="_blank">https://t.co/521jdGKJBC</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sun Mar 10 01:55:16 +0000 2019</small>
+</h4>
+<div class="margin-zero">Enhance #CustomerExperience with my Daily! <a href="https://t.co/Yyr87fAblb" target="_blank">https://t.co/Yyr87fAblb</a> Thanks to @SideCutMedia @JoyAbdullah @Breakingbanks1 #business #cx</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 23:18:33 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Goldman Rolls Out New ETFs Focused On Artificial Intelligence - WSJ <a href="https://t.co/crrMxpbkkV" target="_blank">https://t.co/crrMxpbkkV</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 23:18:33 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: MSPs and Customer Experience: It’s Everyone’s Job <a href="https://t.co/Tbz5klODgZ" target="_blank">https://t.co/Tbz5klODgZ</a>, see more <a href="https://t.co/UD8OsHzfmo" target="_blank">https://t.co/UD8OsHzfmo</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 23:17:36 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Event registration Of UI/UX Workshop <a href="https://t.co/2WFnANwCV2" target="_blank">https://t.co/2WFnANwCV2</a>, see more <a href="https://t.co/L2tL94UirJ" target="_blank">https://t.co/L2tL94UirJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 19:03:42 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Digital Data Lake Enabled Packages Rate Recommendation <a href="https://t.co/fPQy24qhR6" target="_blank">https://t.co/fPQy24qhR6</a>, see more <a href="https://t.co/NThubCuiOJ" target="_blank">https://t.co/NThubCuiOJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 19:03:42 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Report back from the DECHEMA PRAXISforum - TrendMiner <a href="https://t.co/RUVg4U7sLY" target="_blank">https://t.co/RUVg4U7sLY</a>, see more <a href="https://t.co/fyQmqSZN47" target="_blank">https://t.co/fyQmqSZN47</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 19:03:27 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @krunal86: 'What the hell? Good example to understand difference between #UI and #ux '… <a href="https://t.co/71HQsodCRy" target="_blank">https://t.co/71HQsodCRy</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 19:03:25 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: OECD - Home | Facebook <a href="https://t.co/9GrOsfaS9a" target="_blank">https://t.co/9GrOsfaS9a</a>, see more <a href="https://t.co/4Edf7F0YPl" target="_blank">https://t.co/4Edf7F0YPl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 17:34:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Art Created Via Machine Learning Sells at Auction for £40,000 <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/EqHnZaWyO1" target="_blank">https://t.co/EqHnZaWyO1</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 17:33:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">
+<a href="https://t.co/nsNFMDMN6T" target="_blank">https://t.co/nsNFMDMN6T</a> most difficult IT jobs for employers to fill <a href="https://t.co/McQvR5rDcJ" target="_blank">https://t.co/McQvR5rDcJ</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 17:10:11 +0000 2019</small>
+</h4>
+<div class="margin-zero">Specially curated #datascience Daily! <a href="https://t.co/pITrLOnhOC" target="_blank">https://t.co/pITrLOnhOC</a> Stories via @MSFTBusinessUK @AdamMCarrigan @JBenet38 #datascience #bigdata</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 16:00:16 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Triton is the world’s most murderous malware, and it’s spreading <a href="https://t.co/42gpp6asK0" target="_blank">https://t.co/42gpp6asK0</a> <a href="https://t.co/Fyjb4echAo" target="_blank">https://t.co/Fyjb4echAo</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 15:59:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Are the cloud wars over or just getting started? <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/VKSvu3fg8V" target="_blank">https://t.co/VKSvu3fg8V</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 15:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#InternetofThings <a href="https://t.co/fNh33w79zl" target="_blank">https://t.co/fNh33w79zl</a> - top stories by @ProximityCR</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 15:23:54 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @jma245: 'And then my kiddo asked, "What's the difference between UX and UI?" #ux #design #ui '… <a href="https://t.co/79PsKI5Kpd" target="_blank">https://t.co/79PsKI5Kpd</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 15:22:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Google Launches TensorFlow Lite 1.0 For Mobile and Embedded Devices <a href="https://t.co/JC02EEzEen" target="_blank">https://t.co/JC02EEzEen</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 15:22:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Technology can never fully replace the human touch - <a href="https://t.co/302GM7Aqvo" target="_blank">https://t.co/302GM7Aqvo</a>, see more <a href="https://t.co/4Edf7F0YPl" target="_blank">https://t.co/4Edf7F0YPl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 14:30:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#CustomerExperience <a href="https://t.co/qGh8ZvxTqf" target="_blank">https://t.co/qGh8ZvxTqf</a> - top stories by @lmalalanne</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 14:21:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation The future is autonomous <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/BthGwSPWRV" target="_blank">https://t.co/BthGwSPWRV</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 14:20:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation How machine learning and the Internet of Things could transform your business… <a href="https://t.co/W7tV7Bly37" target="_blank">https://t.co/W7tV7Bly37</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 14:03:04 +0000 2019</small>
+</h4>
+<div class="margin-zero">A New Practical Guide To A Successful Digital Transformation <a href="https://t.co/yAYcEsNv0G" target="_blank">https://t.co/yAYcEsNv0G</a> #digitaltransformation</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 14:03:04 +0000 2019</small>
+</h4>
+<div class="margin-zero">The latest Check my #ChiefDigitalOfficer Daily! <a href="https://t.co/zyJBNQ5kIh" target="_blank">https://t.co/zyJBNQ5kIh</a> Thanks to @nyike @Adrienne_Goetz @TeeTripti… <a href="https://t.co/AotW0NufDG" target="_blank">https://t.co/AotW0NufDG</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 13:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation <a href="https://t.co/jszzWCAioT" target="_blank">https://t.co/jszzWCAioT</a> - top stories by @venu66641579, @DigBusPlat</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 13:02:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Be mobile with my #Mobility Daily! <a href="https://t.co/5B72KrQjNy" target="_blank">https://t.co/5B72KrQjNy</a> Thanks to @SamsungMobile @BlueRivet @Victor_SciFi #mobile #webdesign</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 12:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#Wearables <a href="https://t.co/aTF6hov37z" target="_blank">https://t.co/aTF6hov37z</a> - top stories by @neiltwitz, @Jed_Ng1, @CounterPointTR</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 12:01:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation 5 IoT lessons taken from the logistics industry <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/ihCFQcKc8z" target="_blank">https://t.co/ihCFQcKc8z</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 12:00:12 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Stumbling with your Public Cloud Deployments? An Industry Analyst Offers Advice… <a href="https://t.co/qZqYSF8Y7W" target="_blank">https://t.co/qZqYSF8Y7W</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 11:32:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Digital Platforms &amp; Solutions Consulting by Industry | Cognizant <a href="https://t.co/OEWTwGJf9g" target="_blank">https://t.co/OEWTwGJf9g</a>, see more <a href="https://t.co/4Edf7F0YPl" target="_blank">https://t.co/4Edf7F0YPl</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 11:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#UI #UX <a href="https://t.co/aThqcmyi4y" target="_blank">https://t.co/aThqcmyi4y</a> - top stories by @twsjonathan, @chriscct7</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 10:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DataScience <a href="https://t.co/2DsvAvwGjn" target="_blank">https://t.co/2DsvAvwGjn</a> - top stories by @DiSSCoEU, @vsmithuk, @DimitrisKoureas</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 09:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#API <a href="https://t.co/OtfTSqrVgh" target="_blank">https://t.co/OtfTSqrVgh</a> - top stories by @GregMascera, @Laura_R_C, @snydobeddo</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:54:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation 13 Free Sites to Get an Introduction to Machine Learning <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/ahPEnySksD" target="_blank">https://t.co/ahPEnySksD</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:53:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation The Customer Journey Is an Infinite Loop – Digital Branding Institute <a href="https://t.co/cVUkx4Dcgp" target="_blank">https://t.co/cVUkx4Dcgp</a> <a href="https://t.co/ml6lXK1lLY" target="_blank">https://t.co/ml6lXK1lLY</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#BigData <a href="https://t.co/PZIyHA6pap" target="_blank">https://t.co/PZIyHA6pap</a> - top stories by @SA_Mian</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<img class="img-responsive" style="margin:0 auto;" src="https://pbs.twimg.com/media/D1K4KOcXgAApM28.jpg:small"><div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:28:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @Startup_Nerd: 'Evolution of #Internet of Things. #IoT #AI Via @evankirstel ' <a href="https://t.co/NiZBEGElQL" target="_blank">https://t.co/NiZBEGElQL</a>, s… <a href="https://t.co/31rWCnGFxu" target="_blank">https://t.co/31rWCnGFxu</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:28:49 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Hearables - Next Big Thing in Tech - Counterpoint Research <a href="https://t.co/Av2CiECMWg" target="_blank">https://t.co/Av2CiECMWg</a>, see more <a href="https://t.co/pzjFYdfNzC" target="_blank">https://t.co/pzjFYdfNzC</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:27:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Council Post: Four Ways Big Data Converts Into Sales <a href="https://t.co/ygjYxOQjbp" target="_blank">https://t.co/ygjYxOQjbp</a>, see more <a href="https://t.co/fyQmqSZN47" target="_blank">https://t.co/fyQmqSZN47</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:27:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Artificial intelligence and machine learning basics <a href="https://t.co/41N8f3qiQB" target="_blank">https://t.co/41N8f3qiQB</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:27:39 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @exl_service: 'EXL CEO Rohit Kapoor shares with #Forbes his win/win, unconventional approach to #digital… <a href="https://t.co/22IxNVxZVW" target="_blank">https://t.co/22IxNVxZVW</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 08:06:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Urban Airship CEO on bringing brands to the palm of your hand <a href="https://t.co/7wKEpsTzp7" target="_blank">https://t.co/7wKEpsTzp7</a> <a href="https://t.co/Q8kUD05QYs" target="_blank">https://t.co/Q8kUD05QYs</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 07:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#ArtificialIntelligence <a href="https://t.co/CjHZ4r8dHw" target="_blank">https://t.co/CjHZ4r8dHw</a> - top stories by @IntClinTrials</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 07:28:19 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #MachineLearning Daily <a href="https://t.co/p36LbMgwu8" target="_blank">https://t.co/p36LbMgwu8</a> Stories via @reworkkatie @NeilOxtoby @PagdenWill #ai #machinelearning</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<img class="img-responsive" style="margin:0 auto;" src="https://pbs.twimg.com/media/D1MpZ-aXQAQyFj3.png:small"><div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 06:45:02 +0000 2019</small>
+</h4>
+<div class="margin-zero">The Digital Transformation Journey: What It Means And How It Looks <a href="https://t.co/vlfJ5NJwV3" target="_blank">https://t.co/vlfJ5NJwV3</a> #DigitalTransformation <a href="https://t.co/WPgZwLPvYR" target="_blank">https://t.co/WPgZwLPvYR</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 06:44:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation 5 Digital Marketing Myths Debunked <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/fpp3ugC7zO" target="_blank">https://t.co/fpp3ugC7zO</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 06:30:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#MachineLearning <a href="https://t.co/EeghZr32zE" target="_blank">https://t.co/EeghZr32zE</a> - top stories by @DeronHicks</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 06:05:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Improving Risk Evaluation Through Advanced Analytics <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/NWoHTNuR3q" target="_blank">https://t.co/NWoHTNuR3q</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 05:46:34 +0000 2019</small>
+</h4>
+<div class="margin-zero">3 Use-Cases of AI in Recruitment <a href="https://t.co/HfgJuq8xg1" target="_blank">https://t.co/HfgJuq8xg1</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 05:46:33 +0000 2019</small>
+</h4>
+<div class="margin-zero">Disrupt your business with my #DigitalTransformation Daily! <a href="https://t.co/bVZX7hU5WX" target="_blank">https://t.co/bVZX7hU5WX</a> Stories via @ViRR5911 @AIIMIntl… <a href="https://t.co/XHBcDE7Plj" target="_blank">https://t.co/XHBcDE7Plj</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<a href="https://t.co/V7g8HR5vNY" target="_blank">retweeted</a> <div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 05:01:09 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @Ferbeltranmx: User Experience UX is at the heart of Digital Transformation
+#digitaltransformation #innovation #artificialintelligence #…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 04:59:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @grattongirl: 3 Great Ways to Sabotage Your Digital Transformation <a href="https://t.co/oyfVWwicvU" target="_blank">https://t.co/oyfVWwicvU</a> #Transformation #DigitalTransformation https:…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 04:01:30 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @Ronald_vanLoon: #UserExperience #UX is at the heart of #DigitalTransformation
+by @rautsan |
+Read more at <a href="https://t.co/8uYX77CuZU" target="_blank">https://t.co/8uYX77CuZU</a>…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:57:09 +0000 2019</small>
+</h4>
+<div class="margin-zero">Here is my #BigData Daily! <a href="https://t.co/zC9a2pyMFZ" target="_blank">https://t.co/zC9a2pyMFZ</a> Thanks to @theChrisChua @Claudia_OStory @SevenLakesTech #bigdata #ai</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:55:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation How the IIoT is improving factory uptime and reducing costs <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/cj56NzDX4g" target="_blank">https://t.co/cj56NzDX4g</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:54:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation How this retailer underwent a digital customer service transformation <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/GSk62SXGQq" target="_blank">https://t.co/GSk62SXGQq</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:23:47 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @Synechron: 'Up next is Elodie Tayoro, Sr. Digital #Customer Experience consultant &amp; #Digital Project Ma… <a href="https://t.co/a3S8F9aZpb" target="_blank">https://t.co/a3S8F9aZpb</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:23:26 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @martinnewman: 'Thank you for having me @McDonaldButler - it was a pleasure giving a presentation at… <a href="https://t.co/ocK96o12io" target="_blank">https://t.co/ocK96o12io</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:23:25 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Connecting data and expertise: a new alliance for biodiversity knowledge <a href="https://t.co/JptCcRefqh" target="_blank">https://t.co/JptCcRefqh</a>, see mo… <a href="https://t.co/OX2ucPFgMX" target="_blank">https://t.co/OX2ucPFgMX</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 03:07:32 +0000 2019</small>
+</h4>
+<div class="margin-zero">Read my #ArtificialIntelligence Daily! <a href="https://t.co/Qdzx9eKXsI" target="_blank">https://t.co/Qdzx9eKXsI</a> Thanks to @RUNARai4 @MooglieTwitimon @meswan_ismail… <a href="https://t.co/IR2d4pEJ5X" target="_blank">https://t.co/IR2d4pEJ5X</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 02:36:16 +0000 2019</small>
+</h4>
+<div class="margin-zero">RT @B2Bbizbuilder: #Top100 #Technology Pollinators <a href="https://t.co/1iD8nrjUpa" target="_blank">https://t.co/1iD8nrjUpa</a> | @KirkDBorne @KAIPartners @evankirstel @bobehayes @MikeQuindazz…</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 02:15:37 +0000 2019</small>
+</h4>
+<div class="margin-zero">The Complete Guide to Brand Building (Must-Read for Digital Marketers) <a href="https://t.co/9btpweRM8M" target="_blank">https://t.co/9btpweRM8M</a> #entrepreneur</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 02:15:37 +0000 2019</small>
+</h4>
+<div class="margin-zero">Make your brand visible with my #DgitalMarketing Daily! <a href="https://t.co/lnBuIWiVwf" target="_blank">https://t.co/lnBuIWiVwf</a> Thanks to @SkyeLogan @seominicabax… <a href="https://t.co/lVtApGTUps" target="_blank">https://t.co/lVtApGTUps</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 02:01:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Can Femtech deliver radically personalized care to women <a href="https://t.co/luj9vJfYO8" target="_blank">https://t.co/luj9vJfYO8</a> <a href="https://t.co/4Jx7eoxrvj" target="_blank">https://t.co/4Jx7eoxrvj</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<img class="img-responsive" style="margin:0 auto;" src="https://pbs.twimg.com/media/D1LoQLSX0AAh5yr.png:small"><div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 02:00:23 +0000 2019</small>
+</h4>
+<div class="margin-zero">Overcoming The Challenges Of A Digital Transformation <a href="https://t.co/kdjuYKmzyG" target="_blank">https://t.co/kdjuYKmzyG</a> #DigitalTransformation <a href="https://t.co/ZgBPAM5HKA" target="_blank">https://t.co/ZgBPAM5HKA</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Sat Mar 09 01:55:40 +0000 2019</small>
+</h4>
+<div class="margin-zero">Enhance #CustomerExperience with my Daily! <a href="https://t.co/h6RA6PYGxj" target="_blank">https://t.co/h6RA6PYGxj</a> Thanks to @PwC_Suomi @CXJourney #cx #digitaltransformation</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 20:33:56 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Viva the revolution: how cybersecurity can help with digital transformation | TechRadar… <a href="https://t.co/n6wI8lMLAA" target="_blank">https://t.co/n6wI8lMLAA</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 20:33:55 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: @UKSINet: 'Dr. Zingde ex-DyDirector ACTREC highlighted the importance of #data #science education to pre… <a href="https://t.co/dmnZow6S6S" target="_blank">https://t.co/dmnZow6S6S</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 20:33:55 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Samedan Ltd Pharmaceutical Publishers <a href="https://t.co/d25WDxKCsp" target="_blank">https://t.co/d25WDxKCsp</a>, see more <a href="https://t.co/rl6X0dj0Bi" target="_blank">https://t.co/rl6X0dj0Bi</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item"><div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 20:33:55 +0000 2019</small>
+</h4>
+<div class="margin-zero">Top story: Interview: How Panera Bread Uses Intuitive Tech For A Flexible Cafe Experience <a href="https://t.co/r5ObGeZhVR" target="_blank">https://t.co/r5ObGeZhVR</a>,… <a href="https://t.co/4bAYKWlS3z" target="_blank">https://t.co/4bAYKWlS3z</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item">
+<div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 17:34:01 +0000 2019</small>
+</h4>
+<div class="margin-zero">The missing component to digital transformation: Citizen developers <a href="https://t.co/Y5VevsryzB" target="_blank">https://t.co/Y5VevsryzB</a> <a href="https://t.co/HwCPuBWyEj" target="_blank">https://t.co/HwCPuBWyEj</a>
+</div>
+</div>
+</div>
+<ul class="list-group-item">
+<div class="overflow-hidden">
+<div class="header clearfix">
+<div class="tweet-image "><img src="https://pbs.twimg.com/profile_images/1087750225870102529/GsQx_JfU_200x200.jpg" class="img-thumbnail"></div>
+<div class="tweet-text ">
+<h4 class="margin-top-4px">
+<a href="https://twitter.com/rautsan">Sandeep Raut</a> <span class="color-gray">@rautsan</span><small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>Fri Mar 08 17:33:00 +0000 2019</small>
+</h4>
+<div class="margin-zero">#DigitalTransformation Four personalization techniques to help consumers feel less overwhelmed… <a href="https://t.co/1r9TWFwjgj" target="_blank">https://t.co/1r9TWFwjgj</a>
+</div>
+</div>
+</div>
+
+
+<div id="loadMore">Load more</div>
+<div id="showLess">Show less</div>
+<p class="totop">
+<a href="#top">Back to top</a>
+</p>
+</div> 
+</ul>
+</div> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script language="javascript">
+$('a[href=#top]').click(function () {
+    $('body,html').animate({
+        scrollTop: 0
+    }, 600);
+    return false;
+});
+
+$(window).scroll(function () {
+    if ($(this).scrollTop() > 50) {
+        $('.totop a').fadeIn();
+    } else {
+        $('.totop a').fadeOut();
+    }
+});
+
+
+
+$(document).ready(function () {
+  size_li = $("#myList ul").size();
+    x=6;
+    $('#myList ul:lt('+x+')').show();
+    $('#loadMore').click(function () {
+        x= (x+5 <= size_li) ? x+5 : size_li;
+        $('#myList ul:lt('+x+')').show();
+    });
+    $('#showLess').click(function () {
+        x=(x-5<0) ? 6 : x-5;
+        $('#myList ul').not(':lt('+x+')').hide();
+    });
+});
+
+$('document').ready(function() {
+var lastScrollTop = 0;
+$(window).scroll(function(event){
+   var st = $(this).scrollTop();
+   if (st > lastScrollTop){
+      
+       console.log("down")
+
+   }
+   else if(st == lastScrollTop)
+   {
+     //do nothing 
+     //In IE this is an important condition because there seems to be some instances where the last scrollTop is equal to the new one
+   }
+   else {
+      console.log("up")
+   }
+   lastScrollTop = st;
+});});
+ 
+window.onscroll = function(ev) {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+       loadMore();
+    }
+};
+
+var loadMore = function () {
+        x= (x+5 <= size_li) ? x+5 : size_li;
+        $('#myList ul:lt('+x+')').show();
+    };
+
+var showLess = function () {
+        x=(x-5<0) ? 6 : x-5;
+        $('#myList ul').not(':lt('+x+')').hide();
+    };
+
+</script>
+</ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul>
+</div></ul></ul>
+</div>
+</div>
+</body>
+</html>

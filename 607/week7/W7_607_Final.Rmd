@@ -1,50 +1,70 @@
 ---
-title: "Week 7 Work"
+title: "W7 607 Final"
 author: "Rajwant Mishra"
-date: "March 12, 2019"
-output: html_document
+date: "March 17, 2019"
+output:
+  html_document:
+    toc: true
+    theme: united
+    df_print: paged
+    highlight: tango
+
+    
+   
 ---
 
+<style>
+
+.section .level2 .tabset .nav-pills>li.active>a {
+    color: #fff;
+   background-color: #cc7c2d;
+}	
+
+.section .level2 .tabset .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    color: #fff;
+   background-color: #cc7c2d;
+}	
+
+.section .level2 .nav-pills>li>a {
+    border-radius: 50px;
+}
+</style>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # Parsing of HTML/XML files  
 library(rvest)    
-
 # String manipulation
 library(stringr)   
-
 # Verbose regular expressions
 #install.packages("rebus")
 library(rebus)     
-
 # Eases DateTime manipulation
 library(lubridate)
-
 library(DT)
 #----------Woks with File 
 library(mongolite)
-library(lubridate)
 library(gridExtra)
-fs <- gridfs(db = "MS", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
-```
-
-
-
-
-```{r}
 library(tidyverse)
 library(rjson)
 library(XML)
 library(xml2)
 library(plyr)
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(ggmap)
+# install.packages("gridExtra")
 
 
+fs <- gridfs(db = "MS", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
 
+fs$upload("book.html")
 ```
 
-## Read URL to get Book Info
+# Collection  {.tabset .tabset-fade .tabset-pills}
+## Collect Data
 ```{r}
-    url <- "https://www.booksamillion.com/search?id=7523317361322&query=&filter=product_type%3Abooks"
+ url <- "https://www.booksamillion.com/search?id=7523317361322&query=&filter=product_type%3Abooks"
    first_page <- read_html(url)
    
    # Read Title
@@ -66,51 +86,31 @@ library(plyr)
    #.......trimws.......
    finaldf$Author1 <- trimws(str_sub(finaldf$Author1,3,-1L))
    finaldf$Author2 <- trimws(finaldf$Author2)
-    
-   #.......Write CSV File .....
-    write.csv(finaldf,"book.csv")
-    fs$upload("book.csv")
-    
-   
-    
 ```
 
-## Create XML from the Table 
-Excepected XML view:
+## Build CSV File 
+```{r}
+ #.......Write CSV File .....
+    write.csv(finaldf,"book.csv")
+   
+```
 
-~~~~~~
-  <?xml version="1.0" encoding="UTF-8"?>
-  # <root>
-  #    <book>
-  #       <element>
-  #          <Author1>Sarah J Maas </Author1>
-  #          <Author2 />
-  #          <ISBN>9.78155E+12</ISBN>
-  #          <REL_Date> May 2018</REL_Date>
-  #          <id>1</id>
-  #          <title>A Court of Frost and Starlight BAM Exclusive </title>
-  #       </element>
-  #       <element>
-  #          <Author1>Sarah J Maas </Author1>
-  #          <Author2 />
-  #          <ISBN>9.78155E+12</ISBN>
-  #          <REL_Date> May 2018</REL_Date>
-  #          <id>2</id>
-  #          <title>A Cou#$rt of Frost and Starlight BAM Exclusive </title>
-  #       </element>
-  #       <element>
-  #          <Author1>Sarah J Maas </Author1>
-  #          <Author2 />
-  #          <ISBN>9.78155E+12</ISBN>
-  #          <REL_Date> May 2018</REL_Date>
-  #          <id>3</id>
-  #          <title>A Court of Frdon't ost and Starlight BAM Exclusive </title>
-  #       </element>
-  #    </book>
-  # </root>
-~~~~~~
+## Save to Mongo
+```{r}
+ fs$upload("book.csv")
+```
 
 
+# Create File  {.tabset .tabset-fade .tabset-pills}
+## XML From Data  {.tabset .tabset-fade .tabset-pills}
+### Mannual Sample 
+```{r}
+# Reading Book xml from local directory 
+readBookXML <- read_lines("book.xml")
+print(readBookXML)
+```
+
+### Create XML By R
 ```{r}
 prefix.xml <- "<?xml version='1.0' encoding='UTF-8'?><root>
                   <element>
@@ -144,27 +144,47 @@ for (i in 1:nrow(df)){
 
 # VIEW XML
 print(doc)
+
+```
+
+### Save XML 
+```{r}
 saveXML(doc, file="bookRXml.xml")
 ```
 
+***
+## Create  JSON  {.tabset .tabset-fade .tabset-pills}
+### Mannual Sample 
+```{r}
+# Local Sample JOSN File .
+readBookJSON <- read_lines("book.json")
+print(readBookJSON)
+```
 
-
-#xml to JOSN
+### Create JSON By R
 ```{r}
 
 jsonlite::toJSON(df)
 
-write_file(jsonlite::toJSON(df),"bookR.json")
-
-# rjson::toJSON(df,method = "C")
 
 ```
 
-
-
-## READ From XML 
+### Save JSON
 ```{r}
+write_file(jsonlite::toJSON(df),"bookR.json")
+```
 
+***
+## Create HTML  
+### Mannual Sample 
+```{r}
+htmltools::includeHTML("book.html")
+```
+
+***
+# Read   {.tabset .tabset-fade .tabset-pills}
+## XML 
+```{r}
 XMLurl <- "https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/week7/bookRXml.xml"
 readBookXML <- read_xml("bookRXml.xml")
 readBookXML <- read_xml(XMLurl)
@@ -216,14 +236,10 @@ datatable(XML_Book)
 
 
 
-
 ```
 
-
-## Read from JSON
-
+## JSON
 ```{r}
-
 
 jsonURL <- "https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/week7/bookR.json"
 
@@ -236,14 +252,10 @@ jsonlite::fromJSON(readbookJOSN)
 
 readbookJOSN <- read_file("book.json")
 jsonlite::fromJSON(readbookJOSN)
-
 ```
 
-
-## Red from HTML
-
+## HTML
 ```{r}
-
 bookHTML <- read_html("book.html")
 
 # ------------------Method 1
@@ -263,22 +275,12 @@ readHTMLTable("book.html")[[1]]
 
 
 
-
-
-
-```
-# <!-- Read From MONGO -->
-
-```{r}
-
 ```
 
+## Mongo DB
 ```{r}
- fs$download('book.csv','bookMONGO.csv')
+fs$download('book.csv','bookMONGO.csv')
 bookMongoCSV <- read_csv("bookMONGO.csv")
 datatable(bookMongoCSV)
-
 ```
-
-
 

@@ -1,0 +1,96 @@
+---
+title: "mongo"
+author: "Rajwant Mishra"
+date: "March 14, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(ggmap)
+# install.packages("gridExtra")
+library(mongolite)
+library(lubridate)
+library(gridExtra)
+
+book=data.table::fread("book.csv")
+names(crimes)
+
+# mongo "mongodb+srv://cluster0-bqyhe.gcp.mongodb.net/test"     --username msds_user
+
+#----------Woks with File 
+fs <- gridfs(db = "test", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
+
+
+#----------Woks with DATA
+my_collection = mongo(collection = "book", db = "test", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/") # create connection, database and collection
+my_collection$insert(book)
+
+
+#-----------TEST
+#----------Woks with File 
+fs <- gridfs(db = "testSUNDAY", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
+
+fs$upload("book.csv")
+
+fs$download('book.csv','bookSUNDAY.csv')
+
+
+
+bookHTML <- read_html("https://raw.githubusercontent.com/Rajwantmishra/msds/master/607/week7/book.html")
+
+ # Read Title
+Title <- html_nodes(bookHTML,'th') %>%   html_text()  %>%  str_trim() %>%    unlist() 
+   Title <- html_nodes(bookHTML,'tbody tr') %>%   html_text()  %>%  str_trim() %>%    unlist() 
+Title[2]
+
+dft <- tibble(data = unlist(Title))
+head(dft)
+
+
+# -------------------------FILE LOAD UPLOAD DOWNLOAD---------
+# -----------------------------------------------------------
+fs$upload('book.html')
+fs$read('book.html')
+fs$download('book.html','bookMONGO.html')
+# -----------------------------------------------------------
+# -----------------------------------------------------------
+
+# -------------------------Read Data-------------------------
+# -----------------------------------------------------------
+my_collection$insert(book)
+my_collection$count()
+my_collection$iterate()$one()
+length(my_collection$distinct("V3"))
+df<- my_collection$aggregate()
+class(df)
+
+my_collection$find('{"V4":"Maxine Paetro"}')
+my_collection$find('{"V4":"Maxine Paetro"}')
+
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
