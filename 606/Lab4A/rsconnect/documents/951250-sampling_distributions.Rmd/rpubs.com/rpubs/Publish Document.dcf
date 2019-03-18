@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/476885/846faa7eddea4a519a9d2c59ea840105
+bundleId: https://api.rpubs.com/api/v1/document/476885/846faa7eddea4a519a9d2c59ea840105
+url: http://rpubs.com/Rajwantmishra/476885
+when: 1552880172.59

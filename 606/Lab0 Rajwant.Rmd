@@ -21,15 +21,20 @@ devtools::install_github('jbryer/DATA606')
 ## R Markdown
 ```{r}
 getwd()
-
+install.packages("stringi")
+library(RCurl)
+library(tidyverse)
+library(ggplot2)
 setwd("C:\\Users\\951250\\Documents\\myR\\MS\\606\\Lab0")
 
-#devtools::install_github("jbryer/DATA606Spring2019")
+# devtools::install_github("jbryer/DATA606Spring2019")
 library(DATA606)
 startLab('Lab0')
 startLab('Lab1')
 startLab('Lab2')
 startLab('Lab3')
+startLab('Lab4A')
+startLab('Lab4B')
 
 ```
 
