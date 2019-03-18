@@ -43,11 +43,19 @@ mongoFile <- gridfs(db = "MSProject3", url = "mongodb+srv://msds_user:msds@clust
 
 # List All File from Mongo
 allfiles <- mongoFile$find()
-
+allfiles
 # Remove a file by id or Name
 mongoFile$download("tweet.csv")
 mongoFile$download("dataurlA.csv")
+mongoFile$download("linkedin.csv")
 
+
+
+```
+
+
+
+```{r}
 
 
 ```

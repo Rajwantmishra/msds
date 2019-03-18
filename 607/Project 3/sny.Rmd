@@ -8,6 +8,14 @@ library(tidyverse)
 library(rjson)
 library(XML)
 library(xml2)
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(ggmap)
+# install.packages("gridExtra")
+library(mongolite)
+library(lubridate)
+library(gridExtra)
 ```
 
 ```{r}
@@ -346,11 +354,11 @@ IndustryExperience <- "div.psection:nth-of-type(5) span.item"
 #--------------------------------------------------------------------------
 #-------------Read Sub Page -----------------------------------------------
 #--------------------------------------------------------------------------
-  dataurlA$tURL <- trimws(str_extract(dataurlA$socialURL," ?(https://twitter.com/)[:alpha:]+"))
+  dataurlA$tURL <- trimws(str_extract(dataurlA$socialURL," ?(https://twitter.com/)[\\w]+"))
 
 dataurlA$thandle <- str_replace(dataurlA$tURL,"https://twitter.com/","")
 
-  dataurlA$linkURL <- str_extract(dataurlA$socialURL," ?(https://www.linkedin.com/)[:alpha:]+/?[:alpha:]+")
+  dataurlA$linkURL <- str_extract(dataurlA$socialURL," ?(https://www.linkedin.com/)[:alpha:]+/?[\\w]+-?[\\w]+")
    
 
 
@@ -387,13 +395,15 @@ urlC <- "https://data606.net/course-overview/links/"
 write.csv(dataurlA,"dataurlA.csv")
 
 fsp3 <- gridfs(db = "MSProject3", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
-fsp3$drop()
+fsp3$remove("dataurlA.csv")
 fsp3$upload("dataurlA.csv")
- 
+
+
+
 
 ```
 
-
+# Reading Tweeter DATA > March 18
 ```{r}
     
 length(dataurlA$`Twitter Handle`)
@@ -431,12 +441,12 @@ td<- tibble(data= td)
 
 # Tweeter id:
 # tid  <- str_extract(td[1],"@[[a-zA-Z]]+")
- td$DateTime<- str_extract(td$data,"@[[a-zA-Z]]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}")
+ td$DateTime<- str_extract(td$data,"@[\\w]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}")
    # td$Tweets <- str_split(td$data,"@[[a-zA-Z]]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}")
  
  
  
- td<- separate(td,data,c("TName","Tweet"),"@[[a-zA-Z]]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}",remove = FALSE)
+ td<- separate(td,data,c("TName","Tweet"),"@[\\w]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}",remove = FALSE)
  
  td$Month <- trimws(str_extract(td$DateTime," [A-Z]{1}[a-z]{1}[a-z]{1}"))
  td$weekDay <- str_extract(td$DateTime,"[A-Z]{1}[a-z]{1}[a-z]{1}")
@@ -452,16 +462,10 @@ td$img <- html_nodes(tdata,'div.col-lg-4 img.img-thumbnail') %>% html_attr("src"
 dtf <- rbind(dtf,td)
 
 }
-# write_csv(td,file.path(getwd(),"tweet.csv"))
-# write.csv(td,file = "tweet.csv")
 
 
 
-write.csv(dtf,"tweet.csv")
-
-fsp3 <- gridfs(db = "MSProject3", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
-# fsp3$drop("tweet.csv")
-fsp3$upload("tweet.csv")
+# -----
 
 
 
@@ -485,10 +489,64 @@ fsp3$upload("tweet.csv")
 #            
 #             html_nodes(first_page,img) %>% html_attr("src")
             
-         
+ 
+# ###______________________WORKING CODE COMMENTED TO SAVE REDOING process of tdata
+# 
+# str_split(dtf$data[1],"@[[a-zA-Z]]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}")
+# 
+# str_split(dtf$data,"@[\\w]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}") 
+# 
+# 
+# dtf$DateTime<- str_extract(dtf$data[2],"@[\\w]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}")
+# 
+# dtf<- separate(dtf,data,c("TName","Tweet"),"@[\\w]+ [A-Z]{1}[a-z]{1}[a-z]{1} \\d{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [+][0]{4} [0-9]{4}",remove = FALSE)
+# 
+# dtf$Month <- trimws(str_extract(dtf$DateTime," [A-Z]{1}[a-z]{1}[a-z]{1}"))
+#  dtf$weekDay <- str_extract(dtf$DateTime,"[A-Z]{1}[a-z]{1}[a-z]{1}")
+#  dtf$year <- str_extract(dtf$DateTime,"[0-9]{4}$")
+#  dtf$day <- str_extract(dtf$DateTime,"(?<= [A-Z]{1}[a-z]{1}[a-z]{1}) [0-9]{2}")
+# dtf <- mutate(dtf, hash = unlist(lapply(str_extract_all(dtf$Tweet,"#\\S+"), function(X){paste(unlist(X), collapse = ", ")})))
+# 
+# 
+# ###______________________WORKING CODE COMMENTED TO SAVE REDOING process of tdata
+
+# write_csv(td,file.path(getwd(),"tweet.csv"))
+# write.csv(td,file = "tweet.csv")
+
+
+
+write.csv(dtf,"tweet.csv")
+
+fsp3 <- gridfs(db = "MSProject3", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
+fsp3$remove("tweet.csv")
+fsp3$upload("tweet.csv")
             
 ```
 
+## Update read linineid data 18 March
+
+```{r}
+DataLink <- read_csv("link182.csv")
+location <- NA
+linkSkill <- NA
+linkInterests <- NA
+for ( i in  1: length(DataLink$fullData)){
+  
+dataLink <- htmlParse(DataLink$fullData[i] )
+dataLink <- read_html(DataLink$fullData[i])
+
+location[i] <- html_nodes(dataLink, "h3.pv-top-card-section__location") %>% html_text() %>% str_trim() %>%    unlist() 
+linkSkill[i] <- html_nodes(dataLink,"span.pv-skill-category-entity__name-text")  %>%  html_text()  %>%  str_trim() %>%    unlist() %>% paste(collapse = " | ")
+linkInterests[i] <- html_nodes(dataLink,"span.pv-entity__summary-title-text")  %>%  html_text()  %>%  str_trim() %>%    unlist() %>% paste(collapse = " | ")
+
+}
+linkedinData <- tibble(DataLink$Name,DataLink$`web-scraper-start-url`,DataLink$Location,DataLink$Intro,linkSkill,linkInterests)
+
+# write.csv(linkedinData,"linkedin.csv")
+# mongoFile$upload("linkedin.csv")
+# # htmltools::HTML(DataLink$fullData[1])
+
+```
 
 # API TRY
 ```{r eval=FALSE, include=FALSE}
