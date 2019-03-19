@@ -546,6 +546,11 @@ linkedinData <- tibble(DataLink$Name,DataLink$`web-scraper-start-url`,DataLink$L
 # mongoFile$upload("linkedin.csv")
 # # htmltools::HTML(DataLink$fullData[1])
 
+header <- HTML("header.html")
+
+htmlParse(header)
+htmltools::includeHTML("header.html")
+
 ```
 
 # API TRY

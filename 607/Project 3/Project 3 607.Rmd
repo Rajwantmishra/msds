@@ -48,6 +48,8 @@ allfiles
 mongoFile$download("tweet.csv")
 mongoFile$download("dataurlA.csv")
 mongoFile$download("linkedin.csv")
+mongoFile$download("ppl.html")
+
 
 
 
@@ -56,6 +58,9 @@ mongoFile$download("linkedin.csv")
 
 
 ```{r}
+# htmltools::includeHTML("header.html")
+
+htmltools::includeHTML("ppl.html")
 
 
 ```
