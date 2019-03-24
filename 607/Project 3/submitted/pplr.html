@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datascience expertise</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+.carousel{
+    /* background: #2f4357; */
+    margin-top: 20px;
+}
+.carousel .item{
+    min-height: 280px; /* Prevent carousel from being distorted if for some reason image doesn't load */
+}
+.carousel .item img{
+    margin: 0 auto; /* Align slide image horizontally center */
+}
+.bs-example{
+	margin: 20px;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #008CBA;
+}
+
+.carousel-inner:hover .overlay {
+  opacity: 1;
+}
+.text, .subText, .subTitle {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.right{
+  float: right;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: right;
+  width: 70%;
+  padding: 20px;
+  height: 250px; /* Should be removed. Only for demonstration */
+}
+
+.column1 {
+  float: left;
+  width: 30%;
+  padding: 20px;
+ 
+  height: 250px; /* Should be removed. Only for demonstration */
+}
+.carousel .item img {
+    margin: 0 auto;
+    float: right;
+}
+
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 50px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-twitter {
+  /* background: #55ACEE;
+  color: white; */
+}
+
+</style>
+</head>
+<body>
+    <!-- <div class="overlay">
+        <div class="subTitle">Mr. ABS</div>
+        <div class="subText">Mr. ABS</div>
+      </div> -->
+<div class="bs-example">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Carousel indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>   
+        <!-- Wrapper for carousel items -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <div class="column1" >
+                    <img src="https://pbs.twimg.com/profile_images/1013086158375530498/4F7ZDV1W_200x200.jpg" alt="Eric Wilson                    ">
+                    
+                  </div>               
+                
+                <div class="column" >
+                  <h2>Eric Wilson <a href="https://twitter.com/ewilson1776" class="fa fa-twitter"></a> </h2> 
+                  <p> <b>Expertises :</b> AI |Analytics |Big Data|Culture |Digital Transformation|Leadership |Supply Chain|HR |Social |Customer Experience|Marketing |Predictive Analytics|Blockchain |Emerging Technology|Fintech |Management |Procurement |ERP |Digital Disruption|Innovation |Future of|Change Management
+                  </p>
+                 
+                </div>
+            
+              </div>
+            <div class="item">
+                
+                <div class="column1">
+                    <img src="https://pbs.twimg.com/profile_images/1107936345769607169/sJKWJd7g_200x200.png" alt="Ronald van Loon">
+                    
+                  </div>               
+                
+                <div class="column" >
+                  <h2>Ronald van Loon <a href="https://twitter.com/Ronald_vanLoon" class="fa fa-twitter"></a> </h2> 
+                  <p> <b>Expertises :</b> Analytics |Customer Experience|Big Data|Digital Transformation|AI |Sustainability |Procurement |Marketing |IoT |Predictive Analytics|HR |Digital Disruption|Mobility |Management </p>
+                </div>
+            </div>
+            <div class="item">
+                
+                <div class="column1">
+                    <img src="https://pbs.twimg.com/profile_images/565555690119245824/Xwg6sp1Q_200x200.jpeg" alt="Sally Eaves">
+                  </div>               
+                
+                <div class="column" >
+                  <h2>Sally Eaves  <a href="https://twitter.com/sallyeaves" class="fa fa-twitter"></a> </h2> 
+                  <p><b>Expertises :</b>AI |Analytics |IoT </p>
+                </div>
+            </div>
+            <div class="item">
+                
+              <div class="column1">
+                  <img src="https://pbs.twimg.com/profile_images/1074703818154160128/eJl7xcAs_200x200.jpg" alt="Jim Marous">
+                </div>               
+              
+              <div class="column" >
+                <h2>Jim Marous  <a href="https://twitter.com/jimmarous" class="fa fa-twitter"></a> </h2> 
+                <p><b>Expertises :</b> AI |Digital Transformation|Fintech |Innovation |Change Management </p>
+              </div>
+          </div>
+
+          <div class="item">
+                
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/686262456126205952/wCla5uWm_200x200.jpg" alt="Tripp Braden ">
+              </div>               
+            
+            <div class="column" >
+              <h2>Tripp Braden </h2> <a href="https://twitter.com/TrippBraden" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b> AI |Analytics |Big Data|Cloud |Digital Disruption|Digital Transformation|Emerging Technology|Fintech |Healthtech |Innovation |IoT |Leadership |Management |Supply Chain|Marketing  </p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/1055552227660759043/8xR6ZFfI_200x200.jpg" alt="Amelia McNamara ">
+              </div>
+            <div class="column" >
+              <h2>Amelia McNamara </h2> <a href="https://twitter.com/AmeliaMN" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b>Copy Editing|CSS|Data Curation|Data Mining|Data Visualization|Graphic Design|HTML|Illustrator|InDesign|Interpersonal Skills|JavaScript|LaTeX|Mathematica|Mathematics|Matlab|Photoshop|Proofreading|Public Speaking|Python|Research|Science|Science|Statistical Modeling|Teaching|Tools & Technologies
+              </p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/812016485069680640/tKpsducS_200x200.jpg" alt=" Mara Averick ">
+              </div>
+            <div class="column" >
+              <h2></h2> <a href="https://twitter.com/dataandme" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b>Adobe Creative Suite|ArcGIS|BBEdit|Content Inventory|Data Architecture|Data Mapping|Design Documents|Design Strategy|Environmental Justice|Grantsmanship|HTML + CSS|Interaction Design|Interactive Development|Interpersonal Skills|JavaScript|Microsoft Office|MySQL|NVivo|Observational Research|OmniGraffle|Other Skills |Participatory Research|PHP|Qualitative Research|Quantitative Research|R|Ruby|Search Engine Submission|Site Maps|Social Impact Assessment|SPSS|SQL|Survey Design|Tools & Technologies|User Experience|User Profiling|W3C Accessibility|Web Analytics|Web Development|Web Mapping|Website Redesign|Wireframes|Wordpress|Wordpress Design|||||||||||||||||||||||||||
+              </p>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/812016485069680640/tKpsducS_200x200.jpg" alt=" Ed Wakelam  ">
+              </div>
+            <div class="column" >
+              <h2></h2> <a href="https://twitter.com/dataandme" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b></p>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/812016485069680640/tKpsducS_200x200.jpg" alt=" Angela Bassa  ">
+              </div>
+            <div class="column" >
+              <h2></h2> <a href="https://twitter.com/AngeBassa" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b>Analytical Skills|Big Data|Business Analysis|Business Development|Business Strategy|Chilled Water|Cloud Computing|Cross-functional Team Leadership|Crunching Numbers|Data Analysis|Data Science|Databases|Decision Analysis|Economics|Enterprise Software|Fire Breathing|Forecasting|Interpersonal Skills|Laser|Leadership|Management|Market Research|Memes|Other Skills |Predictive Analytics|Predictive Modeling|Project Management
+</p>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/973901018424426496/G-wa6qdw_200x200.jpg" alt=" Mark Reynolds    ">
+              </div>
+            <div class="column" >
+              <h2></h2> <a href="https://twitter.com/Prof_Reynolds" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b>Agile |AI |Analytics |Culture |Design Thinking|Digital Disruption|Digital Transformation|Emerging Technology|Innovation |IoT |Leadership |Open Innovation|Predictive Analytics
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="column1">
+                <img src="https://pbs.twimg.com/profile_images/778793475747766272/STf6cSly_200x200.jpg" alt=" Hessie Jones ">
+              </div>
+            <div class="column" >
+              <h2></h2> <a href="https://twitter.com/hessiejones" class="fa fa-twitter"></a>
+              <p><b>Expertises :</b>AI |Big Data|CRM |Digital Disruption|Digital Transformation|Marketing |Social |Startups |Analytics |Innovation |Open Innovation|Future of|Culture |Proptech |Health and|Cloud 
+              </p>
+            </div>
+          </div>
+
+
+      
+        </div>
+        <!-- Carousel controls -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
+</body>
+</html>                            
