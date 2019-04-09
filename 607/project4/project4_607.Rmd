@@ -1,0 +1,1149 @@
+---
+title: "Project 4 607"
+author: "Rajwant Mishra"
+date: "April 4, 2019"
+output:
+  html_document:
+    code_folding: show
+    df_print: paged
+    toc: true
+    toc_float: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(httr)
+library(rvest)
+library(jsonlite)
+# install.packages("wordcloud")
+library(tidytext)
+library(tidyverse)
+library(stringr)
+library(xml2)
+library(XML)
+library(tm) #for reading in text documents
+library(tidytext) # for cleaning text and sentiments
+library(topicmodels) # for topic analysis
+library(janeaustenr) # for free data
+library(dplyr) # for data manipulation
+library(tidyr)
+library(stringr) # for manipulating string/text data
+library(ggplot2) # for pretty graphs
+library(wordcloud) #duh
+# install.packages(  "installr")
+library(installr)
+# install.pandoc()
+
+```
+
+# Data Preparation  {.tabset .tabset-fade .tabset-pills}
+
+## Regex Exp and Varaible 
+```{r}
+(funReplace <- content_transformer(function(x, pattern, rep="") str_replace(x,pattern,rep) ))
+
+
+(getPattern <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(.+?)>.+?</\\1>'))))
+
+# (getBody <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(BODY)>.+?</\\1>'))))
+# (getIp <- content_transformer(function(x,pattern)()))
+
+# EMail
+ regEmail <-"(?<=(From|Delivered-To:|To:){1} )(<?[[:alnum:]]+@[[:alnum:].?-?]+>?)"
+ (getEmail<- content_transformer(function(x,pattern)(str_extract_all(x,regEmail)))) 
+ 
+ # IP Address
+  regIP <- "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
+ (getIP<- content_transformer(function(x,pattern)(str_extract_all(x,regIP)))) 
+  
+  # Email Type
+  # regEmailType <- "(?<=(Content-Type:){1} )([[:graph:]]+)"
+  regEmailType <- "(?<=(Content-Type:){1} )([[:alpha:]]+/[[:alpha:]]+)"
+(getEmailType <- content_transformer(function(x,pattern)(str_extract_all(x,regEmailType)))) 
+  
+  #Subject
+  # Subject 
+regSub <- "(?<=(Subject:){1} )([[:graph:] [:graph:]]+)"
+
+(getSubject <- content_transformer(function(x,pattern)(str_extract_all(x,regSub))))
+
+str_view_all("bacad", "(?<=b)a") 
+```
+
+
+## Working with Single File
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+fileName <- "C:\\Users\\951250\\Documents\\myR\\MS\\607\\project4\\00001.7848dde101aa985090474a91ec93fcf0"
+spdata <- read_lines(fileName)
+unlist(spdata)
+
+Spamfrom <- list(NA)
+
+ 
+dataXML <-   spdata[25:121]
+str_extract_all(spdata,"Content-Transfer-Encoding: quoted-printable")
+str_which(spdata,"<!DOCTYPE HTML")
+
+str_extract_all(spdata,"(From){1} [:graph:]{1}")
+
+str_view_all(spdata,"(?<=(From){1} )")
+
+regEmail <-"(?<=(From|Delivered-To:|To:){1} )(<?[[:alnum:]]+@[[:alnum:].?-?]+>?)"
+
+unlist(str_extract_all(spdata,regEmail))
+
+# Email Served from Server IP
+unlist(str_extract_all(spdata,"(?<=(Received: from){1} )([[:graph:] [:graph:]]+)"))
+
+# Only IP
+ip<- unlist(str_extract_all(spdata, 
+  "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"))
+
+count(as.data.frame(ip),ip)
+
+# Subject 
+unlist(str_extract_all(spdata,"(?<=(Subject:){1} )([[:graph:] [:graph:]]+)"))
+
+
+# Email Type
+unlist(str_extract_all(spdata,"(?<=(Content-Type:){1} )([[:graph:]]+)"))
+
+# BOdy of the email 
+str_which(spdata,regSub)
+spdata[str_which(spdata,regSub):length(spdata)]
+getReaders()
+
+```
+
+## Using DB Control 
+
+DBControl only works with permanent corpora. using Tidy 
+We need to Vcorpus or pcorpus to work with Meta tag, else meta function doesn't work on sample corpus. 
+```{r}
+src <- "C:/Users/951250/Documents/myR/MS/607/project4/spam"
+spamCorpusDB <- PCorpus(DirSource(src, encoding = "UTF-8"),readerControl = list(reader = readPlain),dbControl=list(useDb = TRUE,dbName = "texts.db",dbType = "DB1"))
+
+
+# spamCorpusDB1 <- tm_map(spamCorpusDB1,getBody1)
+# spamCorpusDB1 <- tm_map(spamCorpusDB1,cleanHTML)
+
+head(tidytext::tidy(spamCorpusDB))
+
+spamCorpusDB
+meta(spamCorpusDB[[1]]) ## No Comment Meta Tag
+
+
+meta(spamCorpusDB[[1]], "comment", type = c("indexed", "corpus", "local")) <- "SPAM"
+
+meta(spamCorpusDB[[1]]) ##  Comment Meta tag
+
+
+
+```
+# SPAM Data {.tabset .tabset-fade .tabset-pills}
+## Working with Full SPAM Dataset
+
+TermDocMatrix provides such a term-document matrix for a given Corpus element. It has
+the slot Data of the formal class Matrix from package Matrix (Bates and Maechler 2007) to
+hold the frequencies in compressed sparse matrix format.
+
++ Creting Corpus 
++ Applying Filters and tidying of data
+
+```{r}
+
+#--------------2
+
+
+src <- "C:/Users/951250/Documents/myR/MS/607/project4/spam"
+tm::URISource(fileName)
+spamCorpus <- Corpus(DirSource(src, encoding = "UTF-8"),readerControl = list(reader = readPlain))
+spamCorpus[[1]]
+
+docTemp<- content(spamCorpus[[1]])
+
+head(summary(spamCorpus))
+
+
+# Next, we make some adjustments to the text; making everything lower case, removing punctuation, removing
+# numbers, and removing common English stop words. The 'tm map' function allows us to apply
+# transformation functions to a corpus.
+# Remove Punctuation 
+
+(funReplace <- content_transformer(function(x, pattern, rep="") str_replace(x,pattern,rep) ))
+
+
+(getPattern <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(.+?)>.+?</\\1>'))))
+
+# (getBody <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(BODY)>.+?</\\1>'))))
+# (getIp <- content_transformer(function(x,pattern)()))
+
+# EMail
+ regEmail <-"(?<=(From|Delivered-To:|To:){1} )(<?[[:alnum:]]+@[[:alnum:].?-?]+>?)"
+ (getEmail<- content_transformer(function(x,pattern)(str_extract_all(x,regEmail)))) 
+ 
+ # IP Address
+  regIP <- "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
+ (getIP<- content_transformer(function(x,pattern)(str_extract_all(x,regIP)))) 
+  
+  # Email Type
+  # regEmailType <- "(?<=(Content-Type:){1} )([[:graph:]]+)"
+  regEmailType <- "(?<=(Content-Type:){1} )([[:alpha:]]+/[[:alpha:]]+)"
+(getEmailType <- content_transformer(function(x,pattern)(str_extract_all(x,regEmailType)))) 
+  
+  #Subject
+  # Subject 
+regSub <- "(?<=(Subject:){1} )([[:graph:] [:graph:]]+)"
+
+(getSubject <- content_transformer(function(x,pattern)(str_extract_all(x,regSub))))
+
+str_view_all("bacad", "(?<=b)a") 
+
+# 
+# BOdy of the email 
+
+
+(getBody<- content_transformer(function(x)(x[(str_which(x,regSub)):length(x)])))
+(getBody1<- content_transformer(function(x)(
+  str_sub(x,str_locate(x, regSub)[1] ,-1L)
+)))
+
+# (getBody<- content_transformer(function(x)(
+#   subindex <- str_which(x,regSub);
+#   endindex <- length(x);
+#   x[subindex:endindex]
+#   )))
+
+(getBodyLen <- content_transformer(function(x)( str_count(x))))
+# Remove HTML TAG from
+(cleanHTML <- content_transformer (function(x) {
+  return(gsub("<.*?>", "", x))
+}))
+
+# Remove HTML TAG from
+(cleanHTML <- content_transformer (function(x) {
+  return(gsub("<.*?>", "", x))
+}))
+
+  
+# unlist(str_extract_all(spdata,regEmail))
+# ip<- unlist(str_extract_all(spdata, 
+#   ))
+# 
+# count(as.data.frame(ip),ip)
+
+tm_map(spamCorpus,funReplace,"@")
+
+
+inspect(spamCorpus[[1]])
+content(tm_map(spamCorpus, getPattern)[[1]])
+content(tm_map(spamCorpus, getBody)[[1]])
+
+#### Main 
+corpusEmail <-  tm_map(spamCorpus, getEmail)
+corpusIP <- tm_map(spamCorpus, getIP)
+corpusEmailType <- tm_map(spamCorpus, getEmailType)
+corpusSubject <- tm_map(spamCorpus, getSubject)
+
+corpusBody <- tm_map(spamCorpus,getBody1)
+inspect(corpusBody[[1]])
+corpusBody <- tm_map(corpusBody,cleanHTML)
+inspect(corpusBody[[1]])
+
+corpusBodyLen <- tm_map(spamCorpus,getBodyLen)
+
+
+# corpusBody2 = tm_map(corpusBody, function(x) {
+#    meta(x, "Author","indexed") <- str_count(x)
+#    x
+# })
+
+
+# working with standardized documents or emails, you can remove special characters.
+# Following code will remove punctuation we find in emails. 
+
+for (j in seq(corpusBody)) {
+    corpusBody[[j]] <- gsub("/", " ", corpusBody[[j]])
+    corpusBody[[j]] <- gsub("@", " ", corpusBody[[j]])
+    corpusBody[[j]] <- gsub("\\|", " ", corpusBody[[j]])
+    corpusBody[[j]] <- gsub("\u2028", " ", corpusBody[[j]])  
+}
+
+# Check Update 
+writeLines(as.character(corpusBody[1]))
+#---test 
+  content(corpusEmail[[1]])
+  content(corpusIP[[1]])
+  inspect(corpusBody[[1]])
+  # Content:  chars: 4927
+
+#---End TEst Data 
+# Removing punctuation:
+corpusBody <- tm_map(corpusBody,removePunctuation)  
+
+# Converting to lowercase:
+corpusBody <- tm_map(corpusBody, tolower) 
+
+# Removing "stopwords" (common words) that usually have no analytic value.
+corpusBody <- tm_map(corpusBody, removeWords, stopwords("english"))   
+
+# Remove HTML syntax words
+corpusBody <- tm_map(corpusBody, removeWords, stopwords("english")) 
+
+library(SnowballC)
+
+# https://quanteda.io/reference/corpus.html
+
+
+# Removing particular words:
+# corpusBody <- tm_map(corpusBody, removeWords, c("http", "email"))   
+
+# Removing common word endings (e.g., "ing", "es", "s")
+corpusBody_stem <- tm_map(corpusBody, stemDocument   )
+detach("package:SnowballC")
+
+inspect(corpusBody_stem[1:2])
+# Stripping unnecesary whitespace from your documents:
+corpusBody <- tm_map(corpusBody, stripWhitespace)
+ writeLines(as.character(corpusBody[1]))
+ 
+ # Remove Number 
+ corpusBody <- tm_map(corpusBody, removeNumbers)
+ 
+ # This tells R to treat your preprocessed documents as text documents.
+# corpusBody <- tm_map(corpusBody, PlainTextDocument)
+
+# create a document term matrix.
+corpusBodydtm <- DocumentTermMatrix(corpusBody)   
+corpusBodydtm 
+
+dim(corpusBodydtm)
+# inspect(corpusBodydtm[1:5, 1:20])
+inspect(corpusBodydtm[1,])
+inspect(corpusBodydtm[1:5, 1:20])
+
+corpusBodytdm <- TermDocumentMatrix(corpusBody)   
+corpusBodytdm
+
+
+# Organize terms by their frequency:
+
+corpusBodyFreq <- colSums(as.matrix(corpusBodydtm))  
+length(corpusBodyFreq) 
+
+
+
+# export the matrix to Excel:
+#COmmenting as file would genrate big file to write.
+# write.csv(as.matrix(corpusBodydtm) , file="DocumentTermMatrix.csv") 
+
+
+# If desired, terms which occur very infrequently (i.e. sparse terms) can be removed; leaving only the
+# 'common' terms. Below, the 'sparse' argument refers to the MAXIMUM sparse-ness allowed for a term
+# to be in the returned matrix; in other words, the larger the percentage, the more terms will be retained
+# (the smaller the percentage, the fewer [but more common] terms will be retained).
+#Since we need to focus on most used word, using 'removeSparseTerms()'  will remove the infrequently used words, leaving only the most well-used words in the corpus.
+
+#  Start by removing sparse terms:   
+corpusBodydtm_St <- removeSparseTerms(corpusBodydtm, 0.2) # This makes a matrix that is 20% empty space, maximum.   
+corpusBodydtm_St
+corpusBodydtm_St60 <- removeSparseTerms(corpusBodydtm, 0.60)
+inspect(corpusBodydtm_St60)
+
+corpusBodydtm_St10 <- removeSparseTerms(corpusBodydtm, 0.10)
+corpusBodydtm_St10
+
+corpusBodytdm_st60 <- removeSparseTerms(corpusBodytdm, 0.60)
+corpusBodytdm_st60
+
+# Next, we see the 5 terms returned when sparse-ness is set to 0.20 - fewer terms which occur more frequently
+# (than above).
+corpusBodytdm_st20 <- removeSparseTerms(corpusBodytdm, 0.20)
+inspect(corpusBodytdm_st20)
+
+
+# Finding most and least frequently occurring words.
+corpusBodyFreq <- colSums(as.matrix(corpusBodydtm))
+
+# Sort and show top 20 words from Frequency 
+reshape2::melt(sort(corpusBodyFreq,decreasing = TRUE)[1:20])
+
+boxplot( reshape2::melt(corpusBodyFreq))
+boxplot(reshape2::melt(sort(corpusBodyFreq,decreasing = TRUE)[1:500]))
+head(table(corpusBodyFreq), 15)
+
+head(prop.table(table(corpusBodyFreq))*100, 15)
+ # The resulting output is two rows of numbers. The top number is the frequency with which words appear and the bottom number reflects how many words appear that frequently
+ # We can see that 15 Frequncy is noted for 102 times and similarly Frequecy of 1 is noted 20213 word. ALmost 58% terms.
+corpusBodyFreq[1:20]
+table(corpusBodyFreq[1:20])
+
+#Using tail 
+tail(table(corpusBodyFreq), 20)
+
+
+# Checking Frequency data after Removing Spare terms 
+inspect(corpusBodydtm_St)
+corpusBodyFreq_St <- colSums(as.matrix(corpusBodydtm_St))
+
+head(table(corpusBodyFreq_St), 20)
+tail(table(corpusBodyFreq_St), 15)
+plot(corpusBodyFreq_St)
+plot(corpusBodyFreq)
+
+corpusBodyFreq <- sort(colSums(as.matrix(corpusBodydtm)), decreasing=TRUE)   
+head(corpusBodyFreq, 14) 
+tail(corpusBodyFreq, 14) 
+
+# Now lets find Frequcy  which is greater than or equesl to 500
+findFreqTerms(corpusBodydtm, lowfreq=100)
+
+#aLTERNATE
+corpusBodyFreq_word <- data.frame(word=names(corpusBodyFreq), freq=corpusBodyFreq)   
+head(corpusBodyFreq_word,10)
+
+
+ggplot(subset(corpusBodyFreq_word, freq>250), aes(x = reorder(word, -freq), y = freq)) +
+          geom_bar(stat = "identity") + 
+          theme(axis.text.x=element_text(angle=45, hjust=1))
+
+# #If you have a term in mind that you have found to be particularly meaningful to your analysis, then you may find it helpful to identify the words that most highly correlate with that term.
+# 
+# If words always appear together, then correlation=1.0.
+# Letss see Free word and its uses with correlation of 1 and 0.85
+findAssocs(corpusBodydtm, "free", corlimit=1)
+findAssocs(corpusBodydtm, term=c("free","money"), corlimit=.75)
+boxplot(corpusBodyFreq)
+
+
+set.seed(142)   
+suppressWarnings(wordcloud(names(corpusBodyFreq), corpusBodyFreq, min.freq=300)  ) 
+set.seed(142)   
+suppressWarnings(wordcloud(names(corpusBodyFreq), corpusBodyFreq, max.words=100)   )
+# occurring at least 20 times.
+suppressWarnings(wordcloud(names(corpusBodyFreq), corpusBodyFreq, min.freq=20, scale=c(5, .1), colors=brewer.pal(6, "Dark2")) ) 
+
+# Plot the 100 most frequently occurring words.
+suppressWarnings(wordcloud(names(corpusBodyFreq), corpusBodyFreq, max.words=100, rot.per=0.2))
+
+
+head(corpusBodyFreq)
+
+# Clustering by Term Similarity
+# remove a lot of the uninteresting or infrequent words
+corpusBodydtm_ST15 <- removeSparseTerms(corpusBodydtm, 0.15) # This makes a matrix that is only 15% empty space, maximum.   
+#Frequency for suc terms
+sort(colSums(as.matrix(corpusBodydtm_ST15)), decreasing=TRUE)  
+
+
+# Hierarchal Clustering
+# First calculate distance between words & then cluster them according to similarity.
+
+
+
+
+```
+
+## WRoking With SPAM IP Address
+
+```{r}
+
+
+# IP Address
+  regIP <- "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
+ # (getIP<- content_transformer(function(x,pattern)(str_extract_all(paste0("'",x,"'"),regIP)))) 
+ (getIP<- content_transformer(function(x,pattern)(str_extract_all(x,regIP)))) 
+
+(getCIP<- content_transformer(function(x,pattern)(str_replace_all(x,pattern,"")))) 
+
+
+
+corpusIP <- tm_map(spamCorpus, getIP)
+content(corpusIP[1:5])
+corpusIP <- tm_map(corpusIP,getIP)
+#This step was done to avoaid IP addresses being returened as "c("XX.XX.XX.XXX" , "XX.XX.XX.XXX")" 
+corpusIP <- tm_map(corpusIP,getCIP,"\\(|\\)|[:alpha:]")
+content(corpusIP[1:5])
+
+
+corpusIPdtm <- DocumentTermMatrix(corpusIP)
+inspect(corpusIPdtm)
+
+# getting frequency()
+
+corpusIPdtm_Freq <- colSums(as.matrix(corpusIPdtm))
+head(corpusIPdtm_Freq,10)
+corpusIPdtm_Freq_word <- data.frame(word=names(corpusIPdtm_Freq), freq=corpusIPdtm_Freq)   
+head(corpusIPdtm_Freq_word,10)
+
+
+subset(corpusIPdtm_Freq_word, freq>25)
+#Intresting to see how IP Addres 193.120.211.219 is used  more than 232
+ggplot(subset(corpusIPdtm_Freq_word, freq>25), aes(x = reorder(word, -freq), y = freq)) +
+          geom_bar(stat = "identity") +
+          theme(axis.text.x=element_text(angle=45, hjust=1))
+
+
+
+
+```
+
+# Working with HAM {.tabset .tabset-fade .tabset-pills}
+
+## WOrking with Ham Message
+```{r}
+
+src <- "C:/Users/951250/Documents/myR/MS/607/project4/easy_ham"
+tm::URISource(fileName)
+hamCorpusH <- Corpus(DirSource(src, encoding = "UTF-8"),readerControl = list(reader = readPlain))
+hamCorpusH[[1]]
+docTemp<- content(hamCorpusH[[1]])
+head(summary(hamCorpusH))
+
+
+# Next, we make some adjustments to the text; making everything lower case, removing punctuation, removing
+# numbers, and removing common English stop words. The 'tm map' function allows us to apply
+# transformation functions to a corpus.
+# Remove Punctuation 
+
+(funReplace <- content_transformer(function(x, pattern, rep="") str_replace(x,pattern,rep) ))
+
+
+(getPattern <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(.+?)>.+?</\\1>'))))
+
+# (getBody <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(BODY)>.+?</\\1>'))))
+# (getIp <- content_transformer(function(x,pattern)()))
+
+# EMail
+ regEmail <-"(?<=(From|Delivered-To:|To:){1} )(<?[[:alnum:]]+@[[:alnum:].?-?]+>?)"
+ (getEmail<- content_transformer(function(x,pattern)(str_extract_all(x,regEmail)))) 
+ 
+ # IP Address
+  regIP <- "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
+ (getIP<- content_transformer(function(x,pattern)(str_extract_all(x,regIP)))) 
+  
+  # Email Type
+  # regEmailType <- "(?<=(Content-Type:){1} )([[:graph:]]+)"
+  regEmailType <- "(?<=(Content-Type:){1} )([[:alpha:]]+/[[:alpha:]]+)"
+(getEmailType <- content_transformer(function(x,pattern)(str_extract_all(x,regEmailType)))) 
+  
+  #Subject
+  # Subject 
+regSub <- "(?<=(Subject:){1} )([[:graph:] [:graph:]]+)"
+
+(getSubject <- content_transformer(function(x,pattern)(str_extract_all(x,regSub))))
+
+str_view_all("bacad", "(?<=b)a") 
+
+# 
+# BOdy of the email 
+
+
+(getBody<- content_transformer(function(x)(x[(str_which(x,regSub)):length(x)])))
+(getBody1<- content_transformer(function(x)(
+  str_sub(x,str_locate(x, regSub)[1] ,-1L)
+)))
+
+# (getBody<- content_transformer(function(x)(
+#   subindex <- str_which(x,regSub);
+#   endindex <- length(x);
+#   x[subindex:endindex]
+#   )))
+
+(getBodyLen <- content_transformer(function(x)( str_count(x))))
+# Remove HTML TAG from
+(cleanHTML <- content_transformer (function(x) {
+  return(gsub("<.*?>", "", x))
+}))
+
+# Remove HTML TAG from
+(cleanHTML <- content_transformer (function(x) {
+  return(gsub("<.*?>", "", x))
+}))
+
+  
+# unlist(str_extract_all(spdata,regEmail))
+# ip<- unlist(str_extract_all(spdata, 
+#   ))
+# 
+# count(as.data.frame(ip),ip)
+
+tm_map(hamCorpusH,funReplace,"@")
+
+
+inspect(hamCorpusH[[1]])
+content(tm_map(hamCorpusH, getPattern)[[1]])
+content(tm_map(hamCorpusH, getBody)[[1]])
+
+#### Main 
+CorpusHEmail <-  tm_map(hamCorpusH, getEmail)
+CorpusHIP <- tm_map(hamCorpusH, getIP)
+CorpusHEmailType <- tm_map(hamCorpusH, getEmailType)
+CorpusHSubject <- tm_map(hamCorpusH, getSubject)
+
+CorpusHBody <- tm_map(hamCorpusH,getBody1)
+inspect(CorpusHBody[[1]])
+CorpusHBody <- tm_map(CorpusHBody,cleanHTML)
+inspect(CorpusHBody[[1]])
+
+CorpusHBodyLen <- tm_map(hamCorpusH,getBodyLen)
+
+
+# CorpusHBody2 = tm_map(CorpusHBody, function(x) {
+#    meta(x, "Author","indexed") <- str_count(x)
+#    x
+# })
+
+
+# working with standardized documents or emails, you can remove special characters.
+# Following code will remove punctuation we find in emails. 
+
+for (j in seq(CorpusHBody)) {
+    CorpusHBody[[j]] <- gsub("/", " ", CorpusHBody[[j]])
+    CorpusHBody[[j]] <- gsub("@", " ", CorpusHBody[[j]])
+    CorpusHBody[[j]] <- gsub("\\|", " ", CorpusHBody[[j]])
+    CorpusHBody[[j]] <- gsub("\u2028", " ", CorpusHBody[[j]])  
+}
+
+# Check Update 
+writeLines(as.character(CorpusHBody[1]))
+#---test 
+  content(CorpusHEmail[[1]])
+  content(CorpusHIP[[1]])
+  inspect(CorpusHBody[[1]])
+  # Content:  chars: 4927
+
+#---End TEst Data 
+# Removing punctuation:
+CorpusHBody <- tm_map(CorpusHBody,removePunctuation)  
+
+# Converting to lowercase:
+CorpusHBody <- tm_map(CorpusHBody, tolower) 
+
+# Removing "stopwords" (common words) that usually have no analytic value.
+CorpusHBody <- tm_map(CorpusHBody, removeWords, stopwords("english"))   
+
+# Remove HTML syntax words
+CorpusHBody <- tm_map(CorpusHBody, removeWords, stopwords("english")) 
+
+library(SnowballC)
+
+# https://quanteda.io/reference/CorpusH.html
+
+
+# Removing particular words:
+# CorpusHBody <- tm_map(CorpusHBody, removeWords, c("http", "email"))   
+
+# Removing common word endings (e.g., "ing", "es", "s")
+CorpusHBody_stem <- tm_map(CorpusHBody, stemDocument   )
+detach("package:SnowballC")
+
+# inspect(CorpusHBody_stem)
+# Stripping unnecesary whitespace from your documents:
+CorpusHBody <- tm_map(CorpusHBody, stripWhitespace)
+ writeLines(as.character(CorpusHBody[1]))
+ 
+ # Remove Number 
+ CorpusHBody <- tm_map(CorpusHBody, removeNumbers)
+ 
+ # This tells R to treat your preprocessed documents as text documents.
+# CorpusHBody <- tm_map(CorpusHBody, PlainTextDocument)
+
+# create a document term matrix.
+CorpusHBodydtm <- DocumentTermMatrix(CorpusHBody)   
+CorpusHBodydtm 
+
+dim(CorpusHBodydtm)
+# inspect(CorpusHBodydtm[1:5, 1:20])
+inspect(CorpusHBodydtm[1,])
+inspect(CorpusHBodydtm[1:5, 1:20])
+
+CorpusHBodytdm <- TermDocumentMatrix(CorpusHBody)   
+CorpusHBodytdm 
+
+
+# Organize terms by their frequency:
+
+CorpusHBodyFreq <- colSums(as.matrix(CorpusHBodydtm))  
+length(CorpusHBodyFreq) 
+
+
+
+# export the matrix to Excel:
+#COmmenting as file would genrate big file to write.
+# write.csv(as.matrix(CorpusHBodydtm) , file="DocumentTermMatrix.csv") 
+
+
+# If desired, terms which occur very infrequently (i.e. sparse terms) can be removed; leaving only the
+# 'common' terms. Below, the 'sparse' argument refers to the MAXIMUM sparse-ness allowed for a term
+# to be in the returned matrix; in other words, the larger the percentage, the more terms will be retained
+# (the smaller the percentage, the fewer [but more common] terms will be retained).
+#Since we need to focus on most used word, using 'removeSparseTerms()'  will remove the infrequently used words, leaving only the most well-used words in the CorpusH.
+
+#  Start by removing sparse terms:   
+CorpusHBodydtm_St <- removeSparseTerms(CorpusHBodydtm, 0.2) # This makes a matrix that is 20% empty space, maximum.   
+CorpusHBodydtm_St
+CorpusHBodydtm_St60 <- removeSparseTerms(CorpusHBodydtm, 0.60)
+inspect(CorpusHBodydtm_St60)
+
+CorpusHBodydtm_St10 <- removeSparseTerms(CorpusHBodydtm, 0.10)
+CorpusHBodydtm_St10
+
+CorpusHBodytdm_st60 <- removeSparseTerms(CorpusHBodytdm, 0.60)
+CorpusHBodytdm_st60
+
+# Next, we see the 5 terms returned when sparse-ness is set to 0.20 - fewer terms which occur more frequently
+# (than above).
+CorpusHBodytdm_st20 <- removeSparseTerms(CorpusHBodytdm, 0.20)
+CorpusHBodytdm_st20
+
+
+# Finding most and least frequently occurring words.
+CorpusHBodyFreq <- colSums(as.matrix(CorpusHBodydtm))
+
+
+ t(CorpusHBodyFreq[1:10])
+
+
+ head(table(CorpusHBodyFreq), 15)
+  head(prop.table(table(CorpusHBodyFreq))*100, 15)
+ # The resulting output is two rows of numbers. The top number is the frequency with which words appear and the bottom number reflects how many words appear that frequently
+ # We can see that 15 Frequncy is noted for 102 times and similarly Frequecy of 1 is noted 20213 word. ALmost 58% terms.
+CorpusHBodyFreq[1:20]
+table(CorpusHBodyFreq[1:20])
+
+#Using tail 
+tail(table(CorpusHBodyFreq), 20)
+
+
+# Checking Frequency data after Removing Spare terms 
+# inspect(CorpusHBodydtm_St)
+CorpusHBodydtm_St
+CorpusHBodyFreq_St <- colSums(as.matrix(CorpusHBodydtm_St))
+
+head(table(CorpusHBodyFreq_St), 20)
+tail(table(CorpusHBodyFreq_St), 15)
+
+plot(CorpusHBodyFreq)
+
+CorpusHBodyFreq <- sort(colSums(as.matrix(CorpusHBodydtm)), decreasing=TRUE)   
+head(CorpusHBodyFreq, 14) 
+tail(CorpusHBodyFreq, 14) 
+
+# Now lets find Frequcy  which is greater than or equesl to 500
+findFreqTerms(CorpusHBodydtm, lowfreq=100)
+
+#aLTERNATE
+CorpusHBodyFreq_word <- data.frame(word=names(CorpusHBodyFreq), freq=CorpusHBodyFreq)   
+head(CorpusHBodyFreq_word,10)
+
+
+ggplot(subset(CorpusHBodyFreq_word, freq>250), aes(x = reorder(word, -freq), y = freq)) +
+          geom_bar(stat = "identity") + 
+          theme(axis.text.x=element_text(angle=45, hjust=1))
+
+# #If you have a term in mind that you have found to be particularly meaningful to your analysis, then you may find it helpful to identify the words that most highly correlate with that term.
+# 
+# If words always appear together, then correlation=1.0.
+# Letss see Free word and its uses with correlation of 1 and 0.85
+findAssocs(CorpusHBodydtm, "free", corlimit=1)
+findAssocs(CorpusHBodydtm, term=c("free","money"), corlimit=.75)
+boxplot(CorpusHBodyFreq)
+
+
+set.seed(142)   
+suppressWarnings(wordcloud(names(CorpusHBodyFreq), CorpusHBodyFreq, min.freq=300)  ) 
+set.seed(142)   
+suppressWarnings(wordcloud(names(CorpusHBodyFreq), CorpusHBodyFreq, max.words=100) )  
+# occurring at least 20 times.
+suppressWarnings(wordcloud(names(CorpusHBodyFreq), CorpusHBodyFreq, min.freq=20, scale=c(5, .1), colors=brewer.pal(6, "Dark2"))  )
+
+# Plot the 100 most frequently occurring words.
+suppressWarnings(wordcloud(names(CorpusHBodyFreq), CorpusHBodyFreq, max.words=100, rot.per=0.2))
+
+
+head(CorpusHBodyFreq)
+
+# Clustering by Term Similarity
+# remove a lot of the uninteresting or infrequent words
+CorpusHBodydtm_ST15 <- removeSparseTerms(CorpusHBodydtm, 0.15) # This makes a matrix that is only 15% empty space, maximum.   
+#Frequency for such terms
+head(sort(colSums(as.matrix(CorpusHBodydtm_ST15)), decreasing=TRUE)  ,20)
+
+# word stem that shows up most frequently across all the good emails: 
+ head( sort(colSums(as.matrix(CorpusHBodydtm)),decreasing = TRUE),25)
+
+# Convert to a data frame
+ CorpusHBodydtm_dt = as.data.frame(as.matrix(CorpusHBodydtm))
+# make variable names of emailsSparse valid i.e. R-friendly (to convert variables names starting with numbers)
+ colnames(CorpusHBodydtm_dt) = make.names(colnames(CorpusHBodydtm_dt))
+
+
+```
+
+## WRoking With HAM IP Address
+
+```{r}
+
+
+CorpusHIP <- tm_map(hamCorpusH, getIP)
+content(CorpusHIP[1:5])
+CorpusHIP <- tm_map(CorpusHIP,getIP)
+CorpusHIP <- tm_map(CorpusHIP,getCIP,"\\(|\\)|[:alpha:]")
+
+
+
+CorpusHIPdtm <- DocumentTermMatrix(CorpusHIP)
+CorpusHIPdtm
+
+# getting frequency()
+
+CorpusHIPdtm_Freq <- colSums(as.matrix(CorpusHIPdtm))
+head(CorpusHIPdtm_Freq,10)
+CorpusHIPdtm_Freq_word <- data.frame(word=names(CorpusHIPdtm_Freq), freq=CorpusHIPdtm_Freq)   
+head(CorpusHIPdtm_Freq_word,10)
+
+
+subset(CorpusHIPdtm_Freq_word, freq>25)
+#Intresting to see how IP Addres 193.120.211.219 is used  more than 232
+ggplot(subset(CorpusHIPdtm_Freq_word, freq>25), aes(x = reorder(word, -freq), y = freq)) +
+          geom_bar(stat = "identity") +
+          theme(axis.text.x=element_text(angle=45, hjust=1))+
+    xlab(label = "IP Address")
+
+
+
+
+
+
+
+```
+
+# SPAM and HAM Study {.tabset .tabset-fade .tabset-pills}
+
+## Study of Some SPAM And HAM words
+```{r}
+library(reshape2)
+# head(corpusBodyFreq, 15) 
+# melt(head(corpusBodyFreq, 15))
+# dimnames(as.data.frame(melt(head(corpusBodyFreq, 14))))[[1]]
+
+dfplot <- as.data.frame(melt(head(corpusBodyFreq, 15)))
+dfplot$word <- dimnames(dfplot)[[1]]
+dfplot$word <- as.factor(dfplot$word)
+dfplot$type  <- "S"
+dfplot <- dfplot[order(dfplot$value,decreasing=TRUE),]
+
+dfplotH <- as.data.frame(melt(head(CorpusHBodyFreq, 15)))
+dfplotH$word <- dimnames(dfplotH)[[1]]
+dfplotH$word <- as.factor(dfplotH$word)
+dfplotH$type  <- "H"
+dfplotH <- dfplotH[order(dfplotH$value,decreasing=TRUE),]
+
+dfppltSH <- rbind(dfplotH,dfplot)
+
+
+ 
+  ggplot(dfppltSH, aes(x=word, y=value, fill= type)) + geom_bar(stat="identity",position = "dodge2") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+
+
+```
+
+
+## Study of Some SPAM And HAM IP address
+```{r}
+
+
+
+ # dfplot = as.data.frame(colSums(as.matrix(corpusIPdtm)))
+
+dfplot <- as.data.frame(melt(colSums(as.matrix(corpusIPdtm))))
+dfplot$word <- dimnames(dfplot)[[1]]
+dfplot$word <- as.factor(dfplot$word)
+dfplot$type  <- "S"
+dfplot <- dfplot[order(dfplot$value,decreasing=TRUE),]
+
+
+dfplotH <- as.data.frame(melt(head(CorpusHIPdtm_Freq, 15)))
+dfplotH$word <- dimnames(dfplotH)[[1]]
+dfplotH$word <- as.factor(dfplotH$word)
+dfplotH$type  <- "H"
+dfplotH <- dfplotH[order(dfplotH$value,decreasing=TRUE),]
+
+dfppltSH <- rbind(dfplotH,dfplot)
+boxplot(dfppltSH$value)
+head(dfppltSH)
+dropip <- str_which(dfppltSH$word,'"127.0.0.1"')
+dfppltSH <- dfppltSH[-(dropip),]
+
+dfppltSH <- dfppltSH[order(dfppltSH$value,decreasing=TRUE),]
+ 
+  ggplot(dfppltSH[1:20,] , aes(x=word, y=value, fill= type)) + geom_bar(stat="identity",position = "dodge2") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1))+
+    xlab(label = "IP Address")
+
+
+```
+
+
+
+
+```{r eval=FALSE, include=FALSE}
+
+## Some Dual Words
+
+# Now I'll plot a histogram of the most frequent two-grams (pairs of words that appear together). To construct the term-document matrix for two-grams I use the NGramTokenizer() function from the RWeka package, which is passed as a control term to the  DocumentTermMatrix function.
+
+
+# install.packages("RWeka")
+library(RWeka)
+library(openNLP)
+
+options(mc.cores=1)
+twogramTokenizer <- content_transformer(function(x) {
+    NGramTokenizer(x, Weka_control(min=2, max=5))
+})
+
+# corpusBody <- tm_map(spamCorpus,getBody1)
+# inspect(corpusBody[[1]])
+# corpusBody <- tm_map(corpusBody,cleanHTML)
+# inspect(corpusBody[[1]])
+#-------------------------------------------------- TEST ZONE 
+# tm:::c.VCorpus
+corpusBodyback <-corpusBody
+
+sham <- data.frame(text = sapply(corpusBodyback, paste, collapse = " "), stringsAsFactors = FALSE)
+
+meta(corpusBodyback[[1]], "comment", type = c("indexed", "corpus", "local")) <- "SPAM"
+
+meta(corpusBodyback[[1]])
+
+
+meta(corpusBodyback[[1]], tag = "NULL") <- "MSDS"
+meta(corpusBodyback[[1]],tag="id")
+meta(corpusBodyback[[1]],tag="id")
+DublinCore(corpusBodyback[[1]],tag ="comment") <- "MSDS"
+DublinCore(corpusBodyback[[1]])
+# Concatenates several text collections to a single one.
+c(corpusBodyback[1:2], corpusBodyback[3:4])
+
+
+
+#--------------------------------------------------TEST ZONE  END
+dtm2 <- DocumentTermMatrix(corpusBody,
+                           control=list(tokenize= twogramTokenizer))
+# Find Frequency of terms more than 100
+findFreqTerms(dtm2,100)
+
+# search for Specific term in Corpus 
+inspect(DocumentTermMatrix(corpusBody, list(dictionary = c("html", "free", "see"))))
+
+# I need to remove most of the sparse elements, otherwise I cannot
+# allocate memory for the matrix object
+dtm2_ns <- removeSparseTerms(dtm2, 0.90)
+dtm2.matrix <- as.matrix(dtm2_ns)
+
+wordcount <- colSums(dtm2.matrix)
+topten <- head(sort(wordcount, decreasing=TRUE), 10)
+
+dfplot <- as.data.frame(melt(topten))
+dfplot$word <- dimnames(dfplot)[[1]]
+dfplot$word <- factor(dfplot$word,
+                      levels=dfplot$word[order(dfplot$value,
+                                               decreasing=TRUE)])
+
+fig <- ggplot(dfplot, aes(x=word, y=value)) + geom_bar(stat="identity")
+fig <- fig + xlab("Two-grams in Corpus")
+fig <- fig + ylab("Count")
+print(fig)
+```
+
+## Training 
+
+When I tried passing full dataset to train the model, I ran into low sapce error as the combination would have resulted in 20GB of data set. 
+So I decided to train with subset of data .
+We trained our model with 400 (200 Ham, 200 Spam ) dataset.  
+```{r}
+# SPAM DATA
+spham <- as.data.frame(melt(colSums(as.matrix(corpusBodydtm))))
+spham$type <- as.factor("SPAM")
+spham$word <- dimnames(spham)[[1]]
+
+#Ham Data 
+ham <- as.data.frame(melt(colSums(as.matrix(CorpusHBodydtm))))
+ham$type <-  as.factor("HAM")
+ham$word <- dimnames(ham)[[1]]
+
+ALL_Data<- rbind(spham[1:200,],ham[1:200,])
+ALL_Data$type <- as.factor(ALL_Data$type)
+
+
+
+# Now to estimate the model, we return to the caret package. Let's try a random forest model first. Here is the syntax for estimating the model:
+library(caret)
+
+
+
+
+
+
+
+# the more text features and observations in the document-term matrix, the longer it takes to train the model. See time taken by N= 20 and n= 200 
+system.time({
+  estModel <- train(type ~ word,
+                     data = ALL_Data,
+                     method = "rf",
+                     ntree = 200,
+                     trControl = trainControl(method = "oob"),stringsasfactor = FALSE )
+})
+
+system.time({
+  estModel20 <- train(type ~ .,
+                     data = ALL_Data,
+                     method = "rf",
+                     ntree = 20,
+                     trControl = trainControl(method = "oob"),stringsasfactor = FALSE )
+})
+
+
+## Reading Model variable 
+estModel$finalModel
+
+ estModel$modelType
+ 
+ggplot(estModel)
+
+
+suppressMessages(plsFit <- train(
+  type ~ .,
+  data = ALL_Data,
+  method = "pls",
+  preProc = c("center", "scale"),
+  ## added:
+  tuneLength = 15
+))
+
+
+rdaFit <- train(type ~ .,
+  data = ALL_Data,
+                method = "rda", 
+                control = trainControl(method = "cv"))
+
+plot(rdaFit)
+plot(rdaFit, plotType = "level")
+
+ggplot(rdaFit) + theme_bw()
+
+```
+
+## Testing
+
+We trained our model with 400 (200 Ham, 200 Spam ) dataset.  
++ We will Test with our model from Train data set 
++ We will Test with out model from New set of SPAM data set (next 200 data set from sample)
++ We will Test with out model from New set of HAM data set (next 200 data set from sample)
++ We will Test with out model from New set of SPAM and HAM data set (next 100 data set from samples of both HAM and SPAM)
+
+```{r}
+
+
+
+# Fitting Generalized Linear Models
+
+# Training 
+EW <- glm(type~word,data=ALL_Data,family=binomial)
+
+predEW <- with(ALL_Data,
+  expand.grid(type=levels(type),word = as.character(word)))
+# Testing with same data set
+predict(EW,newdata=predEW)
+
+
+# 
+#---------------------------ERROR 
+# predEW <- with(testingspam,
+#                expand.grid(type=levels(type),word = as.character(word)))
+#  predict(estModel,newdata=predEW)
+
+ # Error in model.frame.default(Terms, newdata, na.action = na.action, xlev = object$xlevels) : 
+ #  factor word has new levels multi, name, net
+#---------------------------ERROR 
+
+```
+
+
+```{r}
+
+testingham <- rbind(spham[1,],ham[250:300,])
+testingspam <- rbind(spham[250:300,],ham[1,])
+tesitngMix <- rbind(spham[300:350,],ham[300:350,])
+testingham$type <- as.factor(testingham$type)
+
+
+testingspam$type <- as.factor(testingspam$type)
+tesitngMix$type <- as.factor(tesitngMix$type)
+
+## TEsting with actual Data 
+
+plsClasses <- predict((estModel), newdata = ALL_Data)
+str(plsClasses)
+table(plsClasses)
+#>  Factor w/ 2 levels "M","R": 2 1 1 1 2 2 1 2 2 2 ...
+plsProbs <- predict(estModel, newdata = ALL_Data, type = "prob")
+head(plsProbs)
+
+plsClasses <- caret::predict.train(estModel, newdata = ALL_Data)
+str(plsClasses)
+table(plsClasses)
+
+# #---------------------------ERROR 
+# #---------------------------# #---------------------------
+# # Error in model.frame.default(Terms, newdata, na.action = na.action, xlev = object$xlevels) : 
+# #   factor word has new levels multi, name, net, never, news
+# #---------------------------# #---------------------------
+# ## TEsting with SPAM Data 
+# 
+# plsClasses1 <- caret::predict.train(estModel, newdata = testingspam )
+# str(plsClasses)
+# 
+# #>  Factor w/ 2 levels "M","R": 2 1 1 1 2 2 1 2 2 2 ...
+# plsProbs <- predict(estModel, newdata = testingspam, type = "prob")
+# head(plsProbs)
+# 
+# 
+# ## TEsting with HAM Data 
+# 
+# plsClasses <- predict(estModel, newdata = testingham)
+# str(plsClasses)
+# #>  Factor w/ 2 levels "M","R": 2 1 1 1 2 2 1 2 2 2 ...
+# plsProbs <- predict(estModel, newdata = testingham, type = "prob")
+# head(plsProbs)
+# 
+# ## TEsting with MIX Data 
+# 
+# plsClasses <- predict(estModel, newdata = tesitngMix)
+# str(plsClasses)
+# #>  Factor w/ 2 levels "M","R": 2 1 1 1 2 2 1 2 2 2 ...
+# plsProbs <- predict(estModel, newdata = tesitngMix, type = "prob")
+# head(plsProbs)
+# #---------------------------ERROR 
+```
+
+
+It was easy to test with all the trained model but I was getting error while testing with non trained data set. 
+
+---
+Ref:
+https://cran.r-project.org/web/packages/caret/vignettes/caret.html
+https://cran.r-project.org/web/packages/tm/tm.pdf
+https://cfss.uchicago.edu/notes/supervised-text-classification/
+https://rstudio-pubs-static.s3.amazonaws.com/265713_cbef910aee7642dc8b62996e38d2825d.html

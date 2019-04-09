@@ -1,0 +1,129 @@
+---
+title: "test1"
+author: "Rajwant Mishra"
+date: "April 5, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# install.packages("janeaustenr")
+# install.github("janeaustenr")
+library(janeaustenr)
+library(tidyverse)
+library(tidytext)
+library(stringr)
+library(caret)
+library(tm)
+```
+
+```{r}
+USCongress <- read_csv("tweet.csv")
+USCongress <- USCongress[,c(1,4)]
+names(USCongress) <- c("ID","text")
+
+(congress <- as_tibble(USCongress) %>%
+    mutate(text = as.character(text)))
+
+
+
+(congress_tokens <- congress %>%
+   unnest_tokens(output = word, input = text) %>%
+   # remove numbers
+   filter(!str_detect(word, "^[0-9]*$")) %>%
+   # remove stop words
+   anti_join(stop_words) %>%
+   # stem the words
+   mutate(word = SnowballC::wordStem(word)))
+
+
+(congress_dtm <- congress_tokens %>%
+   # get count of each token in each document
+   count(ID, word) %>%
+   # create a document-term matrix with all features and tf weighting
+   cast_dtm(document = ID, term = word, value = n))
+
+inspect(congress_dtm)
+findFreqTerms(congress_dtm,300)
+findAssocs(congress_dtm, "http", 0.8)
+inspect(removeSparseTerms(congress_dtm, 0.4))
+
+inspect(DocumentTermMatrix(congress_dtm, list(dictionary = c("reject", "drp", "oil"))))
+
+
+tweetdtm <- congress_tokens %>%
+  # get count of each token in each document
+  count(ID, word) %>%
+  # create a document-term matrix with all features and tf-idf weighting
+  cast_dtm(document = ID, term = word, value = n,
+           weighting = tm::weightTfIdf)
+
+# getting frequency()
+
+tweetdtm_Freq <- colSums(as.matrix(tweetdtm))
+
+dfplot <- as.data.frame(melt(tweetdtm_Freq))
+dfplot$word <- dimnames(dfplot)[[1]]
+dfplot$word <- as.factor(dfplot$word)
+dfplot$type  <- "S"
+dfplot <- dfplot[order(dfplot$value,decreasing=TRUE),]
+
+head(dfplot,10)
+findFreqTerms(congress_dtm,300)
+
+(congress_tfidf <- congress_tokens %>%
+   count(ID, word) %>%
+   bind_tf_idf(term = word, document = ID, n = n))
+
+#---------------------------------------------------------------
+
+txt <- system.file("texts", "txt", package = "tm")
+
+(ovid <- VCorpus(DirSource(txt, encoding = "UTF-8"),
+ readerControl = list(language = "lat")))
+
+writeCorpus(ovid)
+inspect(ovid[1:2])
+
+meta(ovid[[2]])
+
+content(ovid[[2]])
+inspect(ovid[[2]])
+
+
+data("crude")
+inspect(crude[[1]])
+inspect(stemDocument(crude[[1]]))
+
+library(stringr)
+crude[[1]]
+(f <- content_transformer(function(x, pattern) gsub(pattern, "", x)))
+(f1 <- content_transformer(function(x, pattern, rep="") str_replace(x,pattern,rep) ))
+
+tm_map(crude, f, "[[:digit:]]+")[[1]]
+
+inspect(tm_map(crude, f1, "Diamond")[[1]])
+
+
+# total_words <- congress_tokens %>% 
+#   group_by(ID) %>% 
+#   summarize(total = sum(word))
+# 
+# tweet_words <- congress_tokens %>%
+#   count(ID, word, sort = TRUE)
+# 
+# 
+# book_words <- austen_books() %>%
+#   unnest_tokens(word, text) %>%
+#   count(book, word, sort = TRUE)
+# 
+# total_words <- book_words %>% 
+#   group_by(book) %>% 
+#   summarize(total = sum(n))
+# 
+# book_words <- left_join(book_words, total_words)
+meta(crude[[1]])
+
+```
+
