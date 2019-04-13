@@ -1,0 +1,23 @@
+---
+title: "Google Search Recommendation "
+author: "Rajwant Mishra"
+date: "April 13, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+[Presentation on GITHUB](https://github.com/Rajwantmishra/msds/blob/master/607/week11/Google%20Search%20Recommendation.pdf).
+
+Must check :
+
+<iframe width="900" height="600" src="https://vannizhang.github.io/wonder/#" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+<iframe width="609" height="365" src="https://www.youtube.com/embed/IdjJgd6gezM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
