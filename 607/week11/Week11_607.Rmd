@@ -9,13 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Gitbub
 
 [Presentation on GITHUB](https://github.com/Rajwantmishra/msds/blob/master/607/week11/Google%20Search%20Recommendation.pdf).
 
-Must check :
+## Slides
 
-<iframe width="900" height="600" src="https://vannizhang.github.io/wonder/#" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/mAskCLIvN7P883" width="900" height="800" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/RajwantMishra/google-search-recommendation-140675516" title="Google search recommendation" target="_blank">Google search recommendation</a> </strong> from <strong><a href="https://www.slideshare.net/RajwantMishra" target="_blank">Rajwant Mishra</a></strong> </div>
+
+## Must check : Auto complete data for US by states. 
+
+[main site](https://vannizhang.github.io/wonder/#) 
+
+<iframe width="1000" height="900" src="https://vannizhang.github.io/wonder/#" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 
