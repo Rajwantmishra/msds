@@ -1,0 +1,321 @@
+---
+title: "RDBMtoNoSQL"
+author: "Rajwant Mishra"
+date: "April 18, 2019"
+output: 
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+---
+
+# Package 
+
+```
+
+library(tidyverse)
+library(RMySQL)
+library(DBI)
+library(gridExtra)
+library(mongolite)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RMySQL)
+library(DBI)
+library(gridExtra)
+library(mongolite)
+
+USER = "msds_user"
+PASS = "msds"
+HOST = "cluster0-bqyhe.gcp.mongodb.net"
+URI = sprintf("mongodb+srv://%s:%s@%s/", USER, PASS, HOST)
+
+
+
+
+
+
+NOSQL_CON = mongo(collection = "movie", db = "MSDS_Review", url = URI) # create connection, database and collection
+
+
+NOSQL_ALL = mongo( url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/") # create connection, database and collection
+
+
+```
+
+# Read/Write {.tabset .tabset-fade .tabset-pills}
+
+## Read Data from MySQL 
+
+
+```{r}
+
+# install.packages("RMySQL")
+
+ con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+ 
+
+dbListTables(con2)
+
+ # Database Operation 
+con2 <- dbConnect(RMySQL::MySQL(), dbname = "flights", host="localhost", user="root",password= "")
+query <- "SELECT * FROM movies_review"
+
+tab1 <- dbSendQuery(con2,query)
+suppressWarnings(rm(movies_review ))
+movies_review <- dbFetch(tab1)
+
+query <- "SELECT * FROM movies_master"
+
+tab1 <- dbSendQuery(con2,query)
+movies_master <- dbFetch(tab1)
+
+DT::datatable(movies_master)
+DT::datatable(movies_review)
+
+
+ 
+```
+
+
+## Move to Mongo {.tabset .tabset-fade .tabset}
+
+We are creating two colelction for this data, one for Movie and Movei_Review
+
+### Upload
+
+```{r}
+
+
+# Using plain-text
+URI = sprintf("mongodb+srv://%s:%s@%s/", USER, PASS, HOST)
+OpenCon<- mongo(url = URI)
+
+#Deault is Test colelction 
+OpenCon
+
+# Lets create new colection MOvie
+
+CON_movie <- mongo("movie", db = "MSDS_Review",url=URI)
+
+
+#Check what is in collection Movie
+# empty the colelction
+CON_movie$drop()         #Refresh the collection
+CON_movie$count()        # COunt collection
+CON_movie$insert(movies_master)
+CON_movie$count()        # COunt collection
+
+CON_movie$disconnect()
+CON_movie$count()
+# Lets create new colection MOvieR for Movie Reviews
+
+CON_movieR <- mongo("movie_review", db = "MSDS_Review",url=URI)
+CON_movieR$drop()      #Refresh the collection
+CON_movieR$count()     # COunt collection
+CON_movieR$insert(movies_review)
+CON_movieR$count()     # COunt collection
+
+```
+
+### Query on Data 
+
+ + count 
+ + Find 
+ + Create Index
+
+```{r}
+
+#View connection
+CON_movie
+CON_movieR
+
+#Validation if data was moved successfuly to Mongo DB
+ifelse(CON_movie$count()==nrow(movies_master),"movies_master All Data in Mongo","Something is not in Mongo")
+ifelse(CON_movieR$count()==nrow(movies_review),"movies_review All Data in Mongo","Something is not in Mongo")
+
+# Quick Way
+CON_movieR$count()==nrow(movies_master)
+
+#The empty query {} means: select all data. 
+# Get all records
+CON_movieR$count('{}')
+
+## Read all the data back into R
+CON_movieR$find()
+CON_movieR$find('{}')
+
+
+
+## To query all rows where User_Name == "TheTopDawg" AND Rating > 5 
+
+
+
+CON_movieR$find('{"User_Name" : "TheTopDawg" ,"Rating":{"$gt":5}}')
+
+#Read rating for Movie_ID = 1 and rating less than 5
+
+subsetRevie  <- CON_movieR$find('{"Movie_ID" : 1 ,"Rating":{"$lt":5}}')
+
+subsetRevie
+
+#Using In , find all the movie rating for 1 and 2 where rating is less than 5  
+subsetRevie12  <- CON_movieR$find('{"Movie_ID" :{"$in":[1,2]} ,"Rating":{"$lt":5}}')
+
+subsetRevie12
+
+
+# using Qury and Fields 
+MR_Query_Fields <- CON_movieR$find(
+  query = '{"Movie_ID" : 1 , "Rating" : {"$gt":5 }}', 
+  fields = '{"ID" : true, "Rating" : true,"User_Name" : true,"Movie_ID":true}',
+  limit = 5
+)
+print(MR_Query_Fields)
+
+#sort by rating IN dESCENDING ORDER for Movie_ID = 1
+
+CON_movieR$find('{"Movie_ID" : 1}' , sort = '{"Rating": -1}')   
+
+
+# Check time , since by default Mongo has _id is the only index, and other field would be costly to the db 
+
+system.time(CON_movieR$find('{"Movie_ID" : 1}' , sort = '{"Rating": -1}') )
+system.time(CON_movieR$find('{"Movie_ID" : 1}' , sort = '{"_id": -1}') )
+
+#lets add Movie_ID as Index 
+
+CON_movieR$index(add = '{"Movie_ID" : 1}')
+# Lets see how many index we have
+CON_movieR$index()
+
+# Check sysetm time taken for excecution now
+system.time(CON_movieR$find('{"Movie_ID" : 1}' , sort = '{"Rating": -1}') )
+
+```
+
+### iterate
+
+```{r}
+# Lets use iterate to read data 
+DT::datatable(CON_movieR$find())
+Review_Iter <- CON_movieR$iterate('{"Movie_ID" : 1}', sort = '{"Rating": -1}', limit = 7)
+
+# read records from  the iterator
+while(!is.null(x <- Review_Iter$one())){
+  cat(sprintf("Found Movie ID %s for USER : %s\n", x$Movie_ID, x$User_Name))
+}
+
+```
+
+### Remove 
+
+```{r}
+# Lets say I want to remove all the rating of 4 for Movie 1
+# 1 list those record
+CON_movieR$find('{"Movie_ID" : 1,"Rating":{"$eq":4}}') 
+
+# 2 : Remvoe 
+CON_movieR$remove('{"Movie_ID" : 1,"Rating":{"$eq":4}}')
+
+# 3 : Valdiate 
+CON_movieR$find('{"Movie_ID" : 1,"Rating":{"$eq":4}}') 
+CON_movieR$find('{"Movie_ID" : 1,"Rating":{"$ne":4}}') # not equal to 4
+
+CON_movieR$count() # Count got reduced .
+
+#Let update rating from 8 to 9
+
+CON_movieR$find('{"Movie_ID" : 1,"User_Name":"krice23"}') 
+CON_movieR$update('{"Movie_ID" : 1,"User_Name":"krice23"}','{"$set":{"Rating":9}}')
+CON_movieR$find('{"Movie_ID" : 1,"User_Name":"krice23"}') 
+# we should using multiple = TRUE if we want to udpate more that one record.
+
+
+CON_movieR$find('{"User_Name":"TheTopDawg"}') 
+CON_movieR$update('{"User_Name":"TheTopDawg"}','{"$set":{"Rating":9}}')
+CON_movieR$find('{"User_Name":"TheTopDawg"}') 
+# multiple = TRUE if we want to udpate more that one record.
+CON_movieR$update('{"User_Name":"TheTopDawg"}','{"$set":{"Rating":7}}',multiple = TRUE)
+CON_movieR$find('{"User_Name":"TheTopDawg"}') 
+
+```
+
+### Export and other function
+
+Mongo stores data in BSON , we can get BSON output by passing BSON = true
+```{r}
+CON_movie$export()
+
+CON_movie$export(file("mr.bson"),bson = TRUE)
+
+
+OpenCon$run('{"listCollections":1}')
+
+CON_admin <- admin <- mongo(db = "admin",url = URI)
+CON_admin$run('{"listDatabases":1}')
+
+```
+
+### Distinct
+
+```{r}
+
+NOSQL_CON = mongo(collection = "movie", db = "MSDS_Review", url = URI) # create connection, database and collection
+NOSQL_CON$index()
+NOSQL_CON$count()
+NOSQL_CON$distinct("Movie_Name")
+DT::datatable(NOSQL_CON$find())
+NOSQL_CON$iterate()$one()
+
+# Find Movie with name "Incredibles 2"
+# USe count to get the count of matching record . 
+# use find to get the data
+
+NOSQL_CON$count('{"Movie_Name" : "Incredibles 2"  }')
+NOSQL_CON$count('{"Movie_Name" : "Incredibles2"  }') # Note space missing between name `Incredibles 2`.
+NOSQL_CON$find('{"Movie_Name" : "Incredibles 2"  }')
+MOview_Rating <- NOSQL_CON$find('{"ID" : 1}')
+print(MOview_Rating)
+
+```
+
+
+# Compare Nosql and MYSQL
+
+<table class="table table-bordered table-striped">
+<tbody><tr><th>SQL Database</th><th>NoSQL Database (MongoDB)</th></tr>
+<tr><td>Relational database</td><td>Non-relational database</td></tr>
+<tr><td>Supports SQL query language</td><td>Supports JSON query language</td></tr>
+<tr><td>Table based</td><td>Collection based and key-value pair</td></tr>
+<tr><td>Row based</td><td>Document based</td></tr>
+<tr><td>Column based</td><td>Field based</td></tr>
+<tr><td>Support foreign key</td><td>No support for foreign key</td></tr>
+<tr><td>Support for triggers</td><td>No Support for triggers</td></tr>
+<tr><td>Contains schema which is predefined</td><td>Contains dynamic schema</td></tr>
+<tr><td>Not fit for hierarchical data storage</td><td>Best fit for hierarchical data storage</td></tr>
+<tr><td>Vertically scalable - increasing RAM</td><td>Horizontally scalable - add more servers</td></tr>
+<tr><td>Emphasizes on ACID properties (Atomicity, Consistency, Isolation and Durability)</td><td>Emphasizes on CAP theorem (Consistency, Availability and Partition tolerance)</td></tr>
+</tbody></table>
+
+MongoDB is an open source document-oriented NoSQL database which stores data in the form of JSON-like objects. Hence a collection in MongoDB is equivalent to Table in relational database And a document in a collection in MongoDB is equivalent to a row in relational database table.
+
+If we were using a relational database, we could perform a join on users and stores, and get all our objects in a single query. But MongoDB does not support joins and so, at times, requires bit of denormalization
+
+
+NoSQL and relational databses differ in the manner they represent data. While a row stores data in columns, document stores in JSON like structure.
+
+MongoDB documents support dynamic schema, i.e. documents in same collection can have different schema , one can have 5 fileds , while other can have more or less than five. This allows complex hierarchical /tree structured schemas is be efficiently stored in MongoDB.
+
+Relationships in relational databse can be achieved through primary key /foreign key constraints ; No such mapping is present in MongoDB other than linking / emnbedding of documents .
+
+
+
+# Ref
+ + https://jeroen.github.io/mongolite/manipulate-data.html
+ + https://cran.r-project.org/web/packages/mongolite/mongolite.pdf
