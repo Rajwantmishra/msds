@@ -1,0 +1,66 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0","# load data"
+"0","library(tidyverse)"
+"0","library(rjson)"
+"2","package ‘rjson’ was built under R version 3.5.2"
+"0","library(XML)"
+"0","library(xml2)"
+"0","library(ggplot2)"
+"0","library(dplyr)"
+"0","library(maps)"
+"2","package ‘maps’ was built under R version 3.5.2"
+"2","
+Attaching package: ‘maps’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    map
+
+"
+"0","library(ggmap)"
+"2","package ‘ggmap’ was built under R version 3.5.3"
+"2","Google's Terms of Service: https://cloud.google.com/maps-platform/terms/.
+"
+"2","Please cite ggmap if you use it! See citation(""ggmap"") for details.
+"
+"0","library(mongolite)"
+"2","package ‘mongolite’ was built under R version 3.5.3"
+"0","library(lubridate)"
+"0","library(gridExtra)"
+"2","package ‘gridExtra’ was built under R version 3.5.3"
+"2","
+Attaching package: ‘gridExtra’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    combine
+
+"
+"0","library(tidyverse)"
+"0","library(httr)"
+"0","library(jsonlite)"
+"2","
+Attaching package: ‘jsonlite’
+
+"
+"2","The following objects are masked from ‘package:rjson’:
+
+    fromJSON, toJSON
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    flatten
+
+"
+"0","library(DT)"
+"0","library(rjson)"
+"0","library(readxl) "
+"2","package ‘readxl’ was built under R version 3.5.2"
+"0","#install.packages(""DT"")"
+"0","library(DT)"
+"0","# key = ""p7RTQofDauAUl97P19Ort6XLgxMWlGLG"""
+"0","# fsp3 <- gridfs(db = ""606Project"", url = ""mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/"", prefix = ""fs"",options = ssl_options())"
+"0","# my_collection = mongo(collection = ""606Project"", db = ""test"", url = ""mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/"") # create connection, database and collection"

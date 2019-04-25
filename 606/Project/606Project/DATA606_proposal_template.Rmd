@@ -1,0 +1,383 @@
+---
+title: DATA 606 Data Project Proposal
+author: Rajwant Mishra
+date: "March 22, 2019"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# load data
+library(tidyverse)
+library(rjson)
+library(XML)
+library(xml2)
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(ggmap)
+library(mongolite)
+library(lubridate)
+library(gridExtra)
+library(tidyverse)
+library(httr)
+library(jsonlite)
+library(DT)
+library(rjson)
+library(readxl) 
+#install.packages("DT")
+library(DT)
+# key = "p7RTQofDauAUl97P19Ort6XLgxMWlGLG"
+# fsp3 <- gridfs(db = "606Project", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/", prefix = "fs",options = ssl_options())
+# my_collection = mongo(collection = "606Project", db = "test", url = "mongodb+srv://msds_user:msds@cluster0-bqyhe.gcp.mongodb.net/") # create connection, database and collection
+
+```
+
+### Data Preparation
+
+### Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+
+1. Calculate sales variance /effectiveness by promo by season, Which promotion is effective (buy 10 get 1 ) or (buy 20 get1 free).
+2. Evaluate by specific promotion which creates the most up lift, and does time period play a role in the offer as well. 
+3. Does customers buy more during the Quarter End
+4. Does customer who baught more at the Quarter end , how did they perfrom during the followin quarter. 
+
+
+
+
+### Cases 
+
+**What are the cases, and how many are there?**
+
+I have data for 2 Year for each Quarter.*What else I should Incldue here ?*
+
+### Data collection 
+
+**Describe the method of data collection.**
+
+Promotion and Sales data from 2017 and 2018 Would be provided by Respective team for analysis. 
+
+### Type of study 
+
+**What type of study is this (observational/experiment)?**
+We do studies to gather information and draw conclusions. The type of conclusion we draw depends on the study method used:
+*In an observational* study, we measure or survey members of a sample without trying to affect them.
+*In a controlled experiment*, we assign people or things to groups and apply some treatment to one of the groups, while the other group does not receive the treatment.
+
+This is observational study. 
+
+### Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+```{r echo=TRUE}
+workDir <- getwd()
+
+filePath = paste0(workDir,"/Data")
+g_max <- 1048576 
+ctype = c("text","text","text","text","text","numeric","numeric","text","text","text","text","text","text","text")
+ Q1_17 <-read_excel(path=paste0(filePath,"/","2017_Q1.xlsx"),sheet="Data",guess_max =g_max)
+ Q2_17 <-read_xlsx(path=paste0(filePath,"/","2017_Q2.xlsx"),sheet="Data",guess_max =g_max)
+ 
+ (nms <- names(read_excel(path=paste0(filePath,"/","2017_Q3.xlsx"), sheet="DATA",n_max = 0)))
+ 
+ Q3_17 <-read_xlsx(path=paste0(filePath,"/","2017_Q3.xlsx"),sheet="DATA",guess_max =g_max)
+ Q4_17 <-read_excel(path=paste0(filePath,"/","2017_Q4.xlsx"),sheet="DATA",guess_max =g_max)
+ Q1_18 <-read_excel(path=paste0(filePath,"/","2018_Q1.xlsx"),sheet="Data",guess_max =g_max)
+ Q2_18 <-read_excel(path=paste0(filePath,"/","2018_Q2.xlsx"),sheet="Data",guess_max =g_max)
+ Q3_18 <-read_excel(path=paste0(filePath,"/","2018_Q3.xlsx"),sheet="Data",guess_max =g_max)
+ Q4_18 <-read_excel(path=paste0(filePath,"/","2018_Q4.xlsx"),sheet="Data",guess_max =g_max)
+ 
+# 
+#  
+# 
+# 
+# Q1_17[,c(2,3,4,5,6,7,8,9,10,14,15,16,17,18,19,20,21,22,25,26,27)]
+# Q2_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,22,24,25,26,30,31,32)]
+# Q3_17[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)]
+# Q4_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,29,30,31)]
+# Q1_18[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)]
+# Q2_18[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,30,31,32)]
+# Q3_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)]
+# Q4_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)]
+# 
+# 
+# 
+#    
+#    
+#  
+#   str(Q1_17)SData <- bind_rows(Q3_17,Q1_17)
+#  
+#   Q1_17[,c("Main" , "Customer")]
+#   unique(Q1_17$exc)
+#   Q3_17[7359,]
+#   
+# All_Coll_Name <- bind_cols(  
+# "1"=as.data.frame(names(Q1_17[,c(2,3,4,5,6,7,8,9,10,14,15,16,17,18,19,20,21,22,25,26,27)])),
+# "2"=as.data.frame(names(Q2_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,22,24,25,26,30,31,32)])),
+# "3"=as.data.frame(names(Q3_17[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)])),
+# "4"=as.data.frame(names(Q4_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,29,30,31)])),
+# "18"=as.data.frame(names(Q1_18[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)])),
+# "28"=as.data.frame(names(Q2_18[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,30,31,32)])),
+# "8"=as.data.frame(names(Q3_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)])),
+# "48"=as.data.frame(names(Q4_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)])))
+# 
+# names(All_Coll_Name) <- 1:8
+
+
+Q1_17 <- Q1_17[,c(2,3,4,5,6,7,8,9,10,14,15,16,17,18,19,20,21,22,25,26,27)]
+Q2_17 <- Q2_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,22,24,25,26,30,31,32)]
+Q3_17 <- Q3_17[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)]
+Q4_17 <- Q4_17[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,29,30,31)]
+Q1_18 <- Q1_18[,c(1,2,4,5,6,7,8,9,10,16,17,18,19,20,22,23,24,25,29,30,31)]
+Q2_18 <- Q2_18[,c(2,3,5,6,7,8,9,10,11,17,18,19,20,21,23,24,25,26,30,31,32)]
+Q3_18 <- Q3_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)]
+Q4_18 <- Q4_18[,c(2,3,5,6,7,8,9,10,11,18,19,20,21,22,24,25,26,27,31,32,33)]
+
+   Q1_17$Qt <-   "Q1_17"
+   Q2_17$Qt <-   "Q2_17"
+   Q3_17$Qt <-   "Q3_17"
+   Q4_17$Qt <-   "Q4_17"
+   Q1_18$Qt <-   "Q1_18"
+   Q2_18$Qt <-   "Q2_18"
+   Q3_18$Qt <-   "Q3_18"
+   Q4_18$Qt <-   "Q4_18"
+   
+   
+   names(Q2_17) <- names(Q1_17)
+   names(Q3_17) <- names(Q1_17)
+   names(Q4_17) <- names(Q1_17)
+   names(Q1_18) <- names(Q1_17)
+   names(Q2_18) <- names(Q1_17)
+   names(Q3_18) <- names(Q1_17)
+   names(Q4_18) <- names(Q1_17)
+   
+   rm(mkt_Data)
+   mkt_Data <- bind_rows(
+   Q1_17,
+   Q2_17,
+   Q3_17,
+   Q4_17,
+   Q1_18,
+   Q2_18,
+   Q3_18,
+   Q4_18)
+
+    
+head(mkt_Data)
+
+```
+
+
+
+### Dependent Variable
+
+**What is the response variable? Is it quantitative or qualitative?**
+
+Order Quantity is Response variable here . It's Quantitative variable.
+Order Qty by Quarter for Customer , Needs to calcualte afte rcollecting data over year.
+
+### Independent Variable
+
+**You should have two independent variables, one quantitative and one qualitative.**
+*`Promotion`*, *(same as `External Description`)*, *Zip code* are Independent varaible . 
+*Season* needs to calcualte
+All are qualitative varaible as we can't add them.
+
+### Relevant summary statistics 
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+
+```{r eval=FALSE, include=FALSE}
+
+#>>>>>>>>>>>>>>>>>>CHEK
+
+ggplot(h_gap, aes(x = year, y = lifeExp,
+                  color = fct_reorder2(country, year, lifeExp))) +
+  geom_line() +
+  labs(color = "country")
+#>>>>>>>>>>>>>>>>>>>>>>>CHECK
+
+# PLot by $ value and Qty by Qtr
+
+ggplot(mkt_Data, mapping = aes(x= as.character(mkt_Data$`Promotion Order Doll`), y= mkt_Data$`Order Quantity`, color= mkt_Data$`External Description`))+
+  geom_point()+theme(axis.text.x = element_text(angle = 70, hjust = 1)) + facet_wrap(~mkt_Data$Qt)
+
+# Customer by order Qty Per Qtr
+
+ggplot(mkt_Data, mapping = aes(x= as.character(mkt_Data$Customer), y= mkt_Data$`Order Quantity`, color= mkt_Data$Qt))+
+  geom_point()+theme(axis.text.x = element_text(angle = 70, hjust = 1))+facet_wrap(~mkt_Data$Qt)
+
+# Orde  date and Order Qty 
+
+ggplot(mkt_Data, mapping = aes(x=mkt_Data$`Order Date`, y= mkt_Data$`Order Quantity`, color= mkt_Data$Qt))+
+geom_smooth() 
+
+ggplot(mkt_Data, mapping = aes(x=mkt_Data$`Order Date`, y= mkt_Data$`Order Quantity`))+
+geom_smooth() 
+
+
+# Order Qty by ZIP per QTR
+ggplot(mkt_Data, mapping = aes(x=mkt_Data$zip, y= mkt_Data$`Order Quantity`,color= mkt_Data$Qt))+
+geom_col()
+
+# by Brand 
+ggplot(mkt_Data, mapping = aes(x= mkt_Data$Brand, y= mkt_Data$`Order Quantity`, color= mkt_Data$Qt))+
+  geom_point()+theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+
+# By STATE
+
+ggplot(mkt_Data, mapping = aes(x=mkt_Data$state, y= mkt_Data$`Order Quantity`, color= mkt_Data$Qt))+
+  geom_col()+theme(axis.text.x = element_text(angle = 70, hjust = 1)) + facet_wrap(~mkt_Data$Qt)
+
+
+# Customer by Promotion 
+ggplot(mkt_Data, mapping = aes(x= as.character(mkt_Data$Customer), y= mkt_Data$`Order Quantity`, color= mkt_Data$`External Description`))+facet_wrap(~mkt_Data$Qt) + 
+  geom_point()+theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+ggplot(mkt_Data, mapping = aes(x=as.character(mkt_Data$Customer), y= mkt_Data$`Order Quantity`, color= mkt_Data$Qt))+
+  geom_col()+theme(axis.text.x = element_text(angle = 70, hjust = 1)) + facet_wrap(~mkt_Data$Qt)
+
+# ggplot(mkt_Data, mapping = aes(x=as.character(mkt_Data$Customer), y= mkt_Data$`Order Quantity`, color= mkt_Data$`External Description`))+
+#   geom_col()+theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+
+
+
+
+
+
+
+  
+  
+
+```
+
+
+
+
+```{r eval=FALSE, include=FALSE}
+library(corrr)
+library(psych)
+
+cor.plot(Q1_17[])
+
+Q1_temp <- Q1_17[,c(2,10,15,16,19,21,22,25,26,27)]
+
+Q1_temp <- Q1_temp[,c(10,4)]
+
+Q1_temp$Brand <- as.factor(Q1_temp$Brand)
+Q1_temp$zip <- as.factor(Q1_temp$zip)
+Q1_temp$`External Description` <- as.factor(Q1_temp$`External Description`)
+
+corrr::correlate(Q1_temp[,2])
+corrr::network_plot(correlate(Q1_temp[,2]))
+
+
+set.seed(20)
+clusters <- kmeans(Q1_temp[,10], 10)
+
+str(clusters)
+as.factor(clusters$cluster)
+
+cbind(clusters$centers,clusters$size)
+
+
+
+```
+```{r eval=FALSE, include=FALSE}
+#-----------
+apr14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv")
+may14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-may14.csv")
+jun14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-jun14.csv")
+jul14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-jul14.csv")
+aug14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-aug14.csv")
+sep14 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-sep14.csv")
+
+
+library(dplyr)
+data14 <- bind_rows(apr14, may14, jun14, jul14, aug14, sep14)
+
+# VIM library for using 'aggr'
+install.packages("VIM")
+library(VIM)
+
+# 'aggr' plots the amount of missing/imputed values in each column
+aggr(data14)
+library(lubridate)
+
+# Separate or mutate the Date/Time columns
+data14$Date.Time <- mdy_hms(data14$Date.Time)
+data14$Year <- factor(year(data14$Date.Time))
+data14$Month <- factor(month(data14$Date.Time))
+data14$Day <- factor(day(data14$Date.Time))
+data14$Weekday <- factor(wday(data14$Date.Time))
+data14$Hour <- factor(hour(data14$Date.Time))
+data14$Minute <- factor(minute(data14$Date.Time))
+data14$Second <- factor(second(data14$Date.Time))
+
+#data14$date_time
+data14$Month
+
+head(data14, n=10)
+
+set.seed(20)
+clusters <- kmeans(data14[,2:3], 5)
+
+# Save the cluster number in the dataset as column 'Borough'
+data14$Borough <- as.factor(clusters$cluster)
+
+# Inspect 'clusters'
+str(clusters)
+
+library(DT)
+
+data14$Month <- as.double(data14$Month)
+month_borough_14 <- count_(data14, vars = c('Month', 'Borough'), sort = TRUE) %>% 
+  arrange(Month, Borough)
+datatable(month_borough_14)
+
+library(dplyr)
+monthly_growth <- month_borough_14 %>%
+  mutate(Date = paste("04", Month)) %>%
+  ggplot(aes(Month, n, colour = Borough)) + geom_line() +
+  ggtitle("Uber Monthly Growth - 2014")
+monthly_growth
+
+plot(Q1_17$`Order Quantity`)
+barplot(Q1_17$`Order Quantity`~ Q1_17$state)
+```
+
+
+```{r echo=TRUE}
+
+
+ group_by(mkt_Data,mkt_Data$`External Description`)%>% ggplot2::ggplot(mapping = aes(x=mkt_Data$`External Description`))+geom_bar()+ theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+group_by(mkt_Data,mkt_Data$`External Description`)%>% summarise(count=n())
+
+
+ 
+  group_by(mkt_Data,mkt_Data$Promotion)%>% summarise(count=n())
+ 
+  
+  
+ plyr:: ddply(mkt_Data, c("`External Description`","Promotion"), summarise, Count = sum(`Order Quantity`) )
+ 
+ plyr:: ddply(mkt_Data, c("`External Description`","zip"), summarise, Count = sum(`Order Quantity`) )
+ 
+ group_by(mkt_Data,mkt_Data$zip)%>% summarise(count=n())
+ 
+
+```
+

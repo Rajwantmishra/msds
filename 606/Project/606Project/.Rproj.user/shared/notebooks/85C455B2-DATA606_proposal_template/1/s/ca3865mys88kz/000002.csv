@@ -1,0 +1,5 @@
+"0"," Q1_17 <-read_excel(path=paste0(filePath,""/"",""2017_Q1.xlsx""),sheet=""Data"",guess_max =g_max)
+"
+"2","Error in paste0(filePath, ""/"", ""2017_Q1.xlsx"") : 
+  object 'filePath' not found
+"
