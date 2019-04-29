@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556488590025.000,
+    "dirty" : true,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "702996EB",
+    "lastKnownWriteTime" : 1556488935,
+    "last_content_update" : 1556515044606,
+    "path" : "~/myR/MS/607/Project5/607Project/607_project.Rmd",
+    "project_path" : "607_project.Rmd",
+    "properties" : {
+        "cursorPosition" : "34,100",
+        "last_setup_crc32" : "68AACF305afc6a23",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,36 @@
+---
+title: "607_project"
+author: "Rajwant Mishra"
+date: "April 28, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(DT)
+library(stringr)
+library(lubridate)
+library(corrr)
+library(psych)
+library(readxl)
+library(readr)
+library(plotly)
+library(lme4)
+library(lmerTest)
+# https://www.dataquest.io/blog/statistical-learning-for-predictive-modeling-r/
+```
+
+
+```{r}
+
+# load data
+workDir <- getwd()
+
+
+filePath = paste0(workDir,"/Data")
+g_max <- 1048576
+
+```
+

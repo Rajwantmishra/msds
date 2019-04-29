@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556488681412.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7939519B",
+    "lastKnownWriteTime" : 1556432243,
+    "last_content_update" : 1556432243,
+    "path" : "~/myR/MS/606/Project/606Project/Project_606.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "90,0",
+        "scrollLine" : "83"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
