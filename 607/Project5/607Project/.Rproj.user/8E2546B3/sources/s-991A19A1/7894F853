@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556769242270.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "3569360466",
+    "id" : "7894F853",
+    "lastKnownWriteTime" : 1540423844,
+    "last_content_update" : 1540423844,
+    "path" : "~/myR/MS/607/Project5/607Project/checkme/server.R",
+    "project_path" : "checkme/server.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

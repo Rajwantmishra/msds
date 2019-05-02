@@ -1,0 +1,5 @@
+"0","cosine(as.matrix(t(cos_Train)[,])) 
+"
+"2","Error in crossprod(x, y) : 
+  requires numeric/complex matrix/vector arguments
+"

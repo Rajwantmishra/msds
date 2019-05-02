@@ -1,0 +1,25 @@
+"0","# (getPattern <- content_transformer(  function(x,pattern)( str_extract_all(x, '<(.+?)>.+?</\\1>'))))
+(getPattern <- content_transformer(  function(x,pattern)( str_extract_all(x, pattern))))
+"
+"1","function (x, ...) 
+"
+"1","{
+"
+"1","    content(x) <- FUN(content(x), ...)
+"
+"1","    x
+"
+"1","}
+"
+"1","<bytecode: 0x0000000023338368>
+"
+"1","<environment: 0x00000000286ca038>
+"
+"1","attr(,""class"")"
+"1","
+"
+"1","[1]"
+"1"," ""content_transformer"""
+"1"," ""function""           "
+"1","
+"

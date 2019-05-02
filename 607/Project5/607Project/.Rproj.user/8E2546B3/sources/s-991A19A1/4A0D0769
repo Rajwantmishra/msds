@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556769241850.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "4A0D0769",
+    "lastKnownWriteTime" : 1540423844,
+    "last_content_update" : 1540423844,
+    "path" : "~/myR/MS/607/Project5/607Project/checkme/ui.R",
+    "project_path" : "checkme/ui.R",
+    "properties" : {
+        "cursorPosition" : "20,14",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

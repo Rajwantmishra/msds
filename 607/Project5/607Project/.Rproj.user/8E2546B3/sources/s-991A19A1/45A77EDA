@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556774099470.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "45A77EDA",
+    "lastKnownWriteTime" : 32651569751457901,
+    "last_content_update" : 1556774099470,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "8BEC51D9",
+        "caption" : "cosine_train_drug_result",
+        "contentUrl" : "grid_resource/gridviewer.html?env=_rs_no_env&obj=cosine_train_drug_result&cache_key=8BEC51D9",
+        "displayedObservations" : 40,
+        "environment" : "_rs_no_env",
+        "object" : "cosine_train_drug_result",
+        "preview" : 0,
+        "totalObservations" : 40,
+        "variables" : 40
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
