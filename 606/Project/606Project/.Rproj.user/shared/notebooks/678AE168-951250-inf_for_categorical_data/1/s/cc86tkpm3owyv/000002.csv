@@ -1,0 +1,4 @@
+"0","n <- 1000"
+"0","p <- seq(0, 1, 0.01)"
+"0","me <- 2 * sqrt(p * (1 - p)/n)"
+"0","plot(me ~ p, ylab = ""Margin of Error"", xlab = ""Population Proportion"")"

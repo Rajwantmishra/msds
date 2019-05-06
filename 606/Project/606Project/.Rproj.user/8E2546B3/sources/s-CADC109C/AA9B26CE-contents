@@ -1,0 +1,132 @@
+---
+title: "WPTEST"
+author: "Rajwant Mishra"
+date: "April 28, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("RWordPress", repos="http://www.omegahat.org/R", build=TRUE)
+if (!require('RWordPress')) {
+        devtools::install_github(c("duncantl/XMLRPC", "duncantl/RWordPress"))
+}
+library(tidyverse)
+library(RWordPress)
+library(RCurl)
+library(reshape2)
+library(XMLRPC)
+library(knitr)
+options(WordpressLogin = c(ap_support = 'l%zF)tFFIa^ay7q95xCpwCvX'),
+        WordpressURL = 'https://whatsq.com/xmlrpc.php')
+postTitle = "Testpage from R resp. knitr"
+fileName = "W7_607_Final.Rmd"
+postID = 13409 # for my test post
+
+knit2wpCrayon <- function(input, title="A post from knitr", ...,
+                          action=c("newPost", "editPost", "newPage"),
+                          postid, encoding=getOption("encoding"),
+                          upload=FALSE, publish=FALSE, write=TRUE)
+{
+    out <- knit(input, encoding=encoding)
+    on.exit(unlink(out))
+    con <- file(out, encoding=encoding)
+    on.exit(close(con), add=TRUE)
+    content <- knitr:::native_encode(readLines(con, warn=FALSE))
+    content <- paste(content, collapse="\n")
+    content <- markdown::markdownToHTML(text=content, fragment.only=TRUE)
+    content <- gsub("<pre><code class=\"([[:alpha:]]+)\">(.+?)</code></pre>",
+                    "<pre class=\"lang:\\1 decode:true\">\\2</pre>",
+                    content)
+    content=knitr:::native_encode(content, "UTF-8")
+    title=knitr:::native_encode(title, "UTF-8")
+    if (write){
+        writeLines(text=content,
+                   con=gsub(x=out, pattern="\\.md$", replacement=".html"))
+    }
+    if (upload){
+        action=match.arg(action)
+        WPargs=list(content=list(description=content, title=title, 
+                                 ...), publish=publish)
+        if (action=="editPost") 
+            WPargs=c(postid=postid, WPargs)
+        do.call("library", list(package="RWordPress", character.only=TRUE))
+        print(do.call(action, args=WPargs))
+    }
+}
+
+knit2wpCrayon("951250-inf_for_categorical_data.html", 
+        title = "Create blog posts from RStudio to Wordpress",
+        categories = c("R", "Programming"), 
+        publish = FALSE)
+
+
+
+postID <- knitr::knit2wp(
+        input = fileName, 
+        title = postTitle, 
+        publish = FALSE,
+        action = c("newPost"))
+
+knit2wp('W7_607_Final.Rmd', title = "Blog Posting from R Markdown to WordPress", encoding = getOption("encoding"),publish = FALSE)
+
+```
+```{r}
+
+# https://rpubs.com/pbaumgartner/r2wp
+knit2wp <- function(file) {
+    require(XML)
+    content <- readLines(file)
+    content <- htmlTreeParse(content, trim=FALSE)
+
+    ## WP will add the h1 header later based on the title, so delete here
+    content$children$html$children$body$children$h1 <- NULL
+    content <- paste(capture.output(print(content$children$html$children$body,
+                                          indent=FALSE, tagSeparator="")),
+                     collapse="\n")
+    content <- gsub("<?.body>", "", content)         # remove body tag
+    
+    ## enclose code snippets in SyntaxHighlighter format
+    content <- gsub("<?pre><code class=\"r\">", "\\[code lang='r'\\]\\\n",
+                    content)
+    content <- gsub("<?pre><code class=\"no-highlight\">", "\\[code\\]\\\n",
+                    content)
+    content <- gsub("<?pre><code>", "\\[code\\]\\\n", content)
+    content <- gsub("<?/code></pre>", "\\[/code\\]\\\n", content)
+    return(content)
+}
+
+
+newPost(content=list(description=knit2wp('951250-inf_for_categorical_data.html'),
+                     title='Workflow: Post R markdown to WordPress',
+                     categories=c('R')),
+        publish=FALSE)
+
+```
+
+## R Markdown
+
+RWordPress functions as the interface to WordPress
+’XMLRPC` is necessary for the transfer protocol
+knitr as the Swiss knife for dynamic report generation with R.
+reshape2 for restructuring data sets
+RCurl as a general Network (HTTP/FTP/…) Client Interface for R
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars, echo=TRUE}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

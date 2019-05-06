@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556121033009.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "2281703324",
+    "id" : "5B80BB62",
+    "lastKnownWriteTime" : 1557126618,
+    "last_content_update" : 1557126618706,
+    "path" : "~/myR/MS/606/Project/606Project/Project_606.Rmd",
+    "project_path" : "Project_606.Rmd",
+    "properties" : {
+        "cursorPosition" : "435,0",
+        "last_setup_crc32" : "CADC109C482db6b0",
+        "scrollLine" : "420",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556476992209.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AA9B26CE",
+    "lastKnownWriteTime" : 1556484711,
+    "last_content_update" : 1556484711256,
+    "path" : "~/myR/wordpresR/wordpressTest.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "75,37",
+        "last_setup_crc32" : "",
+        "scrollLine" : "73",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

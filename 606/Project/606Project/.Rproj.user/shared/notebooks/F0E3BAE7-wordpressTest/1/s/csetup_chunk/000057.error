@@ -1,0 +1,1 @@
+{"frames":[],"message":"Error in knit2wp(\"W7_607_Final.Rmd\", title = \"Blog Posting from R Markdown to WordPress\",  : \n  unused arguments (title = \"Blog Posting from R Markdown to WordPress\", encoding = getOption(\"encoding\"), publish = FALSE)\n"}

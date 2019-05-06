@@ -1,0 +1,8 @@
+"0","p <- 0.1"
+"0","n <- 1040"
+"0","p_hats <- rep(0, 5000)"
+"0","for(i in 1:5000){"
+"0","  samp <- sample(c(""atheist"", ""non_atheist""), n, replace = TRUE, prob = c(p, 1-p))"
+"0","  p_hats[i] <- sum(samp == ""atheist"")/n"
+"0","}"
+"0","hist(p_hats, main = ""p = 0.1, n = 1040"", xlim = c(0, 0.18))"
