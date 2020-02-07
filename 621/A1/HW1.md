@@ -7,12 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 
-library(tidyverse)
-library(ggplot2)
-```
 
 ## Deliverables:
 
@@ -22,25 +17,23 @@ from technical details.
 + Assigned predictions (the number of wins for the team) for the evaluation data set.
 + Include your R statistical programming code in an Appendix
 
-```{r }
 
-
+```r
 training = "https://github.com/Rajwantmishra/msds/blob/master/621/A1/moneyball-training-data.csv"
 evaluation = "https://github.com/Rajwantmishra/msds/blob/master/621/A1/moneyball-evaluation-data.csv"
 
 baseball.train = read.csv(training)
 baseball.eval = read.csv(evaluation)
-
 ```
 
 
 ## 1. DATA EXPLORATION
-Describe the size and the variables in the moneyball training data set. Consider that too much detail will cause a manager to lose interest while too little detail will make the manager consider that you aren’t doing your job. Some suggestions are given below. Please do NOT treat this as a check list of things to do to complete the assignment. You should have your own thoughts on what to tell the boss. These are just ideas.
+Describe the size and the variables in the moneyball training data set. Consider that too much detail will cause a manager to lose interest while too little detail will make the manager consider that you aren't doing your job. Some suggestions are given below. Please do NOT treat this as a check list of things to do to complete the assignment. You should have your own thoughts on what to tell the boss. These are just ideas.
 
 a. Mean / Standard Deviation / Median
 b. Bar Chart or Box Plot of the data
 c. Is the data correlated to the target variable (or to other variables?)
-d. Are any of the variables missing and need to be imputed “fixed”?
+d. Are any of the variables missing and need to be imputed "fixed"?
 
 ## 2. DATA PREPARATION
 Describe how you have transformed the data by changing the original variables or creating new variables. If you did transform the data or create new variables, discuss why you did this. Here are some possible transformations.
