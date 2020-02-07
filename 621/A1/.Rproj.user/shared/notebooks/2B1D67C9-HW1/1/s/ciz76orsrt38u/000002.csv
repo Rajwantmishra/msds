@@ -1,0 +1,4 @@
+"0","training = ""https://github.com/Rajwantmishra/msds/blob/master/621/A1/moneyball-training-data.csv"""
+"0","evaluation = ""https://github.com/Rajwantmishra/msds/blob/master/621/A1/moneyball-evaluation-data.csv"""
+"0","baseball.train = read.csv(training)"
+"0","baseball.eval = read.csv(evaluation)"
