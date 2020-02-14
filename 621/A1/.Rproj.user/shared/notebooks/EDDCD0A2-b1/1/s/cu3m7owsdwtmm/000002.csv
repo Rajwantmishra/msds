@@ -1,0 +1,6 @@
+"0","# lets build the model"
+"0","model3 <- lm(y~x,dt_chk)"
+"0","model4 <- lm(y1~x,dt_chk)"
+"0","model5 <- lm(y2~x,dt_chk)"
+"0","par(mfrow = c(2, 2)) "
+"0","plot(model3)"

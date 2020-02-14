@@ -1,0 +1,7 @@
+"0","# Trying to see Residual with different data set that is not linear."
+"0","x <- runif(100,-3,3) # Genrate 100 data points between 3 and -3 "
+"0","y <-  x + sin(x) "
+"0","y1 <- x + sin(x) + rnorm(100,sd=.2)"
+"0","y2 <-  x + rnorm(100,sd=.2)"
+"0","dt_chk <- data.frame('x'= x,'y'=y ,'y1'=y1, 'y2'=y2)"
+"0","head(dt_chk )"

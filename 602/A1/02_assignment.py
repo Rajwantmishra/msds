@@ -41,9 +41,9 @@ def exercise02():
     # Set the variable len_animals to the length of the animal list.
 
     # ------ Place code below here \/ \/ \/ ------
-    animal = exercise01()
-    animal_len = len(animal)
-    [print(animal[i]) for i in range(len(animal))]
+    animals = exercise01()
+    len_animals = len(animals)
+    [print(animals[i]) for i in range(len(animals))]
     # ------ Place code above here /\ /\ /\ ------
 
     return animals, len_animals
@@ -135,7 +135,7 @@ def exercise07(n):
     # 1. creating Key value pair of keys from the "n" and 
     # 2. values = number of duplicates, 
     # In final step I am checking if any value from 2nd point is greater than 1, then its a duplicate.
-    dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
+    dup_value = {n[i]:len([n[j] for j,x in enumerate(n) if x==n[i] ]) for i in range(len(n)) }
     dup_value = list(dup_value.values())
     if True in [dup_value[k] > 1 for k in range(len(dup_value))]:    
         return True
@@ -185,6 +185,7 @@ def exercise10(sentence):
 
     # ------ Place code below here \/ \/ \/ ------
     
+    reversed = sentence[::-1]
 
 
     # ------ Place code above here /\ /\ /\ ------
