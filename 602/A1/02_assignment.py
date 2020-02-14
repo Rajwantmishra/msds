@@ -170,8 +170,29 @@ def exercise09():
     print(str(dog_media.content))
     
     # ------ Place code below here \/ \/ \/ ------
+    # # List of valid image extenstion 
+    validImg= ['.jpg','.jpeg','.png','.gif'] 
     
-
+    #Run the while loop until we have 11 images in dogs list.
+    while len(dogs)<11:
+        # Get the Joson data file 
+        resultUrl = dog_media.json()
+        # Read the url value from the json
+        imageUrl = resultUrl['url']
+        # print(imageUrl)
+        # Following code find the extenstion of file.
+        # 1. Find all the '.' in the file name and read the last position of the "."
+        # 2. read the url from the postion "." to length of the url file. 
+        # 3. Compare this value against the validImage list , on success store the value in Dogs 
+        # 4. Else continue to read next record from url. 
+        l_urlStartExt = [i for i, j in enumerate(imageUrl) if j == '.'][-1:]  # Taking last . from the url name
+        l_urlStopExt = len(imageUrl) 
+        l_urlImgExt = imageUrl[l_urlStartExt[0]:l_urlStopExt]
+        # print('Ext...:',l_urlImgExt)
+        if l_urlImgExt in validImg:
+            # print('Valid ',l_urlImgExt)
+            dogs.append(imageUrl)
+        dog_media = r.get(url=url)
 
     # ------ Place code above here /\ /\ /\ ------
 
@@ -184,10 +205,20 @@ def exercise10(sentence):
     reversed = ''
 
     # ------ Place code below here \/ \/ \/ ------
+    # Here I am storing reversed sentence in wsent list and then 
+    # convert its case and replace _ space and assign value to reversed
     
-    reversed = sentence[::-1]
-
-
+    wsent = list(sentence[::-1])
+    for i,j in enumerate(wsent):     
+        if j.islower()==True: 
+            wsent[i] = j.upper()
+        elif j.isupper()==True:
+            wsent[i] = j.lower()
+        elif j.isspace() == True:
+            wsent[i] = "_"
+        else :
+            wsent[i] = " "     
+    reversed = "".join(wsent)
     # ------ Place code above here /\ /\ /\ ------
     return reversed
 

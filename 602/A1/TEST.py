@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import requests as r
 # # print("RE")
 # # y = [10,20,30,40]
 # # t = [1,2,3,4]
@@ -145,29 +146,29 @@ import numpy as np
 # print('ID of New List:', id(new_list1))
 
 
-def exercise07(a):
-    # This function looks for duplicates in list n. 
-    # If there is a duplicate True is returned. 
-    # If there are no duplicates False is returned.
+# def exercise07(a):
+#     # This function looks for duplicates in list n. 
+#     # If there is a duplicate True is returned. 
+#     # If there are no duplicates False is returned.
 
-    # ------ Place code below here \/ \/ \/ ------
-    dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
-    dup_value = list(dup_value.values())
-    print("Dup value ---",dup_value)
-    if True in [dup_value[k] > 1 for k in range(len(dup_value))]:    
-    # if True in [n[i] in n for i in range(len(n))]:
-        return True
-    else:
-        return False
-    #  {a[i]:a[j] for i in range(len(a)) for j,x in enumerate(a) if x==a[i]}
+#     # ------ Place code below here \/ \/ \/ ------
+#     dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
+#     dup_value = list(dup_value.values())
+#     print("Dup value ---",dup_value)
+#     if True in [dup_value[k] > 1 for k in range(len(dup_value))]:    
+#     # if True in [n[i] in n for i in range(len(n))]:
+#         return True
+#     else:
+#         return False
+#     #  {a[i]:a[j] for i in range(len(a)) for j,x in enumerate(a) if x==a[i]}
     
-    # {a[i]:[a[j] for j,x in enumerate(a) if x==a[i] ] for i in range(len(a)) }
-    #result = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) 
-    # dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
-    # dup_value = list(dup_value.values())
+#     # {a[i]:[a[j] for j,x in enumerate(a) if x==a[i] ] for i in range(len(a)) }
+#     #result = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) 
+#     # dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
+#     # dup_value = list(dup_value.values())
     
     
-print("--------------",exercise07([1,2,3,3]))
+# print("--------------",exercise07([1,2,3,3]))
 # a = [1,2,3,4,3]
 # dup_value = {a[i]:len([a[j] for j,x in enumerate(a) if x==a[i] ]) for i in range(len(a)) }
 # dup_value = list(dup_value.values())
@@ -178,18 +179,82 @@ print("--------------",exercise07([1,2,3,3]))
 # for i in range(len(a)):    
 #     print("....",a[i],"----",[a[j] for j,x in enumerate(a) if x==a[i]])
 
-def exercise05(n):
-    # This function will find n factorial using recursion (calling itself) 
-    # and return the solution. For example exercise05(5) will return 120. No Python functions are to be used.
+# def exercise05(n):
+#     # This function will find n factorial using recursion (calling itself) 
+#     # and return the solution. For example exercise05(5) will return 120. No Python functions are to be used.
 
-    # ------ Place code below here \/ \/ \/ ------ 
-    if n <=1:
-        one = 1
-        return one
-    result = n * exercise05(n-1)
-    return result
+#     # ------ Place code below here \/ \/ \/ ------ 
+#     if n <=1:
+#         one = 1
+#         return one
+#     result = n * exercise05(n-1)
+#     return result
 
-a = [1,1,2,4,5,6,7]
-print(len(a))
+# a = [1,1,2,4,5,6,7]
+# print(len(a))
 # print(exercise05(-7))
 
+#-----------------------------------Request-------------
+
+
+# reqI = req.get('https://random.dog/woof.json')
+# resultUrl = reqI.json()
+# imageUrl = resultUrl['url']
+# # print(imageUrl)
+# print(imageUrl)
+
+# l_urlStartExt = [i for i, j in enumerate(imageUrl) if j == '.'][-1:]  # Taking last . from the url name
+# l_urlStopExt = len(imageUrl) 
+# l_urlImgExt = imageUrl[l_urlStartExt[0]:l_urlStopExt]
+# print(l_urlImgExt)
+# validImg= ['.jpg',',jpeg','.png','.gif'] 
+# if l_urlImgExt in validImg:
+#     print('Valid ',l_urlImgExt)
+    
+
+dogs = []
+url = 'https://random.dog/woof.json'
+dog_media = r.get(url=url)
+print(str(dog_media.content))
+
+validImg= ['.jpg',',jpeg','.png','.gif'] 
+while len(dogs)<11:
+    resultUrl = dog_media.json()
+    imageUrl = resultUrl['url']
+    print(imageUrl)
+    l_urlStartExt = [i for i, j in enumerate(imageUrl) if j == '.'][-1:]  # Taking last . from the url name
+    l_urlStopExt = len(imageUrl) 
+    l_urlImgExt = imageUrl[l_urlStartExt[0]:l_urlStopExt]
+    print('Ext...:',l_urlImgExt)
+    if l_urlImgExt in validImg:
+        print('Valid ',l_urlImgExt)
+        dogs.append(imageUrl)
+    dog_media = r.get(url=url)
+
+print('FINAL len {}...value{}'. format(len(dogs),dogs))
+# # print(imageUrl)
+# print(imageUrl)
+
+# l_urlStartExt = [i for i, j in enumerate(imageUrl) if j == '.'][-1:]  # Taking last . from the url name
+# l_urlStopExt = len(imageUrl) 
+# l_urlImgExt = imageUrl[l_urlStartExt[0]:l_urlStopExt]
+# print(l_urlImgExt)
+# validImg= ['.jpg',',jpeg','.png','.gif'] 
+# if l_urlImgExt in validImg:
+#     print('Valid ',l_urlImgExt)
+
+    
+# ssn = requests.Session()
+# ssn.cookies.update({'visit-month': 'February'})
+ 
+# reqOne = ssn.get('http://httpbin.org/cookies')
+# print(reqOne.text)
+# # prints information about "visit-month" cookie
+ 
+# reqTwo = ssn.get('http://httpbin.org/cookies', cookies={'visit-year': '2017'})
+# print(reqTwo.text)
+# # prints information about "visit-month" and "visit-year" cookie
+ 
+# reqThree = ssn.get('http://httpbin.org/cookies')
+# print(reqThree.text)
+# # prints information about "visit-month" cookie
