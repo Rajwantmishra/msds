@@ -1,0 +1,4 @@
+"0","df = 34-2-2"
+"0","Result<- mutate(Result, cstud = deleted_residual/sd(deleted_residual), "
+"0","                tval= paste(round(qt(c(.001, .999), df),3) ,collapse=""--""),"
+"0","                posib_inf =ifelse( (qt(.025, df)< cstud) & (cstud < qt(.975, df)) , ""T "" ,""F""))"

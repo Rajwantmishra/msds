@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1582738236913.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "935825596",
+    "id" : "B6B8BD2D",
+    "lastKnownWriteTime" : 1582211891,
+    "last_content_update" : 1582211891,
+    "path" : "~/GitHub/msds/621/A1/b1.Rmd",
+    "project_path" : "b1.Rmd",
+    "properties" : {
+        "cursorPosition" : "310,14",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

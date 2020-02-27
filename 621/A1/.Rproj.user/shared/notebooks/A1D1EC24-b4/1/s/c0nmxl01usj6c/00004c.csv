@@ -1,0 +1,2 @@
+"0","  # facet_wrap(~variable, scales =""free"", ncol = 4) +"
+"0","  # labs(x = element_blank(), y = ""Wins"")"

@@ -1,0 +1,3 @@
+"0","cognitive$c_ageiq <- cognitive$mom_age*cognitive$mom_iq"
+"0","cognitive$c_iq  <- cognitive$mom_iq^2 "
+"0","head((cognitive))"

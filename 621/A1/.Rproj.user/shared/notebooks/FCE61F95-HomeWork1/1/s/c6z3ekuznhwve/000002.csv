@@ -1,0 +1,4 @@
+"0","set.seed(42)"
+"0","train_index <- createDataPartition(mtd$TARGET_WINS, p = .7, list = FALSE, times = 1)"
+"0","moneyball_train <- mtd[train_index,]"
+"0","moneyball_test <- mtd[-train_index,]"

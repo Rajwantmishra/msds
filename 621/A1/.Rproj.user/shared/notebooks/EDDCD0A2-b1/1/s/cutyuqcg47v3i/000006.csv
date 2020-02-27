@@ -1,0 +1,4 @@
+"0","car::vif(model1)
+"
+"2","Error in vif.default(model1) : model contains fewer than 2 terms
+"

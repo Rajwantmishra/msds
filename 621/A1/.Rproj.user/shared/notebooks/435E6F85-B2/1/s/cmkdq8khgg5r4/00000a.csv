@@ -1,0 +1,2 @@
+"0","cognitive <- read.csv(""http://bit.ly/dasi_cognitive"")"
+"0","head(cognitive)"

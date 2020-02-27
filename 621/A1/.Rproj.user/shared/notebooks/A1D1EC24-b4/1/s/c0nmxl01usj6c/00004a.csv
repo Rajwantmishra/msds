@@ -1,0 +1,4 @@
+"0","library(ggplot2)"
+"0","ggplot(races.table, aes(Distance, Time)) + "
+"0","  geom_point(fill = ""indianred4"", color=""indianred4"") + "
+"0","  geom_smooth(method = ""lm"",  color = ""black"")  "

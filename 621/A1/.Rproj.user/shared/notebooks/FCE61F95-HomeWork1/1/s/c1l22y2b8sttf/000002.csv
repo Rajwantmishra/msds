@@ -1,0 +1,2 @@
+"0","mtd <- read.csv(""https://raw.githubusercontent.com/Rajwantmishra/DATA621_CR4/master/HW1/Deb/moneyball-training-data.csv"")"
+"0","med <- read.csv(""https://raw.githubusercontent.com/Rajwantmishra/DATA621_CR4/master/HW1/Deb/moneyball-evaluation-data.csv"")"

@@ -1,0 +1,8 @@
+"0","# Make predictions"
+"0","predictions <- model1 %>% predict(moneyball_test)"
+"2","prediction from a rank-deficient fit may be misleading"
+"0","# Model performance"
+"0","data.frame("
+"0","  RMSE = RMSE(predictions, moneyball_test$TARGET_WINS,na.rm = TRUE),"
+"0","  R2 = R2(predictions,moneyball_test$TARGET_WINS,na.rm = TRUE)"
+"0",")"

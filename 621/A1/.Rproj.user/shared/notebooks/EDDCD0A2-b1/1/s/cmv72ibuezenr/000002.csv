@@ -1,0 +1,11 @@
+"0","library(ggplot2)"
+"2","package ‘ggplot2’ was built under R version 3.5.3"
+"2","Need help getting started? Try the cookbook for R: http://www.cookbook-r.com/Graphs/
+"
+"0"," g = ggplot(cars,aes(x = speed, y= dist)) "
+"0"," g = g + xlab(""Speed"")"
+"0"," g = g + ylab(""Distance"")"
+"0"," # g = g + geom_point(size = 7, color = ""black"" , alpha = .6)"
+"0"," g = g + geom_point(size = 3, color = ""blue"" , alpha = .3)"
+"0"," g = g + geom_smooth(method = ""lm"", color = ""gray"")"
+"0"," g"

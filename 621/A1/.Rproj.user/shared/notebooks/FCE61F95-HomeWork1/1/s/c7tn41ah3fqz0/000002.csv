@@ -1,0 +1,8 @@
+"0","data.frame("
+"0","  `Variable Name` = c(""INDEX"",""TARGET_WINS"",""TEAM_BATTING_H"",""TEAM_BATTING_2B"",""TEAM_BATTING_3B"",""TEAM_BATTING_HR"",""TEAM_BATTING_BB"",""TEAM_BATTING_HBP"","
+"0","                      ""TEAM_BATTING_SO"",""TEAM_BASERUN_SB"",""TEAM_BASERUN_CS"",""TEAM_FIELDING_E"",""TEAM_FIELDING_DP"",""TEAM_PITCHING_BB"",""TEAM_PITCHING_H"",""TEAM_PITCHING_HR"",""TEAM_PITCHING_SO""),"
+"0","  `Definition` = c(""Identification Variable (do not use)"",""Number of wins"",""Base Hits by batters (1B,2B,3B,HR)"",""Doubles by batters (2B)"",""Triples by batters (3B)"",""Homeruns by batters (4B)"",""Walks by batters"",""Batters hit by pitch (get a free base)"",""Strikeouts by batters"",""Stolen bases"",""Caught stealing"",""Errors"",""Double Plays"",""Walks allowed"",""Hits allowed"",""Homeruns allowed"",""Strikeouts by pitchers""),"
+"0","  `THEORETICAL EFFECT` = c(""None"","""",""Positive Impact on Wins"",""Positive Impact on Wins"",""Positive Impact on Wins"",""Positive Impact on Wins"",""Positive Impact on Wins"",""Positive Impact on Wins"",""Negative Impact on Wins"",""Positive Impact on Wins"",""Negative Impact on Wins"",""Negative Impact on Wins"",""Positive Impact on Wins"",""Negative Impact on Wins"",""Negative Impact on Wins"",""Negative Impact on Wins"",""Positive Impact on Wins"")"
+"0",") %>%"
+"0","  kable() %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover"", ""condensed"", ""responsive""),full_width = F)"

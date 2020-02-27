@@ -1,0 +1,5 @@
+"0","melt(mtd) %>%"
+"0","  ggplot(aes(x= value)) +"
+"0","    geom_density(fill='red') + facet_wrap(~variable, scales = 'free')"
+"2","Using  as id variables
+"

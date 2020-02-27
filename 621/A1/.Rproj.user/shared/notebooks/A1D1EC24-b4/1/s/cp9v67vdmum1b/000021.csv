@@ -1,0 +1,11 @@
+"0","Result<- data.frame(""Time"" = races.table$Time, 
+           ""yhat"" =predict(model1), 
+           ""yhat2"" =predict(model2,races.table), 
+           ""residual"" = resid(model1) ,
+           ""deleted_residual"" = races.table$Time - predict(model2,races.table),
+           ""std_Res"" = rstandard(model1),  #std = residual divided by its standard deviation of residual 
+           ""Stu_Res"" = studres(model2)) 
+"
+"2","Error in data.frame(Time = races.table$Time, yhat = predict(model1), yhat2 = predict(model2,  : 
+  arguments imply differing number of rows: 35, 33
+"

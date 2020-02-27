@@ -1,0 +1,6 @@
+"0","# Sum of Residual multiplyied by Regression Variable  shoud be zero"
+"0","sum(dt_ress$Calculated.Residual * cars$speed)"
+"1","[1]"
+"1"," -1.685052e-11"
+"1","
+"

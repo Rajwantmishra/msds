@@ -1,0 +1,3 @@
+"0","url = 'http://www.statsci.org/data/general/hills.txt' "
+"0","races.table = read.table(url, header=TRUE, sep='\t')"
+"0","head(races.table)"

@@ -1,0 +1,8 @@
+"0","par(mfrow=c(3,2))   "
+"0","for (i in 1:16) {"
+"0","      hist(mtd[,i],main=names(mtd[i]),xlab=names(mtd[i]),51) # ? 51 mean(mtd$TARGET_WINS)"
+"0","      boxplot(mtd[,i], main=names(mtd[i]), type=""l"",horizontal = TRUE)"
+"0","      "
+"0","      plot(mtd[,i], mtd$TARGET_WINS, main = names(mtd[i]), xlab=names(mtd[i]))"
+"0","      abline(lm(mtd$TARGET_WINS ~ mtd[,i], data = mtd), col = ""blue"")"
+"0","}"

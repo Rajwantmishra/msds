@@ -1,0 +1,6 @@
+"0","# Sum of residual must be zero "
+"0"," sum(dt_ress$Calculated.Residual)"
+"1","[1]"
+"1"," -1.360689e-12"
+"1","
+"

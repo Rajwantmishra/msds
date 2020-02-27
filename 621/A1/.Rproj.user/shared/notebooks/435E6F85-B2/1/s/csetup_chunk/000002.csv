@@ -1,0 +1,24 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0","library(plyr)"
+"0","library(bbmle)"
+"2","package ‘bbmle’ was built under R version 3.5.3"
+"2","Loading required package: stats4
+"
+"0","library(car)"
+"2","package ‘car’ was built under R version 3.5.3"
+"2","Loading required package: carData
+"
+"2","package ‘carData’ was built under R version 3.5.2"
+"0","library(psych)"
+"2","package ‘psych’ was built under R version 3.5.3"
+"2","
+Attaching package: ‘psych’
+
+"
+"2","The following object is masked from ‘package:car’:
+
+    logit
+
+"
+"0","library(tibble)"
+"2","package ‘tibble’ was built under R version 3.5.3"
