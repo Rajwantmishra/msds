@@ -1,0 +1,4 @@
+"0","cor_res <- cor(mtd, use = ""complete.obs"")"
+"0","mtd %>% "
+"0","  cor(., use = ""complete.obs"") %>%"
+"0","  corrplot(., method = ""color"", type = ""upper"", tl.col = ""black"", diag = FALSE)"

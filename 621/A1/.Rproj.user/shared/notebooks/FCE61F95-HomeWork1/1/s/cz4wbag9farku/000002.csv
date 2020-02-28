@@ -1,0 +1,5 @@
+"0","moneyball_test %>%"
+"0","  select(kitchen_sink_error, simple_error, step_back_error) %>%"
+"0","  summary() %>%"
+"0","  kable() %>%"
+"0","  kable_styling()"

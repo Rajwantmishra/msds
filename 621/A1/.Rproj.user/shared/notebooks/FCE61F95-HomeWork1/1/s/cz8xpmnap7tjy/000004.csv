@@ -1,0 +1,6 @@
+"0","mtd %>%"
+"0","  gather(variable, value, TARGET_WINS:FIELDING_DP) %>%"
+"0","  ggplot(., aes(value)) + "
+"0","  geom_density(fill = ""indianred4"", color=""indianred4"") + "
+"0","  facet_wrap(~variable, scales =""free"", ncol = 4) +"
+"0","  labs(x = element_blank(), y = element_blank())"

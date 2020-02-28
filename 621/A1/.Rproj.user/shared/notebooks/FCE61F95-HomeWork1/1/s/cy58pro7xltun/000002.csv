@@ -1,0 +1,1 @@
+"0","scatterplot3d(mtd$TARGET_WINS, mtd$BATTING_2B, mtd$BATTING_BB, pch = 20, highlight.3d = TRUE, type = ""h"", main = ""3D ScatterPlots"")"

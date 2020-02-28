@@ -1,0 +1,1 @@
+"0","  abline(lm(TARGET_WINS ~ BATTING_3B,data = mtd),col=""blue"")"

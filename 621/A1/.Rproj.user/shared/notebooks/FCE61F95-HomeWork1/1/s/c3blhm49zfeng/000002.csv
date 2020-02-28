@@ -1,0 +1,7 @@
+"0","mtd %>%"
+"0","  gather(variable, value, -TARGET_WINS) %>%"
+"0","  ggplot(., aes(value, TARGET_WINS)) + "
+"0","  geom_point(fill = ""indianred4"", color=""indianred4"") + "
+"0","  geom_smooth(method = ""lm"", se = FALSE, color = ""black"") + "
+"0","  facet_wrap(~variable, scales =""free"", ncol = 4) +"
+"0","  labs(x = element_blank(), y = ""Wins"")"

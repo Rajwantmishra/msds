@@ -1,0 +1,8 @@
+"0","moneyball_test$step_back <- round(predict(step_back, moneyball_test), 0)"
+"0","moneyball_test <- moneyball_test %>%"
+"0","                    mutate(step_back_error = TARGET_WINS - step_back)"
+"0","moneyball_test %>%"
+"0","  filter(step_back_error > -100) %>%"
+"0","  ggplot(., aes(step_back_error)) +"
+"0","  geom_histogram(bins = 50) +"
+"0","  labs(caption = ""Outlier removed"")"
